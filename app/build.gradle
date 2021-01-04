@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "ando.dialog"
+        applicationId "ando.dialog.usage"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1

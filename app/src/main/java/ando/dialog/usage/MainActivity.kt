@@ -1,5 +1,8 @@
-package ando.dialog
+package ando.dialog.usage
 
+import ando.dialog.CustomDialog
+import ando.dialog.LoadingDialog
+import ando.dialog.usage.R
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
@@ -21,7 +24,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.bt_loading_by_progressbar -> showLoadingDialogByProgressBar()
-            R.id.bt_loading_by_imageview -> showLoadingDialogByImageView()
+            R.id.bt_loading_by_imageview   -> showLoadingDialogByImageView()
         }
     }
 

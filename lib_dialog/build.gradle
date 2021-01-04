@@ -52,10 +52,10 @@ dependencies {
 }
 
 publish {
-    repoName = 'maven'
+    repoName = 'AndoDialog'
     userOrg = 'javakam'
     groupId = 'ando.dialog'
-    artifactId = 'core'
+    artifactId = 'runtime'
     publishVersion = '0.0.1'
     desc = 'Android Dialog Simple Usage'
     website = "https://github.com/javakam/${rootProject.name}"

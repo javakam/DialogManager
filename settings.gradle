@@ -1,0 +1,3 @@
+include ':lib_dialog'
+include ':app'
+rootProject.name = "DialogManager"

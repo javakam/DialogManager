@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:overScrollMode="always"
+    android:padding="15dp"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_loading_by_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="Loading By ProgressBar"
+            android:textAllCaps="false" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_loading_by_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading By ImageView"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

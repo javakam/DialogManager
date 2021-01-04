@@ -16,28 +16,11 @@
         <item name="android:backgroundDimAmount">0.5</item>
 
         <!--  From Base.V7.Theme.AppCompat.Dialog -->
-
-        <item name="android:colorBackground">?attr/colorBackgroundFloating</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-
-        <item name="android:windowTitleStyle">@style/RtlOverlay.DialogWindowTitle.AppCompat</item>
-        <item name="android:windowTitleBackgroundStyle">
-            @style/Base.DialogWindowTitleBackground.AppCompat
-        </item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
 
-        <item name="windowActionBar">false</item>
-        <item name="windowActionModeOverlay">true</item>
-
-        <item name="listPreferredItemPaddingLeft">24dp</item>
-        <item name="listPreferredItemPaddingRight">24dp</item>
-
         <item name="android:listDivider">@null</item>
-
-        <item name="android:buttonBarStyle">@style/Widget.AppCompat.ButtonBar.AlertDialog</item>
-        <item name="android:borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 

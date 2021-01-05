@@ -9,13 +9,13 @@
         android:layout_width="150dp"
         android:layout_height="106dp"
         android:layout_gravity="center"
-        android:background="@color/color_ando_dialog_loading_bg"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingLeft="21dp"
         android:paddingTop="10dp"
         android:paddingRight="21dp"
         android:paddingBottom="10dp"
+        tools:background="@android:color/holo_blue_dark"
         tools:ignore="UselessParent">
 
         <ProgressBar
@@ -26,8 +26,8 @@
             android:indeterminateBehavior="repeat"
             android:indeterminateDrawable="@drawable/ando_dialog_loading"
             android:indeterminateDuration="20"
-            android:indeterminateTint="@color/color_ando_dialog_white"
-            android:indeterminateOnly="true" />
+            android:indeterminateOnly="true"
+            android:indeterminateTint="@color/color_ando_dialog_white" />
 
         <TextView
             android:id="@+id/tipTextView"

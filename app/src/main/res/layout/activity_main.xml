@@ -14,20 +14,38 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="106dp"
+            android:background="@color/color_ando_dialog_loading_bg" >
+
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:textColor="@color/white"
+                android:text="Width: 150dp \nHeight: 106dp"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_loading_by_progressbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Loading By ProgressBar"
+            android:text="Loading + ProgressBar"
             android:textAllCaps="false" />
-
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_loading_by_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading By ImageView"
+            android:text="Loading + ImageView"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_base"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BaseDialog"
             android:textAllCaps="false" />
 
     </LinearLayout>

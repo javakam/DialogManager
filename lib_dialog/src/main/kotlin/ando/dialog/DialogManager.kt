@@ -6,7 +6,6 @@ import android.content.DialogInterface
 import android.util.Log
 import android.view.*
 import androidx.annotation.StyleRes
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 
 /**
@@ -37,11 +36,12 @@ object DialogManager {
     private fun currentDialog(): Dialog? {
         synchronized(this) {
             if (dialog == null) {
-                if (isDialogType) {
-                    dialog = Dialog(mContext, mThemeResId)
-                } else {
+                dialog = Dialog(mContext, mThemeResId)
+
+                if (!isDialogType && dialogFragment == null) {
                     dialogFragment = FragmentDialog()
-                    dialog = dialogFragment?.dialog
+                    //dialog = dialogFragment?.dialog
+                    dialogFragment?.setCustomDialog(dialog)
                 }
             }
             return dialog
@@ -62,7 +62,6 @@ object DialogManager {
         context: Context,
         @StyleRes themeResId: Int = R.style.Theme_AppCompat_Dialog
     ): DialogManager {
-        dismiss()
         this.mContext = context
         this.mThemeResId = themeResId
         this.useDialog()
@@ -73,12 +72,16 @@ object DialogManager {
      * 默认使用Dialog实现
      */
     fun useDialog(): DialogManager {
+        dismiss()
         this.isDialogType = true
+        this.currentDialog()
         return this
     }
 
     fun useDialogFragment(): DialogManager {
+        dismiss()
         this.isDialogType = false
+        this.currentDialog()
         return this
     }
 
@@ -102,7 +105,10 @@ object DialogManager {
             if (isDialogType) {
                 currentDialog()?.setContentView(this)
             } else {
-                Log.e("123", "setContentView $dialogFragment $this")
+                Log.e(
+                    "123",
+                    "setContentView dialogFragment= $dialogFragment contentView= $contentView"
+                )
                 dialogFragment?.setContentView(this)
             }
             block?.invoke(currentDialog(), this)
@@ -199,13 +205,19 @@ object DialogManager {
     private fun configWindow(window: Window) {
         window.apply {
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+
             clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             if (isDimmedBehind) addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
         }
     }
 
-    fun applyConfig(): DialogManager {
-        currentDialog()?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+    /**
+     * Window设置 (注: 必须在 onCreate 之前调用)
+     */
+    fun applyConfig(block: (Window) -> Unit): DialogManager {
+        if (currentDialog()?.isShowing == false) {
+            currentDialog()?.window?.apply { block.invoke(this) }
+        }
         return this
     }
 

@@ -2,7 +2,6 @@ package ando.dialog
 
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity
@@ -16,7 +15,7 @@ import android.view.WindowManager
  */
 abstract class BottomDialog @JvmOverloads constructor(
     context: Context,
-    themeResId: Int = R.style.BottomDialogStyle
+    themeResId: Int = R.style.AndoBottomDialogStyle
 ) : Dialog(context, themeResId) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

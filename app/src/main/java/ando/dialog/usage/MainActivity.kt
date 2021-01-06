@@ -1,7 +1,6 @@
 package ando.dialog.usage
 
 import ando.dialog.DialogManager
-import ando.dialog.use.PickerDialog
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -20,7 +19,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<Button>(R.id.bt_loading_by_progressbar).setOnClickListener(this)
         findViewById<Button>(R.id.bt_loading_by_progressbar_bg_imageview).setOnClickListener(this)
         findViewById<Button>(R.id.bt_loading_by_imageview).setOnClickListener(this)
-        findViewById<Button>(R.id.bt_dialog_base).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_dialog_fragment).setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_loading_by_progressbar -> showLoadingDialogByProgressBarShape()
             R.id.bt_loading_by_progressbar_bg_imageview -> showLoadingDialogByProgressBarImageView()
             R.id.bt_loading_by_imageview -> showLoadingDialogByImageView()
-            R.id.bt_dialog_base -> showBaseDialogPicker()
+            R.id.bt_dialog_fragment -> showFragmentDialog()
         }
     }
 
@@ -44,92 +43,116 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoadingDialogByProgressBarShape() {
-        DialogManager.with(this, R.style.CustomDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
-                v.findViewById<View>(ando.dialog.R.id.progressbar_ando_dialog_loading).visibility=View.VISIBLE
+        DialogManager.with(this, R.style.AndoDialog)
+                .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+                    v.findViewById<View>(ando.dialog.R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
 
-                val textView = v.findViewById<View>(ando.dialog.R.id.tv_ando_dialog_loading_text) as TextView
-                textView.text = getText(R.string.str_ando_dialog_loading_text)
-            }
-            .setCancelable(true) //支持返回键关闭弹窗 true
-            .setCanceledOnTouchOutside(true)
-            .setOnDismissListener {
+                    val textView = v.findViewById<View>(ando.dialog.R.id.tv_ando_dialog_loading_text) as TextView
+                    textView.text = getText(R.string.str_ando_dialog_loading_text)
+                }
+                .setCancelable(true) //支持返回键关闭弹窗 true
+                .setCanceledOnTouchOutside(true)
+                .setOnDismissListener {
 
-            }
-            .apply {
-                //setTitle("Title")
-                //setOnCancelListener{}
-                //...
-            }
-            .show()
+                }
+                .apply {
+                    //setTitle("Title")
+                    //setOnCancelListener{}
+                    //...
+                }
+                .show()
 
         changeDialogSize()
     }
 
     private fun showLoadingDialogByProgressBarImageView() {
-        DialogManager.with(this, R.style.CustomDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
-                v. findViewById<View>(ando.dialog.R.id.progressbar_ando_dialog_loading).visibility=View.VISIBLE
+        DialogManager.with(this, R.style.AndoDialog)
+                .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+                    v.findViewById<View>(ando.dialog.R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
 
-                val textView = v.findViewById<View>(ando.dialog.R.id.tv_ando_dialog_loading_text) as TextView
-                textView.text = getText(R.string.str_ando_dialog_loading_text)
-            }
-            .setCancelable(true) //支持返回键关闭弹窗 true
-            .setCanceledOnTouchOutside(true)
-            .setOnDismissListener {
+                    val textView = v.findViewById<View>(ando.dialog.R.id.tv_ando_dialog_loading_text) as TextView
+                    textView.text = getText(R.string.str_ando_dialog_loading_text)
+                }
+                .setCancelable(true) //支持返回键关闭弹窗 true
+                .setCanceledOnTouchOutside(true)
+                .setOnDismissListener {
 
-            }
-            .apply {
-                //setTitle("Title")
-                //setOnCancelListener{}
-                //...
-            }
-            .show()
+                }
+                .apply {
+                    //setTitle("Title")
+                    //setOnCancelListener{}
+                    //...
+                }
+                .show()
 
         changeDialogSize()
     }
 
     private fun showLoadingDialogByImageView() {
-        DialogManager.with(this, R.style.CustomDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
-                val tvLoadingTx: TextView = v.findViewById(ando.dialog.R.id.tv_ando_dialog_loading_text)
-                tvLoadingTx.text = getText(R.string.str_ando_dialog_loading_text)
+        DialogManager.with(this, R.style.AndoDialog)
+                .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+                    val tvLoadingTx: TextView = v.findViewById(ando.dialog.R.id.tv_ando_dialog_loading_text)
+                    tvLoadingTx.text = getText(R.string.str_ando_dialog_loading_text)
 
-                val ivLoading: ImageView = v.findViewById(ando.dialog.R.id.iv_ando_dialog_loading)
-                ivLoading.visibility=View.VISIBLE
-                val anim =
-                    AnimationUtils.loadAnimation(this, ando.dialog.R.anim.anim_ando_dialog_loading)
-                ivLoading.startAnimation(anim)
-            }
-            .setCancelable(true) //支持返回键关闭弹窗 true
-            .setCanceledOnTouchOutside(true)
-            .setOnShowListener {
-                //对话框显示后再设置窗体才有效果
-                val attributes = it.attributes
-                attributes?.apply {
-                    width = 800
-                    height = 500
-                    gravity = Gravity.CENTER //居中显示
-                    dimAmount = 0.5f         //背景透明度  取值范围 0 ~ 1
+                    val ivLoading: ImageView = v.findViewById(ando.dialog.R.id.iv_ando_dialog_loading)
+                    ivLoading.visibility = View.VISIBLE
+                    val anim =
+                        AnimationUtils.loadAnimation(this, ando.dialog.R.anim.anim_ando_dialog_loading)
+                    ivLoading.startAnimation(anim)
                 }
-                it.attributes = attributes
-            }
-            .setOnDismissListener {
-            }
-            .apply {
-                //setTitle("Title")
-                //setOnCancelListener{}
-                //...
-            }
-            .show()
+                .setCancelable(true) //支持返回键关闭弹窗 true
+                .setCanceledOnTouchOutside(true)
+                .setWidth(300)
+                .setHeight(300)
+                .setOnShowListener {
+                    //对话框显示后再设置窗体才有效果
+                    findViewById<View>(R.id.bt_loading_by_progressbar).postDelayed({
+                        val attributes = it.attributes
+                        attributes?.apply {
+                            width = 400
+                            height = 400
+                            gravity = Gravity.CENTER //居中显示
+                            dimAmount = 0.5f         //背景透明度  取值范围 0 ~ 1
+                        }
+                        it.attributes = attributes
+                    }, 2000)
+                }
+                .setOnDismissListener {
+                }
+                .apply {
+                    //setTitle("Title")
+                    //setOnCancelListener{}
+                    //...
+                }
+                .show()
 
-        changeDialogSize()
+        //changeDialogSize()
     }
 
-    private fun showBaseDialogPicker() {
+    private fun showFragmentDialog() {
         DialogManager.dismiss()
-        val pickerDialog = PickerDialog()
-        pickerDialog.show(this)
+        //PickerDialog().show(this)
+        //changeDialogSize()
+
+        DialogManager.with(this, R.style.AndoDialog)
+                .useDialogFragment()
+                .applyConfig()
+                .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+                    v.findViewById<View>(ando.dialog.R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
+
+                    val textView = v.findViewById<View>(ando.dialog.R.id.tv_ando_dialog_loading_text) as TextView
+                    textView.text = getText(R.string.str_ando_dialog_loading_text)
+                }
+                .setCancelable(true) //支持返回键关闭弹窗 true
+                .setCanceledOnTouchOutside(true)
+                .setOnDismissListener {
+                }
+                .apply {
+                    //setTitle("Title")
+                    //setOnCancelListener{}
+                    //...
+                }
+                .show()
 
         changeDialogSize()
     }

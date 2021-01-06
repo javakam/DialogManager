@@ -7,15 +7,13 @@
 
     <string name="str_ando_dialog_loading_text">加载中…</string>
 
-    <color name="color_ando_dialog_theme">#23ADE5</color>
-    <color name="color_ando_dialog_theme_dark">#CC23ADE5</color>
     <color name="color_ando_dialog_loading_progress">#DEDEDE</color>
-    <color name="color_ando_dialog_loading_progress_end">@color/color_ando_dialog_theme_dark</color>
+    <color name="color_ando_dialog_loading_progress_end">#CC23ADE5</color>
 
     <color name="color_ando_dialog_white">#FFFFFFFF</color>
     <color name="color_ando_dialog_black">#00000000</color>
 
-    <style name="CustomDialog">
+    <style name="AndoDialog">
         <item name="android:windowFrame">@null</item><!--边框-->
         <item name="android:windowIsFloating">true</item><!--是否浮在activity之上-->
         <item name="android:windowIsTranslucent">false</item><!--半透明-->
@@ -34,7 +32,7 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-    <style name="BottomDialogStyle">
+    <style name="AndoBottomDialogStyle">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -44,31 +42,31 @@
     </style>
 
     <!-- ==================== LoadingDialog中ProgressBar、ImageView和文字样式 ==================== -->
-    <!--  -->
     <dimen name="dimen_ando_dialog_loading_width">150dp</dimen>
     <dimen name="dimen_ando_dialog_loading_height">108dp</dimen>
     <dimen name="dimen_ando_dialog_loading_radius">5dp</dimen>
     <color name="color_ando_dialog_loading_bg">#80000000</color>
-    <drawable name="drawable_ando_dialog_loading_png">@drawable/ic_ando_dialog_loading</drawable>
+    <drawable name="drawable_ando_dialog_loading_icon">@drawable/ic_ando_dialog_loading_line</drawable>
+    <integer name="integer_ando_dialog_loading_duration">1300</integer>
 
-    <style name="AndoDialogLoadingProgressBarStyle">
+    <style name="AndoLoadingDialogProgressBarStyle">
         <item name="android:layout_width">35dp</item>
         <item name="android:layout_height">35dp</item>
         <item name="android:indeterminateDrawable">@drawable/rotate_ando_dialog_loading</item>
-        <item name="android:indeterminateDuration">1300</item>
+        <item name="android:indeterminateDuration">@integer/integer_ando_dialog_loading_duration</item>
         <item name="android:indeterminateTint">@android:color/white</item>
         <item name="android:indeterminateBehavior">repeat</item>
         <item name="android:indeterminateOnly">true</item>
     </style>
 
-    <style name="AndoDialogLoadingImageViewStyle">
+    <style name="AndoLoadingDialogImageViewStyle">
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:scaleType">centerCrop</item>
         <item name="android:src">@drawable/ic_ando_dialog_loading_circle</item>
     </style>
 
-    <style name="AndoDialogLoadingTextStyle">
+    <style name="AndoLoadingDialogTextStyle">
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:layout_marginTop">15dp</item>

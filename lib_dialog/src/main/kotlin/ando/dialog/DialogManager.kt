@@ -6,6 +6,8 @@ import android.content.DialogInterface
 import android.util.Log
 import android.view.*
 import androidx.annotation.StyleRes
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 
 /**
  * Title: DialogManager
@@ -19,26 +21,39 @@ object DialogManager {
     private var mThemeResId: Int = R.style.Theme_AppCompat_Dialog
     private var isDimmedBehind: Boolean = false
 
+    /**
+     * Dialog(true); DialogFragment(false)
+     */
+    private var isDialogType: Boolean = true
+
     private var mWidth = -1
     private var mHeight = -1
 
     var dialog: Dialog? = null
     var contentView: View? = null
 
+    var dialogFragment: FragmentDialog? = null
+
     private fun currentDialog(): Dialog? {
         synchronized(this) {
             if (dialog == null) {
-                dialog = Dialog(mContext, mThemeResId)
+                if (isDialogType) {
+                    dialog = Dialog(mContext, mThemeResId)
+                } else {
+                    dialogFragment = FragmentDialog()
+                    dialog = dialogFragment?.dialog
+                }
             }
             return dialog
         }
     }
 
-    fun getWindow(): Window? = currentDialog()?.window
-
     fun dismiss() {
         synchronized(this) {
-            if (dialog?.isShowing == true) dialog?.dismiss()
+            dialogFragment?.dismissAllowingStateLoss()
+            dialogFragment = null
+
+            dialog?.dismiss()
             dialog = null
         }
     }
@@ -50,6 +65,20 @@ object DialogManager {
         dismiss()
         this.mContext = context
         this.mThemeResId = themeResId
+        this.useDialog()
+        return this
+    }
+
+    /**
+     * 默认使用Dialog实现
+     */
+    fun useDialog(): DialogManager {
+        this.isDialogType = true
+        return this
+    }
+
+    fun useDialogFragment(): DialogManager {
+        this.isDialogType = false
         return this
     }
 
@@ -70,7 +99,12 @@ object DialogManager {
         //getDialog().setContentView(layoutId)
         this.contentView = LayoutInflater.from(mContext).inflate(layoutId, null, false)
         this.contentView?.apply {
-            currentDialog()?.setContentView(this)
+            if (isDialogType) {
+                currentDialog()?.setContentView(this)
+            } else {
+                Log.e("123", "setContentView $dialogFragment $this")
+                dialogFragment?.setContentView(this)
+            }
             block?.invoke(currentDialog(), this)
         }
         return this
@@ -83,8 +117,14 @@ object DialogManager {
     ): DialogManager {
         this.contentView = view
         this.contentView?.apply {
-            if (params == null) currentDialog()?.setContentView(this)
-            else currentDialog()?.setContentView(this, params)
+            if (params == null) {
+                if (isDialogType) currentDialog()?.setContentView(this)
+                else dialogFragment?.setContentView(this)
+            } else {
+                //DialogFragment 用的是 setContentView(View) 一种方式
+                if (isDialogType) currentDialog()?.setContentView(this, params)
+                else dialogFragment?.setContentView(this)
+            }
 
             block?.invoke(currentDialog(), this)
         }
@@ -108,16 +148,22 @@ object DialogManager {
         return this
     }
 
-    fun setWidth(width: Int) {
+    fun setWidth(width: Int): DialogManager {
         mWidth = width
+        return this
     }
 
-    fun setHeight(height: Int) {
+    fun setHeight(height: Int): DialogManager {
         mHeight = height
+        return this
     }
 
     fun setCancelable(cancelable: Boolean): DialogManager {
-        currentDialog()?.setCancelable(cancelable)
+        if (isDialogType) {
+            currentDialog()?.setCancelable(cancelable)
+        } else {
+            dialogFragment?.isCancelable = cancelable
+        }
         return this
     }
 
@@ -137,13 +183,10 @@ object DialogManager {
 
     fun setOnShowListener(listener: (Window) -> Unit): DialogManager {
         currentDialog()?.apply {
+            //对话框显示后再设置窗体才有效果
             setOnShowListener {
-
-                //对话框显示后再设置窗体才有效果
                 this.window?.apply {
-                    clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-                    if (isDimmedBehind) addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-
+                    configWindow(this)
                     applySize(this)
 
                     listener.invoke(this)
@@ -153,13 +196,27 @@ object DialogManager {
         return this
     }
 
+    private fun configWindow(window: Window) {
+        window.apply {
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
+            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            if (isDimmedBehind) addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        }
+    }
+
+    fun applyConfig(): DialogManager {
+        currentDialog()?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        return this
+    }
+
+    /**
+     * 修改Dialog宽高
+     */
     fun applySize(window: Window? = null) {
-        val win: Window = window ?: dialog?.window ?: return
-        if (mWidth != -1 && mHeight != -1) {
-            val attr = win.attributes
-            attr.width = mWidth
-            attr.height = mHeight
-            win.attributes = attr
+        (window ?: dialog?.window ?: return).apply {
+            if (mWidth != -1 && mHeight != -1) {
+                setLayout(mWidth, mHeight)
+            }
         }
     }
 
@@ -174,12 +231,24 @@ object DialogManager {
     }
 
     fun create(): DialogManager {
-        currentDialog()?.create()
+        if (isDialogType) {
+            currentDialog()?.create()
+        } else {
+            show()
+        }
         return this
     }
 
     fun show(): DialogManager {
-        currentDialog()?.show()
+        if (isDialogType) {
+            currentDialog()?.show()
+        } else {
+            if (mContext is FragmentActivity) {
+                (mContext as FragmentActivity).run {
+                    dialogFragment?.show(this)
+                }
+            }
+        }
         return this
     }
 

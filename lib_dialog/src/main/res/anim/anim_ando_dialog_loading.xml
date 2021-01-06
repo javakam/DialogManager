@@ -6,7 +6,7 @@
         android:pivotY="50%"
         android:fromDegrees="0"
         android:toDegrees="+360"
-        android:duration="1500"
+        android:duration="@integer/integer_ando_dialog_loading_duration"
         android:startOffset="-1"
         android:repeatMode="restart"
         android:repeatCount="-1"/>

@@ -17,28 +17,35 @@
         <FrameLayout
             android:layout_width="150dp"
             android:layout_height="106dp"
-            android:background="@color/color_ando_dialog_loading_bg" >
+            android:background="@color/color_ando_dialog_loading_progress_end">
 
             <TextView
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="Width: 150dp \nHeight: 106dp"
-                android:layout_height="wrap_content"/>
+                android:textColor="@color/white" />
         </FrameLayout>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_loading_by_progressbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading + ProgressBar"
+            android:text="Loading + ProgressBar \n背景为Shape"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_loading_by_progressbar_bg_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading + ProgressBar \n背景为图片"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_loading_by_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Loading + ImageView"
+            android:text="Loading + ImageView \nAnimationUtils"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton

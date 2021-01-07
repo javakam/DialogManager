@@ -1,6 +1,7 @@
-package ando.dialog.usage
+package ando.dialog.sample
 
 import ando.dialog.core.DialogManager
+import ando.dialog.usage.DateTimePickerDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.view.Gravity

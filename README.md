@@ -1,5 +1,16 @@
 # DialogManager
 
+## 导入
+
+```
+repositories {
+  maven { url "https://dl.bintray.com/javakam/AndoDialog" }
+}
+
+implementation 'ando.dialog:core:1.0.0'
+implementation 'ando.dialog:usage:1.0.0'
+```
+
 ## 同时支持`Dialog`和`DialogFragment`
 - Dialog: useDialog() ; DialogFragment: useDialogFragment()
 

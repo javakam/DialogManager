@@ -1,12 +1,29 @@
 # DialogManager
 
+## 同时支持`Dialog`和`DialogFragment`
+- Dialog: useDialog() ; DialogFragment: useDialogFragment()
+
+## 开启/关闭背景变暗
+- 开启/关闭背景变暗 Window.addFlags/clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+## Dialog使用注意
+### 1. `Dialog.show`之前设置
+- Dialog/Window.requestWindowFeature(Window.FEATURE_LEFT_ICON)
+
+### 2. `Dialog.show`之后设置
+- Window相关属性(WindowManager.LayoutParams), 如动态改变Dialog的宽高、动画等
+
+- `setFeatureXXX` 相关方法, 如 setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha
+
+- `setFeatureXXX` 方法必须在`Dialog.show`之前设置`requestWindowFeature`才能生效,
+否则出现BUG:java.lang.RuntimeException: The feature has not been requested
 
 ## `Dialog`设置`Window`
 > 需要在`setOnShowListener`中设置`window`属性才会生效
 
 ```kotlin
 .setOnShowListener {
-    //对话框显示后再设置窗体才有效果
+    //对Dialog.Window的设置需要在显示后才有效果 ╮(╯▽╰)╭
     val attributes = DialogManager.getDialog().window?.attributes
     attributes?.apply {
         width = 800
@@ -24,7 +41,8 @@
 
 `rectangle_dialog_margin.xml`
 ```xml
-<?xml version="1.0" encoding="utf-8"?><!--Drawable距离View右边边缘的距离-->
+<!--Drawable距离View右边边缘的距离-->
+<?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:drawable="@drawable/rectangle_common_dialog"
     android:insetBottom="0dp"
@@ -45,10 +63,10 @@
 ## `Dialog`显示宽高与`dp`设置不匹配问题
 > 要在`setContentView`外包一层`FrameLayout`防止宽高设置无效问题
 
-🍎 `LoadingDialog`样式的弹窗提供了两种实现方案,一种是`animated-rotate`,另一种是`android.view.animation.AnimationUtils`;
+🍎 `LoadingDialog`样式的弹窗提供了两种实现方案,一种是`animated-rotate`/`rotate`直接配置动画方式,另一种是`android.view.animation.AnimationUtils`;
 其中的布局文件需要包一层`FragmeLayout`
 
-```kotlin
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -57,38 +75,37 @@
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="150dp"
-        android:layout_height="106dp"
+        android:layout_width="@dimen/dimen_ando_dialog_loading_width"
+        android:layout_height="@dimen/dimen_ando_dialog_loading_height"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingLeft="21dp"
-        android:paddingTop="10dp"
-        android:paddingRight="21dp"
-        android:paddingBottom="10dp"
         tools:background="@android:color/holo_blue_dark"
         tools:ignore="UselessParent">
 
         <ProgressBar
-            android:id="@+id/progressBar1"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:id="@id/progressbar_ando_dialog_loading"
+            style="@style/AndoLoadingDialogProgressBarStyle"
             android:layout_gravity="center_horizontal"
-            android:indeterminateBehavior="repeat"
-            android:indeterminateDrawable="@drawable/ando_dialog_loading"
-            android:indeterminateDuration="20"
-            android:indeterminateOnly="true"
-            android:indeterminateTint="@color/color_ando_dialog_white" />
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:id="@id/iv_ando_dialog_loading"
+            style="@style/AndoLoadingDialogImageViewStyle"
+            android:visibility="gone"
+            tools:ignore="ContentDescription"
+            tools:visibility="visible" />
 
         <TextView
-            android:id="@+id/tipTextView"
+            android:id="@id/tv_ando_dialog_loading_text"
+            style="@style/AndoLoadingDialogTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/str_ando_dialog_loading"
-            android:textColor="@android:color/white"
-            android:textSize="14sp" />
+            android:singleLine="true" />
     </LinearLayout>
 
 </FrameLayout>
 ```
+
+> DialogFragment源码中加载视图用的是 Dialog.setContentView(View)

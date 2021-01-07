@@ -1,25 +1,37 @@
-package ando.dialog
+package ando.dialog.core
 
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.fragment.app.*
 import java.lang.RuntimeException
 
 /**
- * FragmentDialog
+ * # FragmentDialog
+ *
+ * > 如果要改变Window属性, 可以在onStart中处理。因为DialogFragment.onStart中
+ * 执行了Dialog.show()
  *
  * @author javakam
  */
-open class FragmentDialog : DialogFragment() {
+open class FragmentDialog : DialogFragment {
 
     private val mDefaultTag: String by lazy { this.tag ?: javaClass.simpleName }
-    private var contentView: View? = null
     private var customDialog: Dialog? = null
+    private var contentView: View? = null
+
+    open fun initWindow(window: Window) {}
+
+    constructor()
+    constructor(dialog: Dialog) {
+        this.customDialog = dialog
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (this.customDialog == null) customDialog = Dialog(requireContext(), theme)
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
             dismissAllowingStateLoss()
@@ -29,7 +41,7 @@ open class FragmentDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         //Note: 改用自定义的Dialog (Use a custom Dialog instead)
         //return super.onCreateDialog(savedInstanceState)
-        return this.customDialog ?: throw RuntimeException("Custom Dialog is null")
+        return customDialog ?: throw RuntimeException("Custom Dialog is null")
     }
 
     override fun onCreateView(
@@ -37,12 +49,13 @@ open class FragmentDialog : DialogFragment() {
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? = contentView
 
-    fun setCustomDialog(dialog: Dialog?) {
-        this.customDialog = dialog
-    }
-
     fun setContentView(v: View) {
         this.contentView = v
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply { initWindow(this) }
     }
 
     fun show(fragment: Fragment) = fragment.activity?.supportFragmentManager?.apply {
@@ -67,4 +80,3 @@ open class FragmentDialog : DialogFragment() {
     override fun dismiss() = super.dismissAllowingStateLoss()
 
 }
-

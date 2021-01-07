@@ -1,10 +1,11 @@
-package ando.dialog
+package ando.dialog.usage
 
+import ando.dialog.core.FragmentDialog
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.LinearLayout
@@ -13,12 +14,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * 日期&时间选择控件
+ * # 日期/时间选择弹窗
+ *
+ * Date and time selection dialog.
+ *
+ * - 通过`setType`进行切换
  *
  * @author javakam
  */
 class DateTimePickerDialog : FragmentDialog() {
 
+    // Dialog(requireContext(), theme)
     companion object {
         const val Y_M_D_H_M = "yyyy-MM-dd HH:mm"
         const val Y_M_D = "yyyy-MM-dd"
@@ -34,28 +40,38 @@ class DateTimePickerDialog : FragmentDialog() {
     private var mDate: Date? = Date()
     private var mListener: CallBack? = null
 
+    override fun initWindow(window: Window) {
+        window.attributes?.apply {
+            width = ViewGroup.LayoutParams.MATCH_PARENT
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+            dimAmount = 0F
+            window.attributes = this
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.dialog_picker, container, false)
-        mLlDate = view.findViewById<View>(R.id.ll_date) as LinearLayout
-        mTpDate = view.findViewById<View>(R.id.tp_date) as DatePicker
-        mTpTime = view.findViewById<View>(R.id.tp_time) as TimePicker
-        if (TextUtils.equals(mType, Y_M_D)) {
+        val view = inflater.inflate(R.layout.layout_ando_dialog_datetime, container, false)
+        mLlDate = view.findViewById(R.id.ll_date)
+        mTpDate = view.findViewById(R.id.tp_date)
+        mTpTime = view.findViewById(R.id.tp_time)
+        if (Y_M_D.equals(mType, true)) {
             mLlDate.removeView(mTpTime)
         }
-        if (TextUtils.equals(mType, H_M)) {
+        if (H_M.equals(mType, true)) {
             mLlDate.removeView(mTpDate)
         }
 
         mTpDate.init(
             Utils.getYear(getDate()),
             Utils.getMonth(getDate()),
-            Utils.getDay(getDate()),
-            null
-        )
+            Utils.getDay(getDate())
+        ) { v, year, monthOfYear, dayOfMonth ->
+            mListener?.onDateChanged(v, year, monthOfYear, dayOfMonth)
+        }
 
         mTpTime.setIs24HourView(true)
         mTpTime.currentHour = Utils.getHour(getDate())
@@ -63,9 +79,7 @@ class DateTimePickerDialog : FragmentDialog() {
 
         mBtnCancel = view.findViewById(R.id.btn_cancel)
         mBtnCertain = view.findViewById(R.id.btn_certain)
-        mBtnCancel.setOnClickListener {
-            dismiss()
-        }
+        mBtnCancel.setOnClickListener { dismiss() }
 
         mBtnCertain.setOnClickListener {
             val calendar = Calendar.getInstance()
@@ -82,13 +96,15 @@ class DateTimePickerDialog : FragmentDialog() {
             val minute = mTpTime.currentMinute
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
-            mListener?.onClick(Utils.getDate(calendar.time, mType))
+            mListener?.onClick(Utils.getFormattedDate(calendar.time, mType))
+
+            //
             dismiss()
         }
         return view
     }
 
-    fun getDate(): Date = mDate ?: Date()
+    private fun getDate(): Date = mDate ?: Date()
 
     fun setDate(date: Date?) {
         mDate = date
@@ -100,6 +116,7 @@ class DateTimePickerDialog : FragmentDialog() {
 
     interface CallBack {
         fun onClick(dateTime: String)
+        fun onDateChanged(v: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int)
     }
 
     internal object Utils {
@@ -155,7 +172,7 @@ class DateTimePickerDialog : FragmentDialog() {
          * @param format 日期格式
          * @return 格式化后日期字符串
          */
-        fun getDate(date: Date, format: String?): String {
+        fun getFormattedDate(date: Date, format: String?): String {
             return SimpleDateFormat(format, Locale.getDefault()).format(date)
         }
     }

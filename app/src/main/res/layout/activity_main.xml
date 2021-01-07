@@ -88,5 +88,35 @@
             android:text="DialogFragment使用"
             android:textAllCaps="false" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_fragment_datetime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DateTimePicker"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="replaceDialog(externalDialog: Dialog)"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="10dp"
+            android:background="#ABABAB" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_replace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="replaceDialog"
+            android:textAllCaps="false" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

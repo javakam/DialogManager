@@ -1,4 +1,4 @@
-package ando.dialog
+package ando.dialog.core
 
 import android.app.Dialog
 import android.content.Context
@@ -6,46 +6,96 @@ import android.content.DialogInterface
 import android.util.Log
 import android.view.*
 import androidx.annotation.StyleRes
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 
 /**
- * Title: DialogManager
+ * # DialogManager
+ *
+ * ## 支持Dialog/DialogFragment
+ * - Dialog: useDialog() ; DialogFragment: useDialogFragment()
+ *
+ * ## 开启/关闭背景变暗
+ * - 开启/关闭背景变暗 Window.addFlags/clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+ *
+ * ## Dialog使用注意
+ *
+ * ### 1. `Dialog.show`之前设置
+ * - Dialog/Window.requestWindowFeature(Window.FEATURE_LEFT_ICON)
+ *
+ * ### 2. `Dialog.show`之后设置
+ * - Window.mWindowAttributes(WindowManager.LayoutParams) 相关属性, 如动态改变Dialog的宽高、动画等
+ *
+ * - setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha
+ *
+ * - setFeatureXXX 方法必须在`Dialog.show`之前设置`requestWindowFeature`才能生效,
+ * 否则出现BUG:java.lang.RuntimeException: The feature has not been requested
  *
  * @author javakam
  * @date 2021/1/5  10:00
  */
 object DialogManager {
 
-    private lateinit var mContext: Context
+    private var mContext: Context? = null
     private var mThemeResId: Int = R.style.Theme_AppCompat_Dialog
-    private var isDimmedBehind: Boolean = false
+    private var mWidth = -3
+    private var mHeight = -3
 
     /**
      * Dialog(true); DialogFragment(false)
      */
     private var isDialogType: Boolean = true
 
-    private var mWidth = -1
-    private var mHeight = -1
+    /**
+     * 默认该窗口后面的所有内容都会变暗
+     *
+     * By default, everything behind the window will be dimmed.
+     */
+    private var isDimmedBehind: Boolean = true
 
-    var dialog: Dialog? = null
     var contentView: View? = null
-
+    var dialog: Dialog? = null
     var dialogFragment: FragmentDialog? = null
 
     private fun currentDialog(): Dialog? {
         synchronized(this) {
-            if (dialog == null) {
-                dialog = Dialog(mContext, mThemeResId)
+            if (dialog != null) return dialog
 
-                if (!isDialogType && dialogFragment == null) {
-                    dialogFragment = FragmentDialog()
-                    //dialog = dialogFragment?.dialog
-                    dialogFragment?.setCustomDialog(dialog)
+            return mContext?.run {
+                dialog = Dialog(this, mThemeResId)
+                dialog?.apply {
+                    if (!isDialogType && dialogFragment == null) {
+                        dialogFragment = FragmentDialog(this)
+                    }
                 }
             }
-            return dialog
         }
+    }
+
+    /**
+     * 使用外部创建好的Dialog
+     *
+     * Use externally created Dialog
+     */
+    fun replaceDialog(externalDialog: Dialog): DialogManager {
+        synchronized(this) {
+            reset()
+            dismiss()
+            mContext = externalDialog.context
+            isDialogType = true
+            dialog = externalDialog
+            return this
+        }
+    }
+
+    private fun reset() {
+        mContext = null
+        isDialogType = true
+        mThemeResId = R.style.Theme_AppCompat_Dialog
+        mWidth = -3
+        mHeight = -3
+        isDimmedBehind = true
+        contentView = null
     }
 
     fun dismiss() {
@@ -62,26 +112,22 @@ object DialogManager {
         context: Context,
         @StyleRes themeResId: Int = R.style.Theme_AppCompat_Dialog
     ): DialogManager {
-        this.mContext = context
-        this.mThemeResId = themeResId
-        this.useDialog()
+        reset()
+        dismiss()
+        mContext = context
+        mThemeResId = themeResId
         return this
     }
 
-    /**
-     * 默认使用Dialog实现
-     */
     fun useDialog(): DialogManager {
-        dismiss()
-        this.isDialogType = true
-        this.currentDialog()
+        isDialogType = true
+        currentDialog()
         return this
     }
 
     fun useDialogFragment(): DialogManager {
-        dismiss()
-        this.isDialogType = false
-        this.currentDialog()
+        isDialogType = false
+        currentDialog()
         return this
     }
 
@@ -99,16 +145,11 @@ object DialogManager {
         layoutId: Int,
         block: ((Dialog?, View) -> Unit)? = null
     ): DialogManager {
-        //getDialog().setContentView(layoutId)
-        this.contentView = LayoutInflater.from(mContext).inflate(layoutId, null, false)
-        this.contentView?.apply {
+        contentView = LayoutInflater.from(mContext).inflate(layoutId, null, false)
+        contentView?.apply {
             if (isDialogType) {
                 currentDialog()?.setContentView(this)
             } else {
-                Log.e(
-                    "123",
-                    "setContentView dialogFragment= $dialogFragment contentView= $contentView"
-                )
                 dialogFragment?.setContentView(this)
             }
             block?.invoke(currentDialog(), this)
@@ -121,17 +162,15 @@ object DialogManager {
         params: ViewGroup.LayoutParams? = null,
         block: ((Dialog?, View) -> Unit)? = null
     ): DialogManager {
-        this.contentView = view
-        this.contentView?.apply {
+        contentView = view
+        contentView?.apply {
             if (params == null) {
                 if (isDialogType) currentDialog()?.setContentView(this)
                 else dialogFragment?.setContentView(this)
             } else {
-                //DialogFragment 用的是 setContentView(View) 一种方式
                 if (isDialogType) currentDialog()?.setContentView(this, params)
                 else dialogFragment?.setContentView(this)
             }
-
             block?.invoke(currentDialog(), this)
         }
         return this
@@ -146,11 +185,17 @@ object DialogManager {
         val observer = contentView?.viewTreeObserver
         observer?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                Log.e("123", "onGlobalLayout ... ${contentView?.width}  ${contentView?.height}")
+                Log.e("123", "onGlobalLayout ... ${contentView?.width} ${contentView?.height}")
                 observer.removeOnGlobalLayoutListener(this)
                 onGlobalLayout.invoke()
             }
         })
+        return this
+    }
+
+    fun setSize(width: Int, height: Int): DialogManager {
+        mWidth = width
+        mHeight = height
         return this
     }
 
@@ -178,8 +223,9 @@ object DialogManager {
         return this
     }
 
-    fun setDimmedBehind(dimmedBehind: Boolean) {
-        this.isDimmedBehind = dimmedBehind
+    fun setDimmedBehind(dimmedBehind: Boolean): DialogManager {
+        isDimmedBehind = dimmedBehind
+        return this
     }
 
     fun setOnDismissListener(listener: DialogInterface.OnDismissListener): DialogManager {
@@ -189,12 +235,8 @@ object DialogManager {
 
     fun setOnShowListener(listener: (Window) -> Unit): DialogManager {
         currentDialog()?.apply {
-            //对话框显示后再设置窗体才有效果
             setOnShowListener {
                 this.window?.apply {
-                    configWindow(this)
-                    applySize(this)
-
                     listener.invoke(this)
                 }
             }
@@ -202,31 +244,9 @@ object DialogManager {
         return this
     }
 
-    private fun configWindow(window: Window) {
-        window.apply {
-            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
-
-            clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            if (isDimmedBehind) addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        }
-    }
-
-    /**
-     * Window设置 (注: 必须在 onCreate 之前调用)
-     */
-    fun applyConfig(block: (Window) -> Unit): DialogManager {
-        if (currentDialog()?.isShowing == false) {
-            currentDialog()?.window?.apply { block.invoke(this) }
-        }
-        return this
-    }
-
-    /**
-     * 修改Dialog宽高
-     */
     fun applySize(window: Window? = null) {
         (window ?: dialog?.window ?: return).apply {
-            if (mWidth != -1 && mHeight != -1) {
+            if (mWidth != -3 && mHeight != -3) {
                 setLayout(mWidth, mHeight)
             }
         }
@@ -255,10 +275,23 @@ object DialogManager {
         if (isDialogType) {
             currentDialog()?.show()
         } else {
-            if (mContext is FragmentActivity) {
-                (mContext as FragmentActivity).run {
+            (mContext as? FragmentActivity?)?.run {
+                if (dialog?.isShowing == false) {
                     dialogFragment?.show(this)
                 }
+            }
+        }
+
+        //注: 对Dialog.Window的设置需要在显示后才有效果 ╮(╯▽╰)╭
+        //Note: The setting of Dialog.Window needs to be effective after display .
+        currentDialog()?.apply {
+            window?.apply {
+                setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
+
+                if (isDimmedBehind) addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+                else clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+                applySize(this)
             }
         }
         return this

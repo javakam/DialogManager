@@ -1,4 +1,4 @@
-package ando.dialog
+package ando.dialog.usage
 
 import android.app.Dialog
 import android.content.Context

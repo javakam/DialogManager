@@ -47,7 +47,6 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compileOnly 'androidx.core:core-ktx:1.3.2'
     compileOnly 'androidx.appcompat:appcompat:1.2.0'
-    compileOnly 'com.google.android.material:material:1.2.1'
 
 }
 
@@ -55,9 +54,9 @@ publish {
     repoName = 'AndoDialog'
     userOrg = 'javakam'
     groupId = 'ando.dialog'
-    artifactId = 'runtime'
-    publishVersion = '0.0.1'
-    desc = 'Android Dialog Simple Usage'
+    artifactId = 'core'
+    publishVersion = '1.0.0'
+    desc = 'Ando DialogManager Core'
     website = "https://github.com/javakam/${rootProject.name}"
     //dryRun = true
 }

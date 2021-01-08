@@ -47,26 +47,18 @@ implementation 'ando.dialog:usage:1.0.0'
 ```
 
 ## `Dialog`配置圆角样式问题
-> 两种方案: 一是在`styles.xml`配置属性`<item name="android:windowBackground">@drawable/ando_dialog_shape_bg_gray</item>`;
-二是在`Dialog`创建之前通过`Window`进行设置`window.setBackgroundDrawableResource(R.drawable.rectangle_dialog_margin);`
+> 在`Dialog`的`setContentView`之后设置`window.setBackgroundDrawableResource(R.drawable.rectangle_ando_dialog_bottom)`
 
-`rectangle_dialog_margin.xml`
-```xml
-<!--Drawable距离View右边边缘的距离-->
-<?xml version="1.0" encoding="utf-8"?>
-<inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@drawable/rectangle_common_dialog"
-    android:insetBottom="0dp"
-    android:insetLeft="36dp"
-    android:insetRight="36dp"
-    android:insetTop="0dp" />
-```
-`rectangle_common_dialog.xml`
+`rectangle_ando_dialog_bottom.xml`
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <corners android:radius="20dp" />
+    <corners
+        android:topLeftRadius="@dimen/dimen_ando_dialog_bottom_top_radius"
+        android:topRightRadius="@dimen/dimen_ando_dialog_bottom_top_radius" />
+
+    <solid android:color="@color/color_ando_dialog_white" />
 </shape>
 ```
 🍎 上面两种方式本质上是相同的, 就是给`Dialog`的`window`加上个`background`
@@ -119,4 +111,47 @@ implementation 'ando.dialog:usage:1.0.0'
 </FrameLayout>
 ```
 
-> DialogFragment源码中加载视图用的是 Dialog.setContentView(View)
+## 总结
+
+1. DialogFragment源码中加载视图用的是 Dialog.setContentView(View)
+
+2. 如果要改变`Window`属性, 可以在`onStart`中处理。因为`DialogFragment.onStart`中执行了`Dialog.show()`
+
+3.
+
+## Bug Fix
+> android.util.AndroidRuntimeException: requestFeature() must be called before adding content
+
+`setContentView(...)`之前设置即可
+
+> java.lang.IllegalStateException: Fragment FragmentDialog{d53478e (a87e9bdb-56b6-46f3-ab1b-3f0d71cdd024)} not associated with a fragment manager.
+
+> `java.lang.IllegalArgumentException: View not attached to window manager`
+
+<https://stackoverflow.com/questions/2224676/android-view-not-attached-to-window-manager>
+
+
+> WindowManager: android.view.WindowLeaked: Activity ando.dialog.sample.MainActivity
+has leaked window DecorView@54f9439[MainActivity] that was originally added here
+
+如果只是处理`Dialog`在`Acticity.onConfigurationChanged`出现的问题
+(If you just deal with the problem of `Dialog` in `Activity.onConfigurationChanged`)
+
+```kotlin
+Acticity/Context.registerComponentCallbacks(object : ComponentCallbacks {
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        dialog?.dismiss()
+    }
+    override fun onLowMemory() {
+    }
+})
+```
+在`onDestroy`中销毁更保险点
+(It is safer to destroy in `on Destroy`)
+
+```kotlin
+override fun onDestroy() {
+    super.onDestroy()
+    DialogManager.dismiss()
+}
+```

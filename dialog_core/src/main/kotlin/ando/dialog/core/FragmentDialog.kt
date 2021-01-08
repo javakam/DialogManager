@@ -12,8 +12,7 @@ import java.lang.RuntimeException
 /**
  * # FragmentDialog
  *
- * > 如果要改变Window属性, 可以在onStart中处理。因为DialogFragment.onStart中
- * 执行了Dialog.show()
+ * - 如果要改变`Window`属性, 可以在`onStart`中处理。因为`DialogFragment.onStart`中执行了`Dialog.show()`
  *
  * @author javakam
  */
@@ -26,6 +25,7 @@ open class FragmentDialog : DialogFragment {
     open fun initWindow(window: Window) {}
 
     constructor()
+
     constructor(dialog: Dialog) {
         this.customDialog = dialog
     }
@@ -39,7 +39,7 @@ open class FragmentDialog : DialogFragment {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        //Note: 改用自定义的Dialog (Use a custom Dialog instead)
+        //注: 改用自定义的Dialog (Note: Use a custom Dialog instead)
         //return super.onCreateDialog(savedInstanceState)
         return customDialog ?: throw RuntimeException("Custom Dialog is null")
     }

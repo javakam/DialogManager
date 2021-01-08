@@ -1,8 +1,13 @@
 package ando.dialog.sample
 
 import ando.dialog.core.DialogManager
+import ando.dialog.usage.BottomDialog
 import ando.dialog.usage.DateTimePickerDialog
 import android.app.Dialog
+import android.content.Context
+import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -26,6 +31,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<Button>(R.id.bt_dialog_fragment).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_fragment_datetime).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_replace).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_dialog_bottom).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_dialog_configuration).setOnClickListener(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogManager.dismiss()
     }
 
     override fun onClick(v: View) {
@@ -33,14 +45,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_loading_by_progressbar -> showLoadingDialogByProgressBarShape()
             R.id.bt_loading_by_progressbar_bg_imageview -> showLoadingDialogByProgressBarImageView()
             R.id.bt_loading_by_imageview -> showLoadingDialogByImageView()
-            R.id.bt_dialog_fragment -> showCustomDialogFragment()
+            R.id.bt_dialog_fragment -> showDialogFragmentSimpleUsage()
             R.id.bt_dialog_fragment_datetime -> showDateTimePickerDialog()
             R.id.bt_dialog_replace -> replaceDialog()
+            R.id.bt_dialog_bottom -> showBottomDialog()
+            R.id.bt_dialog_configuration -> showDialogConfiguration()
         }
     }
 
     /**
-     * 2秒后改变Dialog宽高
+     * 动态改变显示中的Dialog宽高
      */
     private fun changeDialogSize() {
         findViewById<View>(R.id.bt_loading_by_progressbar).postDelayed({
@@ -53,7 +67,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoadingDialogByProgressBarShape() {
-        DialogManager.with(this, R.style.AndoDialog)
+        DialogManager.with(this, R.style.AndoLoadingDialog)
             .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
                 v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
                     View.VISIBLE
@@ -62,7 +76,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     getText(R.string.str_ando_dialog_loading_text)
             }
             .setCancelable(true) //支持返回键关闭弹窗 true
-            .setCanceledOnTouchOutside(true)
+            .setCanceledOnTouchOutside(false)
             .setOnDismissListener {
 
             }
@@ -77,7 +91,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoadingDialogByProgressBarImageView() {
-        DialogManager.with(this, R.style.AndoDialog)
+        DialogManager.with(this, R.style.AndoLoadingDialog)
             .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
                 v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
                     View.VISIBLE
@@ -99,7 +113,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoadingDialogByImageView() {
-        DialogManager.with(this, R.style.AndoDialog)
+        DialogManager.with(this, R.style.AndoLoadingDialog)
             .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
                 v.findViewById<TextView>(R.id.tv_ando_dialog_loading_text).text =
                     getText(R.string.str_ando_dialog_loading_text)
@@ -132,8 +146,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //changeDialogSize()
     }
 
-    private fun showCustomDialogFragment() {
-        DialogManager.with(this, R.style.AndoDialog)
+    private fun showDialogFragmentSimpleUsage() {
+        DialogManager.with(this, R.style.AndoLoadingDialog)
             .useDialogFragment()
             .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
                 v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
@@ -188,6 +202,36 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             .show()
 
         changeDialogSize()
+    }
+
+    private fun showBottomDialog() {
+        val bottomDialog = CustomBottomDialog(this)
+        DialogManager.replaceDialog(bottomDialog)
+            .setCancelable(true)
+            .setCanceledOnTouchOutside(true)
+            .setDimmedBehind(true)
+            .show()
+    }
+
+    private class CustomBottomDialog(context: Context) :
+        BottomDialog(context, R.style.CustomBottomStyle) {
+        override fun initView() {
+
+        }
+
+        override fun initBeforeShow(savedInstanceState: Bundle?) {
+            super.initBeforeShow(savedInstanceState)
+        }
+
+        override fun initWindow(window: Window) {
+            super.initWindow(window)
+        }
+
+        override fun getLayoutId(): Int = R.layout.layout_dialog_bottom
+    }
+
+    private fun showDialogConfiguration() {
+        startActivity(Intent(this, DialogConfigurationSampleActivity::class.java))
     }
 
 }

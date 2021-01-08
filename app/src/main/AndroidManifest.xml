@@ -18,6 +18,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DialogConfigurationSampleActivity"
+             />
+<!--        android:configChanges="orientation"  -->
     </application>
 
 </manifest>

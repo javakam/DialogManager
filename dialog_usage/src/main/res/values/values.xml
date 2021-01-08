@@ -18,8 +18,8 @@
         <item name="android:windowIsFloating">true</item><!--是否浮在activity之上-->
         <item name="android:windowIsTranslucent">false</item><!--半透明-->
         <item name="android:windowNoTitle">true</item><!--无标题-->
-        <item name="android:windowBackground">@drawable/rectangle_ando_dialog_loading_bg
-        </item><!--背景透明-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+
         <item name="android:backgroundDimEnabled">true</item><!--模糊-->
         <item name="android:backgroundDimAmount">0.5</item>
 
@@ -27,17 +27,12 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
-
         <item name="android:listDivider">@null</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-    <style name="AndoBottomDialogStyle">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
-        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+    <style name="AndoLoadingDialog" parent="AndoDialog">
+        <!--背景透明-->
         <item name="android:windowBackground">@drawable/rectangle_ando_dialog_loading_bg</item>
     </style>
 
@@ -46,14 +41,16 @@
     <dimen name="dimen_ando_dialog_loading_height">108dp</dimen>
     <dimen name="dimen_ando_dialog_loading_radius">5dp</dimen>
     <color name="color_ando_dialog_loading_bg">#80000000</color>
-    <drawable name="drawable_ando_dialog_loading_icon">@drawable/ic_ando_dialog_loading_line</drawable>
+    <drawable name="drawable_ando_dialog_loading_icon">@drawable/ic_ando_dialog_loading_line
+    </drawable>
     <integer name="integer_ando_dialog_loading_duration">1300</integer>
 
     <style name="AndoLoadingDialogProgressBarStyle">
         <item name="android:layout_width">35dp</item>
         <item name="android:layout_height">35dp</item>
         <item name="android:indeterminateDrawable">@drawable/rotate_ando_dialog_loading</item>
-        <item name="android:indeterminateDuration">@integer/integer_ando_dialog_loading_duration</item>
+        <item name="android:indeterminateDuration">@integer/integer_ando_dialog_loading_duration
+        </item>
         <item name="android:indeterminateTint">@android:color/white</item>
         <item name="android:indeterminateBehavior">repeat</item>
         <item name="android:indeterminateOnly">true</item>
@@ -73,6 +70,10 @@
         <item name="android:text">@string/str_ando_dialog_loading_text</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
+    <!-- ======================================================================== -->
+
+    <!-- ==================== BottomDialog圆角(BottomDialog rounded corners) ==================== -->
+    <dimen name="dimen_ando_dialog_bottom_radius">20dp</dimen>
     <!-- ======================================================================== -->
 
 </resources>

@@ -1,13 +1,17 @@
 package ando.dialog.core
 
+import android.app.Activity
 import android.app.Dialog
+import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.Configuration
+import android.os.Build
 import android.util.Log
 import android.view.*
 import androidx.annotation.StyleRes
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import java.lang.Exception
 
 /**
  * # DialogManager
@@ -63,6 +67,8 @@ object DialogManager {
 
             return mContext?.run {
                 dialog = Dialog(this, mThemeResId)
+                createInternalDialog(dialog)
+
                 dialog?.apply {
                     if (!isDialogType && dialogFragment == null) {
                         dialogFragment = FragmentDialog(this)
@@ -73,7 +79,7 @@ object DialogManager {
     }
 
     /**
-     * 使用外部创建好的Dialog
+     * 使用外部创建好的 Dialog
      *
      * Use externally created Dialog
      */
@@ -83,9 +89,41 @@ object DialogManager {
             dismiss()
             mContext = externalDialog.context
             isDialogType = true
-            dialog = externalDialog
+            createInternalDialog(externalDialog)
             return this
         }
+    }
+
+    private fun createInternalDialog(externalDialog: Dialog?) {
+        dialog = externalDialog
+        mContext?.apply {
+            if (this is Activity) dialog?.setOwnerActivity(this)
+            registerComponentCallbacks(object : ComponentCallbacks {
+                override fun onConfigurationChanged(newConfig: Configuration) {
+                    reset()
+                    dismiss()
+                }
+
+                override fun onLowMemory() {
+                }
+            })
+        }
+    }
+
+    private fun isShowing() = currentDialog()?.isShowing ?: false
+
+    private fun isContextIllegal(dialog: Dialog?): Boolean {
+        dialog?.context?.apply {
+            if (this is Activity) {
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    isFinishing || isDestroyed
+                } else {
+                    // Api < 17. Unfortunately cannot check for isDestroyed()
+                    isFinishing
+                }
+            }
+        }
+        return false
     }
 
     private fun reset() {
@@ -100,11 +138,16 @@ object DialogManager {
 
     fun dismiss() {
         synchronized(this) {
-            dialogFragment?.dismissAllowingStateLoss()
-            dialogFragment = null
+            if (!isContextIllegal(dialog)) {
+                try {
+                    dialogFragment?.dismissAllowingStateLoss()
+                } catch (e: Exception) {
+                }
+                dialogFragment = null
 
-            dialog?.dismiss()
-            dialog = null
+                dialog?.dismiss()
+                dialog = null
+            }
         }
     }
 
@@ -213,6 +256,7 @@ object DialogManager {
         if (isDialogType) {
             currentDialog()?.setCancelable(cancelable)
         } else {
+            //不是 Dialog 的 setCancelable() 方法 (Not the setCancelable() method of Dialog)
             dialogFragment?.isCancelable = cancelable
         }
         return this
@@ -245,6 +289,8 @@ object DialogManager {
     }
 
     fun applySize(window: Window? = null) {
+        if (isContextIllegal(dialog) || !isShowing()) return
+
         (window ?: dialog?.window ?: return).apply {
             if (mWidth != -3 && mHeight != -3) {
                 setLayout(mWidth, mHeight)
@@ -263,6 +309,7 @@ object DialogManager {
     }
 
     fun create(): DialogManager {
+        if (isContextIllegal(dialog) || isShowing()) return this
         if (isDialogType) {
             currentDialog()?.create()
         } else {
@@ -272,13 +319,13 @@ object DialogManager {
     }
 
     fun show(): DialogManager {
+        if (isContextIllegal(dialog) || isShowing()) return this
+
         if (isDialogType) {
             currentDialog()?.show()
         } else {
             (mContext as? FragmentActivity?)?.run {
-                if (dialog?.isShowing == false) {
-                    dialogFragment?.show(this)
-                }
+                dialogFragment?.show(this)
             }
         }
 

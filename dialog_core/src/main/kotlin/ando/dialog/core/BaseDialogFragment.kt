@@ -10,13 +10,13 @@ import androidx.fragment.app.*
 import java.lang.RuntimeException
 
 /**
- * # FragmentDialog
+ * # BaseDialogFragment
  *
  * - 如果要改变`Window`属性, 可以在`onStart`中处理。因为`DialogFragment.onStart`中执行了`Dialog.show()`
  *
  * @author javakam
  */
-open class FragmentDialog : DialogFragment {
+open class BaseDialogFragment : DialogFragment {
 
     private val mDefaultTag: String by lazy { this.tag ?: javaClass.simpleName }
     private var customDialog: Dialog? = null

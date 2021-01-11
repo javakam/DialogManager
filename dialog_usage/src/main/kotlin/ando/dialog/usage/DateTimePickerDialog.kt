@@ -1,6 +1,6 @@
 package ando.dialog.usage
 
-import ando.dialog.core.FragmentDialog
+import ando.dialog.core.BaseDialogFragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +22,7 @@ import java.util.*
  *
  * @author javakam
  */
-class DateTimePickerDialog : FragmentDialog() {
+class DateTimePickerDialog : BaseDialogFragment() {
 
     // Dialog(requireContext(), theme)
     companion object {

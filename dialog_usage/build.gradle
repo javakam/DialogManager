@@ -57,7 +57,7 @@ publish {
     userOrg = 'javakam'
     groupId = 'ando.dialog'
     artifactId = 'usage'
-    publishVersion = '1.0.1'
+    publishVersion = '1.0.2'
     desc = 'Ando DialogManager Usages'
     website = "https://github.com/javakam/${rootProject.name}"
     //dryRun = true

@@ -7,11 +7,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Build
-import android.util.Log
 import android.view.*
 import androidx.annotation.StyleRes
 import androidx.fragment.app.FragmentActivity
-import java.lang.Exception
 
 /**
  * # DialogManager
@@ -42,6 +40,7 @@ object DialogManager {
 
     private var mContext: Context? = null
     private var mThemeResId: Int = R.style.Theme_AppCompat_Dialog
+    private var mAnimResId: Int = 0
     private var mWidth = -3
     private var mHeight = -3
 
@@ -59,7 +58,7 @@ object DialogManager {
 
     var contentView: View? = null
     var dialog: Dialog? = null
-    var dialogFragment: FragmentDialog? = null
+    var dialogFragment: BaseDialogFragment? = null
 
     private fun currentDialog(): Dialog? {
         synchronized(this) {
@@ -71,7 +70,7 @@ object DialogManager {
 
                 dialog?.apply {
                     if (!isDialogType && dialogFragment == null) {
-                        dialogFragment = FragmentDialog(this)
+                        dialogFragment = BaseDialogFragment(this)
                     }
                 }
             }
@@ -130,6 +129,7 @@ object DialogManager {
         mContext = null
         isDialogType = true
         mThemeResId = R.style.Theme_AppCompat_Dialog
+        mAnimResId = 0
         mWidth = -3
         mHeight = -3
         isDimmedBehind = true
@@ -224,13 +224,12 @@ object DialogManager {
         return this
     }
 
-    fun addOnGlobalLayoutListener(onGlobalLayout: () -> Unit): DialogManager {
-        val observer = contentView?.viewTreeObserver
-        observer?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+    fun addOnGlobalLayoutListener(onGlobalLayout: (width:Int,height:Int) -> Unit): DialogManager {
+        contentView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
-                Log.e("123", "onGlobalLayout ... ${contentView?.width} ${contentView?.height}")
-                observer.removeOnGlobalLayoutListener(this)
-                onGlobalLayout.invoke()
+                contentView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                onGlobalLayout.invoke(contentView?.width?:0, contentView?.height?:0)
             }
         })
         return this
@@ -288,6 +287,22 @@ object DialogManager {
         return this
     }
 
+    /**
+     * 设置动画(Set animation)
+     *
+     * ```xml
+     * <style name="DialogAnimation" parent="XXX">
+     *      <item name="android:windowEnterAnimation">@anim/anim_xxx_in</item>
+     *      <item name="android:windowExitAnimation">@anim/anim_xxx_out</item>
+     * </style>
+     * ```
+     */
+    fun setAnimationId(animResId: Int): DialogManager {
+        if (animResId <= 0) return this
+        this.mAnimResId = animResId
+        return this
+    }
+
     fun applySize(window: Window? = null) {
         if (isContextIllegal(dialog) || !isShowing()) return
 
@@ -337,6 +352,8 @@ object DialogManager {
 
                 if (isDimmedBehind) addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
                 else clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+                if (mAnimResId > 0) setWindowAnimations(mAnimResId)
 
                 applySize(this)
             }

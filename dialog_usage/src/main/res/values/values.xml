@@ -51,6 +51,7 @@
         <item name="android:indeterminateDrawable">@drawable/rotate_ando_dialog_loading</item>
         <item name="android:indeterminateDuration">@integer/integer_ando_dialog_loading_duration
         </item>
+        <item name="android:tint">@android:color/white</item>
         <item name="android:indeterminateTint">@android:color/white</item>
         <item name="android:indeterminateBehavior">repeat</item>
         <item name="android:indeterminateOnly">true</item>
@@ -72,8 +73,14 @@
     </style>
     <!-- ======================================================================== -->
 
-    <!-- ==================== BottomDialog圆角(BottomDialog rounded corners) ==================== -->
+    <!-- ==================== BottomDialog ==================== -->
     <dimen name="dimen_ando_dialog_bottom_radius">20dp</dimen>
+    <integer name="integer_ando_dialog_bottom_translate_duration">300</integer>
+
+    <style name="AndoBottomDialogAnimation" parent="AndoDialog">
+        <item name="android:windowEnterAnimation">@anim/anim_ando_dialog_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_ando_dialog_bottom_out</item>
+    </style>
     <!-- ======================================================================== -->
 
 </resources>

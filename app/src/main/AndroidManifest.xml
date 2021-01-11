@@ -20,9 +20,9 @@
         </activity>
 
         <activity
-            android:name=".DialogConfigurationSampleActivity"
-             />
-<!--        android:configChanges="orientation"  -->
+            android:name=".ConfigurationActivity"
+            android:configChanges="orientation" />
+
     </application>
 
 </manifest>

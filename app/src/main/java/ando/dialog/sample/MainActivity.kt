@@ -6,8 +6,6 @@ import ando.dialog.usage.DateTimePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -54,12 +52,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     /**
-     * 动态改变显示中的Dialog宽高
+     * 动态改变显示中的Dialog位置/宽高/动画等
      */
     private fun changeDialogSize() {
         findViewById<View>(R.id.bt_loading_by_progressbar).postDelayed({
-            DialogManager.setWidth(500)
-            DialogManager.setHeight(300)
+            DialogManager.setWidth(180)
+            DialogManager.setHeight(180)
             DialogManager.applySize()
             //移除背景变暗
             DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -76,7 +74,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     getText(R.string.str_ando_dialog_loading_text)
             }
             .setCancelable(true) //支持返回键关闭弹窗 true
-            .setCanceledOnTouchOutside(false)
+            .setCanceledOnTouchOutside(true)
+//            .addOnGlobalLayoutListener {width, height ->
+//
+//            }
             .setOnDismissListener {
 
             }
@@ -99,9 +100,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     getText(R.string.str_ando_dialog_loading_text)
             }
             .setDimmedBehind(false)
-            .setSize(800, 600)
+            .setSize(350, 230)
+            .setAnimationId(R.style.AndoBottomDialogAnimation)
             .setCancelable(true) //支持返回键关闭弹窗 true
-            .setCanceledOnTouchOutside(true)
+            .setCanceledOnTouchOutside(false)
             .apply {
                 //setTitle("Title")
                 //setOnCancelListener{}
@@ -128,7 +130,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             .setCancelable(true) //支持返回键关闭弹窗 true
             .setCanceledOnTouchOutside(true)
-            .setSize(800, 600)
+            .setSize(350, 230)
             .setOnShowListener {
                 findViewById<View>(R.id.bt_loading_by_imageview).postDelayed({
                     it.attributes?.apply {
@@ -191,7 +193,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 //Fixed: java.lang.RuntimeException: The feature has not been requested
                 dialog?.requestWindowFeature(Window.FEATURE_LEFT_ICON)
             }
-            .setSize(800, 600)
+            .setSize(350, 230)
             .setTitle("Hello World")
             .setOnShowListener {
                 DialogManager.dialog?.setFeatureDrawableResource(
@@ -215,12 +217,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private class CustomBottomDialog(context: Context) :
         BottomDialog(context, R.style.CustomBottomStyle) {
-        override fun initView() {
-
+        override fun initView(contentView: View) {
         }
 
-        override fun initBeforeShow(savedInstanceState: Bundle?) {
-            super.initBeforeShow(savedInstanceState)
+        override fun initDialog(savedInstanceState: Bundle?) {
+            super.initDialog(savedInstanceState)
         }
 
         override fun initWindow(window: Window) {
@@ -231,7 +232,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showDialogConfiguration() {
-        startActivity(Intent(this, DialogConfigurationSampleActivity::class.java))
+        startActivity(Intent(this, ConfigurationActivity::class.java))
     }
 
 }

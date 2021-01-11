@@ -21,7 +21,7 @@
 
         <activity
             android:name=".ConfigurationActivity"
-            android:configChanges="orientation" />
+            android:configChanges="uiMode|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" />
 
     </application>
 

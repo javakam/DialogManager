@@ -7,6 +7,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
@@ -79,7 +80,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //
 //            }
             .setOnDismissListener {
-
             }
             .apply {
                 //setTitle("Title")
@@ -167,6 +167,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             .setCancelable(true) //支持返回键关闭弹窗 true
             .setCanceledOnTouchOutside(true)
             .setOnDismissListener {
+                Log.e("123", "Dismiss... ")
             }
             .apply {
                 //setTitle("Title")

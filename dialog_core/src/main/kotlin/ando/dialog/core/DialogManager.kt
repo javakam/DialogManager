@@ -195,7 +195,7 @@ object DialogManager {
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
 
-            contentView = LayoutInflater.from(mContext).inflate(layoutId, this, true)
+            contentView = LayoutInflater.from(context).inflate(layoutId, this, true)
             contentView?.apply {
                 if (isDialogType) {
                     currentDialog()?.setContentView(this@apply)
@@ -286,22 +286,6 @@ object DialogManager {
         return this
     }
 
-    fun setOnDismissListener(listener: DialogInterface.OnDismissListener): DialogManager {
-        currentDialog()?.setOnDismissListener(listener)
-        return this
-    }
-
-    fun setOnShowListener(listener: (Window) -> Unit): DialogManager {
-        currentDialog()?.apply {
-            setOnShowListener {
-                this.window?.apply {
-                    listener.invoke(this)
-                }
-            }
-        }
-        return this
-    }
-
     /**
      * 设置动画(Set animation)
      *
@@ -328,8 +312,32 @@ object DialogManager {
         }
     }
 
+    fun setOnShowListener(listener: (Window) -> Unit): DialogManager {
+        currentDialog()?.apply {
+            setOnShowListener {
+                this.window?.apply {
+                    listener.invoke(this)
+                }
+            }
+        }
+        return this
+    }
+
+    fun setOnDismissListener(listener: DialogInterface.OnDismissListener): DialogManager {
+        if (isDialogType) {
+            currentDialog()?.setOnDismissListener(listener)
+        } else {
+            dialogFragment?.setOnDismissListener(listener)
+        }
+        return this
+    }
+
     fun setOnCancelListener(listener: DialogInterface.OnCancelListener): DialogManager {
-        currentDialog()?.setOnCancelListener(listener)
+        if (isDialogType) {
+            currentDialog()?.setOnCancelListener(listener)
+        } else {
+            dialogFragment?.setOnCancelListener(listener)
+        }
         return this
     }
 

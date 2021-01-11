@@ -1,6 +1,7 @@
 package ando.dialog.core
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,8 @@ open class BaseDialogFragment : DialogFragment {
     private val mDefaultTag: String by lazy { this.tag ?: javaClass.simpleName }
     private var customDialog: Dialog? = null
     private var contentView: View? = null
+    private var onDismissListener: DialogInterface.OnDismissListener? = null
+    private var onCancelListener: DialogInterface.OnCancelListener? = null
 
     open fun initWindow(window: Window) {}
 
@@ -49,10 +52,6 @@ open class BaseDialogFragment : DialogFragment {
         container: ViewGroup?, savedInstanceState: Bundle?
     ): View? = contentView
 
-    fun setContentView(v: View) {
-        this.contentView = v
-    }
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply { initWindow(this) }
@@ -74,9 +73,30 @@ open class BaseDialogFragment : DialogFragment {
         transaction.commitAllowingStateLoss()
     }
 
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        onCancelListener?.onCancel(dialog)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        onDismissListener?.onDismiss(dialog)
+    }
+
     /**
      * 解决Activity状态无法保存崩溃的异常
      */
     override fun dismiss() = super.dismissAllowingStateLoss()
 
+    fun setContentView(v: View) {
+        this.contentView = v
+    }
+
+    fun setOnDismissListener(listener: DialogInterface.OnDismissListener) {
+        this.onDismissListener = listener
+    }
+
+    fun setOnCancelListener(listener: DialogInterface.OnCancelListener) {
+        this.onCancelListener = listener
+    }
 }

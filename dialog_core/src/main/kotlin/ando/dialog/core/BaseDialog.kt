@@ -43,7 +43,7 @@ abstract class BaseDialog : Dialog {
         }
         mView?.apply {
             setContentView(this)
-            window?.apply { initWindow(this) }
+            this@BaseDialog.window?.apply { initWindow(this) }
             initView(this)
         }
     }

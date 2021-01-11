@@ -109,45 +109,52 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
 其中的布局文件需要包一层`FragmeLayout`
 
 ```xml
-<?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="@dimen/dimen_ando_dialog_loading_width"
-        android:layout_height="@dimen/dimen_ando_dialog_loading_height"
+        android:layout_width="200dp"
+        android:layout_height="150dp"
         android:layout_gravity="center"
-        android:gravity="center"
-        android:orientation="vertical"
-        tools:background="@android:color/holo_blue_dark"
-        tools:ignore="UselessParent">
+        android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@id/progressbar_ando_dialog_loading"
-            style="@style/AndoLoadingDialogProgressBarStyle"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"
-            tools:visibility="gone" />
-
-        <ImageView
-            android:id="@id/iv_ando_dialog_loading"
-            style="@style/AndoLoadingDialogImageViewStyle"
-            android:visibility="gone"
-            tools:ignore="ContentDescription"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@id/tv_ando_dialog_loading_text"
-            style="@style/AndoLoadingDialogTextStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:singleLine="true" />
+        ...
     </LinearLayout>
-
 </FrameLayout>
+```
+
+> `Dialog`的`setContentView(layoutId)`和`setContentView(view)`是不一样的, 如果使用的是`layoutId:Int`则不需要外面套一层`FrameLayout`,
+但如果是用的`view:View`, 则必须在自定义布局的最外层在套一层其它布局,如`FrameLayout`。前者用的是`LayoutInflater.inflate(layoutId,mContentParent,true)`
+而后者用的是`mContentParent.addView(view)`即`LayoutInflater.inflate(view,null,false)` . 我们看下`inflate`方法的特性:
+
+### inflate(view, null);/inflate(resource, null, true/false);
+只创建view，view没有LayoutParams值，然后直接返回view.
+xml布局中最外层的layout_width、layout_height将失效
+
+### inflate(resource, root);/inflate(resource, root, true);
+创建view, 然后执行root.addView(view, params), 最后返回root
+
+> 综上所述, `Dialog`宽高无效问题, 本质上就是`LayoutInflater.inflate`不同方法之间差异的问题.
+其中的`mContentParent:ViewGroup`由`PhoneWindow.installDecor()`创建. 详见: `PhoneWindow.setContentView`
+
+### `DialogManager`中已处理该问题
+```kotlin
+fun setContentView(
+    layoutId: Int,
+    block: ((Dialog?, View) -> Unit)? = null
+): DialogManager {
+    FrameLayout(mContext ?: return this).apply {
+        layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        contentView = LayoutInflater.from(mContext).inflate(layoutId, this, true)
+        ...
+    }
+    return this
+}
 ```
 
 ## 总结
@@ -156,11 +163,14 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
 
 2. 如果要改变`Window`属性, 可以在`onStart`中处理。因为`DialogFragment.onStart`中执行了`Dialog.show()`
 
-3.
-
 ## Thanks
+`Android源码在线阅读` <https://www.androidos.net.cn>
+
 `Android Dialog - Rounded Corners and Transparency` <https://stackoverflow.com/questions/16861310/android-dialog-rounded-corners-and-transparency>
 
+`LayoutInflater的正确使用姿势` <https://www.jianshu.com/p/74bb29077690>
+
+`LayoutInflater中inflate方法的区别` <https://blog.csdn.net/u012702547/article/details/52628453>
 
 ## Bug Fix
 - android.util.AndroidRuntimeException: requestFeature() must be called before adding content

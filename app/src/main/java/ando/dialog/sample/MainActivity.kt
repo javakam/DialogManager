@@ -217,11 +217,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private class CustomBottomDialog(context: Context) :
         BottomDialog(context, R.style.CustomBottomStyle) {
-        override fun initView(contentView: View) {
+        override fun initView() {
         }
 
-        override fun initDialog(savedInstanceState: Bundle?) {
-            super.initDialog(savedInstanceState)
+        override fun initConfig(savedInstanceState: Bundle?) {
+            super.initConfig(savedInstanceState)
         }
 
         override fun initWindow(window: Window) {

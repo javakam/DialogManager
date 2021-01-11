@@ -17,8 +17,6 @@ import android.view.Window
  */
 abstract class BaseDialog : Dialog {
 
-    private var mView: View? = null
-
     constructor(
         context: Context
     ) : this(context, 0)
@@ -35,26 +33,23 @@ abstract class BaseDialog : Dialog {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.initDialog(savedInstanceState)
+        this.initConfig(savedInstanceState)
         if (getLayoutView() != null) {
-            this.mView = getLayoutView()
+            this.setContentView(getLayoutView() ?: return)
         } else {
-            this.mView = layoutInflater.inflate(getLayoutId(), null, false)
+            this.setContentView(getLayoutId())
         }
-        mView?.apply {
-            setContentView(this)
-            this@BaseDialog.window?.apply { initWindow(this) }
-            initView(this)
-        }
+        window?.apply { initWindow(this) }
+        initView()
     }
 
-    open fun initDialog(savedInstanceState: Bundle?) {}
+    open fun initConfig(savedInstanceState: Bundle?) {}
 
     open fun initWindow(window: Window) {}
 
     open fun getLayoutView(): View? = null
 
-    abstract fun initView(contentView: View)
+    abstract fun initView()
 
     abstract fun getLayoutId(): Int
 }

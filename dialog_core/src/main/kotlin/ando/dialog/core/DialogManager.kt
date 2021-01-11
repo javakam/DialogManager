@@ -8,6 +8,7 @@ import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Build
 import android.view.*
+import android.widget.FrameLayout
 import androidx.annotation.StyleRes
 import androidx.fragment.app.FragmentActivity
 
@@ -188,14 +189,21 @@ object DialogManager {
         layoutId: Int,
         block: ((Dialog?, View) -> Unit)? = null
     ): DialogManager {
-        contentView = LayoutInflater.from(mContext).inflate(layoutId, null, false)
-        contentView?.apply {
-            if (isDialogType) {
-                currentDialog()?.setContentView(this)
-            } else {
-                dialogFragment?.setContentView(this)
+        FrameLayout(mContext ?: return this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+
+            contentView = LayoutInflater.from(mContext).inflate(layoutId, this, true)
+            contentView?.apply {
+                if (isDialogType) {
+                    currentDialog()?.setContentView(this@apply)
+                } else {
+                    dialogFragment?.setContentView(this@apply)
+                }
+                block?.invoke(currentDialog(), this)
             }
-            block?.invoke(currentDialog(), this)
         }
         return this
     }
@@ -205,16 +213,23 @@ object DialogManager {
         params: ViewGroup.LayoutParams? = null,
         block: ((Dialog?, View) -> Unit)? = null
     ): DialogManager {
-        contentView = view
-        contentView?.apply {
-            if (params == null) {
-                if (isDialogType) currentDialog()?.setContentView(this)
-                else dialogFragment?.setContentView(this)
-            } else {
-                if (isDialogType) currentDialog()?.setContentView(this, params)
-                else dialogFragment?.setContentView(this)
+        FrameLayout(mContext ?: return this).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+
+            contentView = view
+            contentView?.apply {
+                if (isDialogType) {
+                    if (params == null) {
+                        currentDialog()?.setContentView(this@apply)
+                    } else {
+                        currentDialog()?.setContentView(this@apply, params)
+                    }
+                } else dialogFragment?.setContentView(this@apply)
+                block?.invoke(currentDialog(), this)
             }
-            block?.invoke(currentDialog(), this)
         }
         return this
     }
@@ -224,12 +239,12 @@ object DialogManager {
         return this
     }
 
-    fun addOnGlobalLayoutListener(onGlobalLayout: (width:Int,height:Int) -> Unit): DialogManager {
+    fun addOnGlobalLayoutListener(onGlobalLayout: (width: Int, height: Int) -> Unit): DialogManager {
         contentView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 contentView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                onGlobalLayout.invoke(contentView?.width?:0, contentView?.height?:0)
+                onGlobalLayout.invoke(contentView?.width ?: 0, contentView?.height ?: 0)
             }
         })
         return this

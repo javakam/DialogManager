@@ -26,7 +26,7 @@ abstract class BottomDialog : BaseDialog {
         themeResId: Int = R.style.AndoDialog
     ) : super(context, themeResId)
 
-    override fun initDialog(savedInstanceState: Bundle?) {
+    override fun initConfig(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
     }
 

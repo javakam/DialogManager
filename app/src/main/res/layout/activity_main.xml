@@ -14,9 +14,9 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:layout_width="150dp"
-            android:layout_height="106dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="@dimen/dimen_ando_dialog_loading_width"
+            android:layout_height="@dimen/dimen_ando_dialog_loading_height"
+            android:layout_marginTop="5dp"
             android:background="#CC23ADE5">
 
             <TextView
@@ -93,14 +93,14 @@
             android:id="@+id/bt_dialog_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DialogFragment简单使用"
+            android:text="简单用法(Simple usage)"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_dialog_fragment_datetime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DateTimePicker(日期/时间选择器)"
+            android:text="日期/时间选择器(DateTimePicker)"
             android:textAllCaps="false" />
 
         <TextView
@@ -128,7 +128,7 @@
             android:id="@+id/bt_dialog_replace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="replaceDialog(Dialog)"
+            android:text="替换弹窗(replaceDialog)"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -142,7 +142,14 @@
             android:id="@+id/bt_dialog_configuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="旋屏问题(Rotating screen problem)"
+            android:text="旋屏测试(Rotating Screen Test)"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_edit_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="输入框(EditText)"
             android:textAllCaps="false" />
 
     </LinearLayout>

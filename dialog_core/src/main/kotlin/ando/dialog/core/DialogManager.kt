@@ -94,23 +94,14 @@ object DialogManager {
         }
     }
 
+    fun isShowing() = currentDialog()?.isShowing ?: false
+
     private fun createInternalDialog(externalDialog: Dialog?) {
         dialog = externalDialog
         mContext?.apply {
-            if (this is Activity) dialog?.setOwnerActivity(this)
-            registerComponentCallbacks(object : ComponentCallbacks {
-                override fun onConfigurationChanged(newConfig: Configuration) {
-                    reset()
-                    dismiss()
-                }
-
-                override fun onLowMemory() {
-                }
-            })
+            if (isDialogType && this is Activity) dialog?.setOwnerActivity(this)
         }
     }
-
-    private fun isShowing() = currentDialog()?.isShowing ?: false
 
     private fun isContextIllegal(dialog: Dialog?): Boolean {
         dialog?.context?.apply {
@@ -187,7 +178,7 @@ object DialogManager {
 
     fun setContentView(
         layoutId: Int,
-        block: ((Dialog?, View) -> Unit)? = null
+        block: ((View) -> Unit)? = null
     ): DialogManager {
         FrameLayout(mContext ?: return this).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -202,7 +193,7 @@ object DialogManager {
                 } else {
                     dialogFragment?.setContentView(this@apply)
                 }
-                block?.invoke(currentDialog(), this)
+                block?.invoke(this)
             }
         }
         return this
@@ -211,7 +202,7 @@ object DialogManager {
     fun setContentView(
         view: View,
         params: ViewGroup.LayoutParams? = null,
-        block: ((Dialog?, View) -> Unit)? = null
+        block: ((View) -> Unit)? = null
     ): DialogManager {
         FrameLayout(mContext ?: return this).apply {
             layoutParams = ViewGroup.LayoutParams(
@@ -228,7 +219,7 @@ object DialogManager {
                         currentDialog()?.setContentView(this@apply, params)
                     }
                 } else dialogFragment?.setContentView(this@apply)
-                block?.invoke(currentDialog(), this)
+                block?.invoke(this)
             }
         }
         return this

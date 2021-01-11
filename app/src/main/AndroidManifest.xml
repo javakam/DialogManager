@@ -23,6 +23,10 @@
             android:name=".ConfigurationActivity"
             android:configChanges="uiMode|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" />
 
+        <activity
+            android:name=".EditTextActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
+
     </application>
 
 </manifest>

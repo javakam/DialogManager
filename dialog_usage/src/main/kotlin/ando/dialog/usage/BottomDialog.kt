@@ -1,8 +1,6 @@
 package ando.dialog.usage
 
-import ando.dialog.core.BaseDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Gravity

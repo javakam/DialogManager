@@ -44,7 +44,6 @@ class DateTimePickerDialog : BaseDialogFragment() {
         window.attributes?.apply {
             width = ViewGroup.LayoutParams.MATCH_PARENT
             height = ViewGroup.LayoutParams.WRAP_CONTENT
-            dimAmount = 0F
             window.attributes = this
         }
     }

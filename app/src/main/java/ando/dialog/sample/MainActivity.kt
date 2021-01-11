@@ -6,6 +6,7 @@ import ando.dialog.usage.DateTimePickerDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -32,6 +33,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<Button>(R.id.bt_dialog_replace).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_bottom).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_configuration).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_dialog_edit_text).setOnClickListener(this)
+
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.e(
+            ConfigurationActivity.TAG,
+            "MainActivity Configuration= $newConfig isShowing= ${DialogManager.isShowing()}"
+        )
     }
 
     override fun onDestroy() {
@@ -49,6 +60,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_dialog_replace -> replaceDialog()
             R.id.bt_dialog_bottom -> showBottomDialog()
             R.id.bt_dialog_configuration -> showDialogConfiguration()
+            R.id.bt_dialog_edit_text -> showDialogEditText()
         }
     }
 
@@ -57,8 +69,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun changeDialogSize() {
         findViewById<View>(R.id.bt_loading_by_progressbar).postDelayed({
-            DialogManager.setWidth(180)
-            DialogManager.setHeight(180)
+            DialogManager.setWidth(280)
+            DialogManager.setHeight(280)
             DialogManager.applySize()
             //移除背景变暗
             DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
@@ -67,7 +79,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showLoadingDialogByProgressBarShape() {
         DialogManager.with(this, R.style.AndoLoadingDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+            .setContentView(R.layout.layout_ando_dialog_loading) { v ->
                 v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
                     View.VISIBLE
 
@@ -76,16 +88,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             .setCancelable(true) //支持返回键关闭弹窗 true
             .setCanceledOnTouchOutside(true)
-//            .addOnGlobalLayoutListener {width, height ->
-//
-//            }
             .setOnDismissListener {
             }
             .apply {
                 //setTitle("Title")
                 //setOnCancelListener{}
+                //setOnDismissListener{}
                 //...
             }
+            //.addOnGlobalLayoutListener {width, height -> }
             .show()
 
         changeDialogSize()
@@ -93,7 +104,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showLoadingDialogByProgressBarImageView() {
         DialogManager.with(this, R.style.AndoLoadingDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+            .setContentView(R.layout.layout_ando_dialog_loading) { v ->
                 v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
                     View.VISIBLE
                 v.findViewById<TextView>(R.id.tv_ando_dialog_loading_text).text =
@@ -102,13 +113,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             .setDimmedBehind(false)
             .setSize(350, 230)
             .setAnimationId(R.style.AndoBottomDialogAnimation)
-            .setCancelable(true) //支持返回键关闭弹窗 true
+            .setCancelable(true)
             .setCanceledOnTouchOutside(false)
-            .apply {
-                //setTitle("Title")
-                //setOnCancelListener{}
-                //...
-            }
             .show()
 
         changeDialogSize()
@@ -116,7 +122,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showLoadingDialogByImageView() {
         DialogManager.with(this, R.style.AndoLoadingDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+            .setContentView(R.layout.layout_ando_dialog_loading) { v ->
                 v.findViewById<TextView>(R.id.tv_ando_dialog_loading_text).text =
                     getText(R.string.str_ando_dialog_loading_text)
 
@@ -128,7 +134,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 )
                 imageView.startAnimation(anim)
             }
-            .setCancelable(true) //支持返回键关闭弹窗 true
+            .setCancelable(true)
             .setCanceledOnTouchOutside(true)
             .setSize(350, 230)
             .setOnShowListener {
@@ -151,28 +157,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun showDialogFragmentSimpleUsage() {
         DialogManager.with(this, R.style.AndoLoadingDialog)
             .useDialogFragment()
-            .setContentView(R.layout.layout_ando_dialog_loading) { _, v ->
+            .setContentView(R.layout.layout_ando_dialog_loading) { v ->
                 v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
                     View.VISIBLE
 
                 v.findViewById<TextView>(R.id.tv_ando_dialog_loading_text).text =
                     getText(R.string.str_ando_dialog_loading_text)
             }
-//            .apply {
-//                //`requestWindowFeature`必须在`show`之前调用
-//                //Fixed: java.lang.RuntimeException: The feature has not been requested
-//                dialog?.requestWindowFeature(Window.FEATURE_ACTION_BAR)
-//            }
-//            .setTitle("Hello World")
-            .setCancelable(true) //支持返回键关闭弹窗 true
+            .setCancelable(true)
             .setCanceledOnTouchOutside(true)
             .setOnDismissListener {
                 Log.e("123", "Dismiss... ")
-            }
-            .apply {
-                //setTitle("Title")
-                //setOnCancelListener{}
-                //...
             }
             .show()
 
@@ -194,7 +189,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 //Fixed: java.lang.RuntimeException: The feature has not been requested
                 dialog?.requestWindowFeature(Window.FEATURE_LEFT_ICON)
             }
-            .setSize(350, 230)
+            .setSize(450, 260)
             .setTitle("Hello World")
             .setOnShowListener {
                 DialogManager.dialog?.setFeatureDrawableResource(
@@ -234,6 +229,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showDialogConfiguration() {
         startActivity(Intent(this, ConfigurationActivity::class.java))
+    }
+
+    private fun showDialogEditText() {
+        startActivity(Intent(this, EditTextActivity::class.java))
     }
 
 }

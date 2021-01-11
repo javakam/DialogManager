@@ -15,10 +15,17 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- Custom Style  -->
+    <!-- Custom Bottom Style  -->
     <style name="CustomBottomStyle" parent="AndoDialog">
         <item name="android:windowNoTitle">false</item>
         <item name="android:backgroundDimAmount">0.7</item>
+    </style>
+
+    <style name="EditTextDialogStyle" parent="AndoDialog">
+        <item name="android:windowNoTitle">false</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+        <item name="android:windowBackground">@drawable/rectangle_dialog_edittext_bg</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
     </style>
 
 </resources>

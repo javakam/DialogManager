@@ -199,8 +199,7 @@ Acticity/Context.registerComponentCallbacks(object : ComponentCallbacks {
     }
 })
 ```
-在`onDestroy`中销毁更保险点
-(It is safer to destroy in `on Destroy`)
+在`onDestroy`中也加上销毁
 
 ```kotlin
 override fun onDestroy() {
@@ -209,6 +208,16 @@ override fun onDestroy() {
 }
 ```
 
-
 - java.lang.IllegalStateException: This ViewTreeObserver is not alive, call getViewTreeObserver() again
-
+```kotlin
+fun addOnGlobalLayoutListener(onGlobalLayout: (width: Int, height: Int) -> Unit): DialogManager {
+    contentView?.viewTreeObserver?.addOnGlobalLayoutListener(object :
+        ViewTreeObserver.OnGlobalLayoutListener {
+        override fun onGlobalLayout() {
+            contentView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+            onGlobalLayout.invoke(contentView?.width ?: 0, contentView?.height ?: 0)
+        }
+    })
+    return this
+}
+```

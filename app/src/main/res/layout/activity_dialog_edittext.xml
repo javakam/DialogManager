@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
         android:text="Dialog"
         android:textAllCaps="false" />
 
@@ -19,8 +18,8 @@
         android:id="@+id/bt_dialog_show_dialog_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
         android:text="DialogFragment"
         android:textAllCaps="false" />
 

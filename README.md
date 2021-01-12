@@ -1,7 +1,7 @@
 # DialogManager
 
 ## 预览(Preview)
-<img src="https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif" width="310" height="630"/>
+<img src="https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif" width="310" height="620"/>
 
 ## 导入(Import)
 
@@ -10,8 +10,68 @@ repositories {
   maven { url "https://dl.bintray.com/javakam/AndoDialog" }
 }
 
-implementation 'ando.dialog:core:1.0.2'
-implementation 'ando.dialog:usage:1.0.2'
+implementation 'ando.dialog:core:1.0.3'
+implementation 'ando.dialog:usage:1.0.3'
+```
+
+## 用法(Usage)
+```kotlin
+fun showLoadingDialog() {
+      //建议设置一个主题样式
+      DialogManager.with(this, R.style.AndoLoadingDialog)
+          //useDialogFragment()表示由`DialogFragment`实现, useDialog()表示由`Dialog`实现, 默认为`DialogFragment`实现
+          .useDialogFragment()
+          //设置显示布局             
+          .setContentView(R.layout.layout_ando_dialog_loading) { v ->
+              v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
+          }
+          .setTitle("Title")//在配置了 `<item name="android:windowNoTitle">false</item>` 后才会生效
+          .setWidth(200)//设置宽
+          .setHeight(200)//设置高
+          .setSize(200, 200)//设置宽高
+          .setAnimationId(R.style.AndoBottomDialogAnimation)//设置动画
+          .setCancelable(true)
+          .setCanceledOnTouchOutside(true)
+          .setDimAmount(0.7F) //设置背景透明度, 0 ~ 1 之间,0为透明,1为不透明. 只要该值不是 -1, 就会应用该值
+          .setDimmedBehind(false) //设置背景透明, false透明, true不透明
+          .addOnGlobalLayoutListener { width, height -> }//获取显示后的真实宽高
+          .setOnCancelListener {} //取消监听
+          .setOnDismissListener {}//关闭监听
+          .setOnKeyListener { dialog, keyCode, event -> true }//按键监听
+          .setOnShowListener {}//显示监听
+          .apply {
+              //显示之前配置,如:
+              //dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+          }
+          .show()
+          .apply {
+              //显示之后配置, 效果和`setOnShowListener`相同
+          }
+          
+      //Dialog是否正在显示
+      DialogManager.isShowing()
+      
+      //Dialog显示后动态改变一些参数
+      changeDialogSize()
+}
+
+/**
+ * 动态改变显示中的Dialog位置/宽高/动画等
+ */
+fun changeDialogSize() {
+    View.postDelayed({
+        //改变弹窗宽高(Change the width and height of the dialog)
+        DialogManager.setWidth(280)
+        DialogManager.setHeight(280)
+        DialogManager.applySize()
+        
+        //控制背景亮度(Control background brightness)
+        DialogManager.setDimAmount(0.3F)
+        DialogManager.applyDimAmount()
+        
+        //or 直接移除背景变暗(Directly remove the background darkening)
+        //DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+    }, 1500)
 ```
 
 ## 同时支持`Dialog`和`DialogFragment`(Support both `Dialog` and `Dialog Fragment`)
@@ -110,7 +170,7 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
     <solid android:color="@android:color/white" />
 </shape>
 ```
-🍎 就是给`Dialog`的`window`加上个`background`
+就是给`Window`加上个`background`
 
 ## `Dialog`设置宽高(`Dialog` set width and height)
 > 要在`setContentView`外包一层`FrameLayout`防止宽高设置无效问题
@@ -168,13 +228,13 @@ fun setContentView(
 }
 ```
 
-## 总结
+## 总结(Summary)
 
 1. DialogFragment源码中加载视图用的是 Dialog.setContentView(View)
 
 2. 如果要改变`Window`属性, 可以在`onStart`中处理。因为`DialogFragment.onStart`中执行了`Dialog.show()`
 
-## Thanks
+## 感谢(Thanks)
 `Android源码在线阅读` <https://www.androidos.net.cn>
 
 `Android Dialog - Rounded Corners and Transparency` <https://stackoverflow.com/questions/16861310/android-dialog-rounded-corners-and-transparency>
@@ -183,19 +243,20 @@ fun setContentView(
 
 `LayoutInflater中inflate方法的区别` <https://blog.csdn.net/u012702547/article/details/52628453>
 
-## Bug Fix
+## 遇到的BUG(BUG encountered)
 - java.lang.RuntimeException: The feature has not been requested
-`see above`
+
+Fixed: `see above`
 
 - android.util.AndroidRuntimeException: requestFeature() must be called before adding content
 
-`setContentView(...)`之前设置即可
+Fixed: `setContentView(...)`之前设置即可
 
 - `java.lang.IllegalStateException: Fragment xxx not associated with a fragment manager.`
 
 - `java.lang.IllegalArgumentException: View not attached to window manager`
 
-<https://stackoverflow.com/questions/2224676/android-view-not-attached-to-window-manager>
+Fixed: <https://stackoverflow.com/questions/2224676/android-view-not-attached-to-window-manager>
 
 - WindowManager: android.view.WindowLeaked: Activity ando.dialog.sample.MainActivity
 has leaked window DecorView@54f9439[MainActivity] that was originally added here
@@ -223,6 +284,8 @@ override fun onDestroy() {
 ```
 
 - java.lang.IllegalStateException: This ViewTreeObserver is not alive, call getViewTreeObserver() again
+
+Fixed:
 
 ```kotlin
 fun addOnGlobalLayoutListener(onGlobalLayout: (width: Int, height: Int) -> Unit): DialogManager {

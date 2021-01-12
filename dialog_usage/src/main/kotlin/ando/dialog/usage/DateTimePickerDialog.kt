@@ -24,7 +24,6 @@ import java.util.*
  */
 class DateTimePickerDialog : BaseDialogFragment() {
 
-    // Dialog(requireContext(), theme)
     companion object {
         const val Y_M_D_H_M = "yyyy-MM-dd HH:mm"
         const val Y_M_D = "yyyy-MM-dd"

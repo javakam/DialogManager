@@ -2,10 +2,8 @@ package ando.dialog.core
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.ComponentCallbacks
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.os.Build
 import android.view.*
 import android.widget.FrameLayout
@@ -49,7 +47,7 @@ object DialogManager {
     /**
      * Dialog(true); DialogFragment(false)
      */
-    private var isDialogType: Boolean = true
+    private var isDialogType: Boolean = false
 
     /**
      * 默认该窗口后面的所有内容都会变暗
@@ -301,7 +299,7 @@ object DialogManager {
     }
 
     fun setDimmedBehind(dimmedBehind: Boolean): DialogManager {
-        isDimmedBehind = dimmedBehind
+        isDimmedBehind = if (mDimAmount != -1F) true else dimmedBehind
         return this
     }
 

@@ -13,7 +13,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0.2"
+        versionName "1.0.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -57,7 +57,7 @@ publish {
     userOrg = 'javakam'
     groupId = 'ando.dialog'
     artifactId = 'usage'
-    publishVersion = '1.0.2'
+    publishVersion = '1.0.3'
     desc = 'Ando DialogManager Usage'
     website = "https://github.com/javakam/${rootProject.name}"
     //dryRun = true

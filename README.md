@@ -21,12 +21,9 @@ implementation 'ando.dialog:usage:1.0.3'
 ## 用法(Usage)
 ```kotlin
 fun showLoadingDialog() {
-      //建议设置一个主题样式
-      DialogManager.with(this, R.style.AndoLoadingDialog)
-          //useDialogFragment()表示由`DialogFragment`实现, useDialog()表示由`Dialog`实现, 默认为`DialogFragment`实现
-          .useDialogFragment()
-          //设置显示布局             
-          .setContentView(R.layout.layout_ando_dialog_loading) { v ->
+      DialogManager.with(this, R.style.AndoLoadingDialog) //建议设置一个主题样式
+          .useDialogFragment()//默认为`DialogFragment`实现, useDialog()表示由`Dialog`实现
+          .setContentView(R.layout.layout_ando_dialog_loading) { v -> //设置显示布局
               v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
           }
           .setTitle("Title")//在配置了 `<item name="android:windowNoTitle">false</item>` 后才会生效

@@ -48,7 +48,7 @@ fun showLoadingDialog() {
           .apply {
               //显示之后配置, 效果和`setOnShowListener`相同
           }
-          
+
       //Dialog是否正在显示
       DialogManager.isShowing()
       

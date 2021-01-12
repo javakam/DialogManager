@@ -1,9 +1,13 @@
 # DialogManager
+- [**GitHub**](https://github.com/javakam/DialogManager)👉<https://github.com/javakam/DialogManager>
+
+- [**Blog**](https://juejin.cn/post/6916791502161051656/)👉<https://juejin.cn/post/6916791502161051656/>
 
 ## 预览(Preview)
 <img src="https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif" width="310" height="620"/>
 
 ## 导入(Import)
+> 🍎很轻量, 目前只有五个类
 
 ```
 repositories {
@@ -105,7 +109,7 @@ otherwise a BUG:java.lang.RuntimeException: The feature has not been requested
 Usually set the `window` property after `show` is executed or in `set On Show Listener`
 
 ```kotlin
-.setOnShowListener {
+setOnShowListener {
     //对`Window`的设置需要在`Dialog`显示后才有效果
     //The setting of `Window` needs to be effective after `Dialog` is displayed
     val attributes = DialogManager.getDialog().window?.attributes

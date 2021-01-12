@@ -1,7 +1,7 @@
 # DialogManager
 
 ## 预览(Preview)
-![](https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif)
+<img src="https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif" width="310" height="640"/>
 
 ## 导入(Import)
 

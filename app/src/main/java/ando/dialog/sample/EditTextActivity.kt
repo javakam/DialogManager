@@ -10,10 +10,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 
 /**
- * Title: EditTextActivity
- * <p>
- * Description:
- * </p>
+ * # EditTextActivity
+ *
  * @author javakam
  * @date 2021/1/11  16:32
  */
@@ -25,6 +23,7 @@ class EditTextActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dialog_edittext)
+        title = "输入框(EditText)"
 
         mBtDialog.setOnClickListener { showDialog() }
         mBtDialogFragment.setOnClickListener { showDialogFragment() }
@@ -74,7 +73,7 @@ class EditTextActivity : AppCompatActivity() {
                 }
             }
             .setTitle("DialogFragment EditText")
-            .setCanceledOnTouchOutside(false)
+            .setCanceledOnTouchOutside(true)
             .setOnShowListener {
                 val edtDialog: EditText? = DialogManager.contentView?.findViewById(R.id.edt_dialog)
                 edtDialog?.isFocusable = true

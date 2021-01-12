@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rotate xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="1200"
+    android:duration="800"
     android:fromDegrees="0"
     android:pivotX="50%"
     android:pivotY="50%"
@@ -8,14 +8,14 @@
     <shape
         android:innerRadiusRatio="3"
         android:shape="ring"
-        android:thicknessRatio="10"
+        android:thicknessRatio="12"
         android:useLevel="false">
 
         <gradient
-            android:centerColor="@color/color_ando_dialog_loading_progress_end"
+            android:centerColor="#CC23ADE5"
             android:centerY="0.50"
-            android:endColor="#00000000"
-            android:startColor="@color/color_ando_dialog_loading_progress"
+            android:endColor="#666666"
+            android:startColor="#ABABAB"
             android:type="sweep"
             android:useLevel="false" />
     </shape>

@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <item name="progressbar_ando_dialog_loading" type="id" />
-    <item name="iv_ando_dialog_loading" type="id" />
-    <item name="tv_ando_dialog_loading_text" type="id" />
-
-    <string name="str_ando_dialog_loading_text">加载中…</string>
-
-    <color name="color_ando_dialog_loading_progress">#DEDEDE</color>
-    <color name="color_ando_dialog_loading_progress_end">#CC23ADE5</color>
-
-    <color name="color_ando_dialog_white">#FFFFFFFF</color>
-    <color name="color_ando_dialog_black">#00000000</color>
-
     <style name="AndoDialog">
         <!--边框-->
         <item name="android:windowFrame">@null</item>
@@ -20,8 +8,8 @@
         <item name="android:windowIsFloating">true</item>
         <!--半透明-->
         <item name="android:windowIsTranslucent">false</item>
-        <!--无标题-->
-        <item name="android:windowNoTitle">true</item>
+        <!--标题-->
+        <item name="android:windowNoTitle">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
 
         <!--模糊-->
@@ -37,11 +25,17 @@
     </style>
 
     <style name="AndoLoadingDialog" parent="AndoDialog">
-        <!--背景透明-->
-        <item name="android:windowBackground">@drawable/rectangle_ando_dialog_loading_bg</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@drawable/rectangle_ando_dialog_loading</item>
+    </style>
+
+    <style name="AndoLoadingDialogLight" parent="AndoDialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
     </style>
 
     <!-- ==================== LoadingDialog中ProgressBar、ImageView和文字样式 ==================== -->
+    <string name="str_ando_dialog_loading_text">加载中…</string>
     <dimen name="dimen_ando_dialog_loading_width">150dp</dimen>
     <dimen name="dimen_ando_dialog_loading_height">108dp</dimen>
     <dimen name="dimen_ando_dialog_loading_radius">5dp</dimen>
@@ -66,7 +60,8 @@
         <item name="android:layout_width">40dp</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:scaleType">centerCrop</item>
-        <item name="android:src">@drawable/ic_ando_dialog_loading_circle</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="android:src">@drawable/ic_ando_dialog_loading_point</item>
     </style>
 
     <style name="AndoLoadingDialogTextStyle">
@@ -79,6 +74,7 @@
     <!-- ======================================================================== -->
 
     <!-- ==================== BottomDialog ==================== -->
+    <color name="color_ando_dialog_bottom_bg">@android:color/white</color>
     <dimen name="dimen_ando_dialog_bottom_radius">20dp</dimen>
     <integer name="integer_ando_dialog_bottom_translate_duration">300</integer>
 

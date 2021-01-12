@@ -42,8 +42,9 @@ object DialogManager {
     private var mContext: Context? = null
     private var mThemeResId: Int = R.style.Theme_AppCompat_Dialog
     private var mAnimResId: Int = 0
-    private var mWidth = -3
-    private var mHeight = -3
+    private var mWidth: Int = -3
+    private var mHeight: Int = -3
+    private var mDimAmount: Float = -1F
 
     /**
      * Dialog(true); DialogFragment(false)
@@ -272,11 +273,6 @@ object DialogManager {
         return this
     }
 
-    fun setDimmedBehind(dimmedBehind: Boolean): DialogManager {
-        isDimmedBehind = dimmedBehind
-        return this
-    }
-
     /**
      * 设置动画(Set animation)
      *
@@ -293,10 +289,32 @@ object DialogManager {
         return this
     }
 
+    /**
+     * 背景暗度值(Background darkness value)
+     * <p>
+     * `0 ~ 1` 表示从透明到不透明(纯黑)
+     */
+    fun setDimAmount(amount: Float): DialogManager {
+        mDimAmount = if (amount < 0 || amount > 1) 0.5F else amount
+        isDimmedBehind = true
+        return this
+    }
+
+    fun setDimmedBehind(dimmedBehind: Boolean): DialogManager {
+        isDimmedBehind = dimmedBehind
+        return this
+    }
+
+    fun applyDimAmount(window: Window? = null) {
+        (window ?: currentDialog()?.window ?: return).apply {
+            if (isDimmedBehind && mDimAmount != -1F) this.setDimAmount(mDimAmount)
+        }
+    }
+
     fun applySize(window: Window? = null) {
         if (isContextIllegal(dialog) || !isShowing()) return
 
-        (window ?: dialog?.window ?: return).apply {
+        (window ?: currentDialog()?.window ?: return).apply {
             if (mWidth != -3 && mHeight != -3) {
                 setLayout(mWidth, mHeight)
             }
@@ -369,6 +387,7 @@ object DialogManager {
 
                 if (mAnimResId > 0) setWindowAnimations(mAnimResId)
 
+                applyDimAmount(this)
                 applySize(this)
             }
         }

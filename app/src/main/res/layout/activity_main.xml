@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:overScrollMode="always"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     tools:context="ando.dialog.sample.MainActivity">
 
     <LinearLayout
@@ -16,14 +17,15 @@
         <FrameLayout
             android:layout_width="@dimen/dimen_ando_dialog_loading_width"
             android:layout_height="@dimen/dimen_ando_dialog_loading_height"
-            android:layout_marginTop="5dp"
-            android:background="#CC23ADE5">
+            android:background="#CC23ADE5"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Width: 150dp \nHeight: 106dp"
+                android:text="Width: 150dp \nHeight: 108dp"
                 android:textColor="@color/white" />
         </FrameLayout>
 
@@ -48,21 +50,14 @@
             android:background="#ABABAB" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_loading_by_progressbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="加载中弹窗(LoadingDialog)\nProgressBar + Shape"
-            android:textAllCaps="false" />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_loading_by_progressbar_bg_imageview"
+            android:id="@+id/bt_loading_progressbar_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="加载中弹窗(LoadingDialog)\nProgressBar + png"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_loading_by_imageview"
+            android:id="@+id/bt_loading_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="加载中弹窗(LoadingDialog)\nImageView + AnimationUtils"
@@ -90,7 +85,7 @@
             android:background="#ABABAB" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_dialog_fragment"
+            android:id="@+id/bt_dialog_fragment_usage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="简单用法(Simple usage)"
@@ -136,6 +131,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="底部弹窗(BottomDialog)"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_progress_param"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="进度弹窗(ProgressDialog)"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton

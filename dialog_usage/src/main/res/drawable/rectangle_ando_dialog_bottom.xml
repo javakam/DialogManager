@@ -5,5 +5,5 @@
         android:topLeftRadius="@dimen/dimen_ando_dialog_bottom_radius"
         android:topRightRadius="@dimen/dimen_ando_dialog_bottom_radius" />
 
-    <solid android:color="@color/color_ando_dialog_white" />
+    <solid android:color="@color/color_ando_dialog_bottom_bg" />
 </shape>

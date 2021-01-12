@@ -1,6 +1,9 @@
 # DialogManager
 
-## 导入
+## 预览(Preview)
+![](https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif)
+
+## 导入(Import)
 
 ```
 repositories {
@@ -11,60 +14,53 @@ implementation 'ando.dialog:core:1.0.2'
 implementation 'ando.dialog:usage:1.0.2'
 ```
 
-## 同时支持`Dialog`和`DialogFragment`
+## 同时支持`Dialog`和`DialogFragment`(Support both `Dialog` and `Dialog Fragment`)
 - Dialog: useDialog() ; DialogFragment: useDialogFragment()
 
-## 开启/关闭背景变暗
-- 开启/关闭背景变暗 Window.addFlags/clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+## 控制背景变暗(Control the darkening of the background)
+- Window.addFlags/clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
-## Dialog使用注意
-### 1. `Dialog.show`之前设置
+## `Dialog.Window`设置(`Dialog.Window` settings)
+### 1. `show()`之前设置(Set before `Dialog.show`)
+
 - Dialog/Window.requestWindowFeature(Window.FEATURE_LEFT_ICON)
 
-### 2. `Dialog.show`之后设置
-- Window相关属性(WindowManager.LayoutParams), 如动态改变Dialog的宽高、动画等
+### 2. `show()`之后设置(Set after `Dialog.show`)
+- `Window`相关属性(WindowManager.LayoutParams), 如动态改变`Dialog`的位置、宽高、动画、背景等
 
-- `setFeatureXXX` 相关方法, 如 setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha
+`Window` related properties (WindowManager.LayoutParams), such as dynamically changing the position, width, height, animation, background, etc. of `Dialog`
+
+- `setFeatureXXX` 相关方法, 如 `setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha`
+
+`setFeatureXXX` related methods, such as `setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha`
 
 - `setFeatureXXX` 方法必须在`Dialog.show`之前设置`requestWindowFeature`才能生效,
 否则出现BUG:java.lang.RuntimeException: The feature has not been requested
 
-## `Dialog`设置`Window`
-> 需要在`setOnShowListener`中设置`window`属性才会生效
+The `setFeatureXXX` method must set `requestWindowFeature` before `Dialog.show` to take effect,
+otherwise a BUG:java.lang.RuntimeException: The feature has not been requested
+
+- 🍎 通常在`show`执行后或者`setOnShowListener`中设置`window`属性
+
+Usually set the `window` property after `show` is executed or in `set On Show Listener`
 
 ```kotlin
 .setOnShowListener {
-    //对Dialog.Window的设置需要在显示后才有效果 ╮(╯▽╰)╭
+    //对`Window`的设置需要在`Dialog`显示后才有效果
+    //The setting of `Window` needs to be effective after `Dialog` is displayed
     val attributes = DialogManager.getDialog().window?.attributes
     attributes?.apply {
         width = 800
         height = 500
-        gravity = Gravity.CENTER //居中显示
-        dimAmount = 0.5f         //背景透明度  取值范围 0 ~ 1
+        gravity = Gravity.CENTER //居中显示 (Center display)
+        dimAmount = 0.5f         //背景透明度 (Background transparency)  0 ~ 1
     }
     DialogManager.getDialog().window?.attributes = attributes
 }
 ```
 
-## `Dialog`配置圆角样式问题
-> 在`Dialog`的`setContentView`之后设置`window.setBackgroundDrawableResource(R.drawable.rectangle_ando_dialog_bottom)`
-
-`rectangle_ando_dialog_bottom.xml`
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <corners
-        android:topLeftRadius="@dimen/dimen_ando_dialog_bottom_top_radius"
-        android:topRightRadius="@dimen/dimen_ando_dialog_bottom_top_radius" />
-
-    <solid android:color="@color/color_ando_dialog_white" />
-</shape>
-```
-🍎 上面两种方式本质上是相同的, 就是给`Dialog`的`window`加上个`background`
-
-## `Dialog`动画
-### 准备配置文件
+## `Dialog`设置动画(`Dialog` set animation)
+### 1. 准备配置文件
 `anim_ando_dialog_bottom_in.xml`
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -92,17 +88,31 @@ implementation 'ando.dialog:usage:1.0.2'
     <item name="android:windowExitAnimation">@anim/anim_ando_dialog_bottom_out</item>
 </style>
 ```
-### 设置`Dialog`动画
+### 2. 设置动画(Set animation)
 ```kotlin
 Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
 ```
-> 注意: `Dialog`设置动画在`new BottomDialog(context, R.style.AndoBottomDialogAnimation)`是无效的, 经实际测试发现 API 5.0~11
-都是如此。
+> 注意: `Dialog`设置动画在`new BottomDialog(context, R.style.AndoBottomDialogAnimation)`时设置是无效的, 必须在`show`之后再对`Window`
+设置动画(`setWindowAnimations`)才能生效。经实际测试发现 API 5.0~11都是如此。
 
-可见通过构造器传入的`themeResId`只是应用在了`ContextThemeWrapper(context, themeResId)`上, 而不是直接应用在`Window`
-属性上面
+## `Dialog`设置圆角(`Dialog` set rounded corners)
+> 在`Dialog`的`setContentView`之后(即`show`之后)设置`window.setBackgroundDrawableResource(R.drawable.rectangle_ando_dialog_bottom)`
 
-## `Dialog`显示宽高与`dp`设置不匹配问题
+`rectangle_ando_dialog_bottom.xml`
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners
+        android:topLeftRadius="10dp"
+        android:topRightRadius="10dp" />
+
+    <solid android:color="@android:color/white" />
+</shape>
+```
+🍎 就是给`Dialog`的`window`加上个`background`
+
+## `Dialog`设置宽高(`Dialog` set width and height)
 > 要在`setContentView`外包一层`FrameLayout`防止宽高设置无效问题
 
 🍎 `LoadingDialog`样式的弹窗提供了两种实现方案,一种是`animated-rotate`/`rotate`直接配置动画方式,另一种是`android.view.animation.AnimationUtils`;
@@ -139,7 +149,8 @@ xml布局中最外层的layout_width、layout_height将失效
 > 综上所述, `Dialog`宽高无效问题, 本质上就是`LayoutInflater.inflate`不同方法之间差异的问题.
 其中的`mContentParent:ViewGroup`由`PhoneWindow.installDecor()`创建. 详见: `PhoneWindow.setContentView`
 
-### `DialogManager`中已处理该问题
+### `DialogManager`中已处理该问题(This issue has been dealt with in `Dialog Manager`)
+
 ```kotlin
 fun setContentView(
     layoutId: Int,
@@ -173,16 +184,18 @@ fun setContentView(
 `LayoutInflater中inflate方法的区别` <https://blog.csdn.net/u012702547/article/details/52628453>
 
 ## Bug Fix
+- java.lang.RuntimeException: The feature has not been requested
+`see above`
+
 - android.util.AndroidRuntimeException: requestFeature() must be called before adding content
 
 `setContentView(...)`之前设置即可
 
-- java.lang.IllegalStateException: Fragment BaseDialogFragment{d53478e (a87e9bdb-56b6-46f3-ab1b-3f0d71cdd024)} not associated with a fragment manager.
+- `java.lang.IllegalStateException: Fragment xxx not associated with a fragment manager.`
 
 - `java.lang.IllegalArgumentException: View not attached to window manager`
 
 <https://stackoverflow.com/questions/2224676/android-view-not-attached-to-window-manager>
-
 
 - WindowManager: android.view.WindowLeaked: Activity ando.dialog.sample.MainActivity
 has leaked window DecorView@54f9439[MainActivity] that was originally added here
@@ -191,6 +204,7 @@ has leaked window DecorView@54f9439[MainActivity] that was originally added here
 (If you just deal with the problem of `Dialog` in `Activity.onConfigurationChanged`)
 
 ```kotlin
+//若`AndroidManifest.xml`中已经配置了`android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"`则不需要设置该项
 Acticity/Context.registerComponentCallbacks(object : ComponentCallbacks {
     override fun onConfigurationChanged(newConfig: Configuration) {
         dialog?.dismiss()
@@ -209,6 +223,7 @@ override fun onDestroy() {
 ```
 
 - java.lang.IllegalStateException: This ViewTreeObserver is not alive, call getViewTreeObserver() again
+
 ```kotlin
 fun addOnGlobalLayoutListener(onGlobalLayout: (width: Int, height: Int) -> Unit): DialogManager {
     contentView?.viewTreeObserver?.addOnGlobalLayoutListener(object :

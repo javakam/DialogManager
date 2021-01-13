@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@drawable/rectangle_ando_dialog_datetime"
     android:gravity="center"
     android:minHeight="300dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
 
     <LinearLayout
-        android:id="@+id/ll_date"
+        android:id="@+id/ll_ando_date_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <DatePicker
-            android:id="@+id/tp_date"
-            android:layout_width="0dp"
+            android:id="@+id/dp_ando_date"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:calendarViewShown="false"
             android:datePickerMode="spinner" />
 
         <TimePicker
-            android:id="@+id/tp_time"
-            android:layout_width="0dp"
+            android:id="@+id/tp_ando_time"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:calendarViewShown="false"
             android:timePickerMode="spinner" />
 
@@ -37,22 +38,37 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="20dp">
+        android:paddingBottom="15dp">
 
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_ando_cancel"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
+            android:height="40dp"
+            android:background="@drawable/rectangle_ando_dialog_datetime"
+            android:backgroundTint="#D6D7D7"
+            android:gravity="center"
             android:padding="10dp"
-            android:text="取消" />
+            android:text="取消"
+            android:textColor="#1C1C1C" />
 
-        <Button
-            android:id="@+id/btn_certain"
-            android:layout_width="wrap_content"
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_ando_certain"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="90dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
+            android:background="@drawable/rectangle_ando_dialog_datetime"
+            android:backgroundTint="@android:color/holo_blue_light"
+            android:gravity="center"
             android:padding="10dp"
-            android:text="确定" />
+            android:text="确定"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 

@@ -1,6 +1,9 @@
 package ando.dialog.usage
 
 import ando.dialog.core.BaseDialogFragment
+import android.content.ComponentCallbacks
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,7 +21,9 @@ import java.util.*
  *
  * Date and time selection dialog.
  *
- * - 通过`setType`进行切换
+ * - 1. 通过`setType`进行切换
+ *
+ * - 2. 支持Phone和Tablet
  *
  * @author javakam
  */
@@ -37,14 +42,25 @@ class DateTimePickerDialog : BaseDialogFragment() {
     private lateinit var mBtnCertain: Button
     private var mType = Y_M_D
     private var mDate: Date? = Date()
-    private var mListener: CallBack? = null
+    private var mCallBack: CallBack? = null
+
+    interface CallBack {
+        fun onClick(originalTime: Date, dateTime: String)
+        fun onDateChanged(v: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int) {}
+        fun onTimeChanged(view: TimePicker?, hourOfDay: Int, minute: Int) {}
+    }
+
+    fun setCallBack(callBack: CallBack) {
+        this.mCallBack = callBack
+    }
 
     override fun initWindow(window: Window) {
         window.attributes?.apply {
-            width = ViewGroup.LayoutParams.MATCH_PARENT
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
             height = ViewGroup.LayoutParams.WRAP_CONTENT
             window.attributes = this
         }
+        window.setBackgroundDrawableResource(android.R.color.white)
     }
 
     override fun onCreateView(
@@ -53,30 +69,34 @@ class DateTimePickerDialog : BaseDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.layout_ando_dialog_datetime, container, false)
-        mLlDate = view.findViewById(R.id.ll_date)
-        mTpDate = view.findViewById(R.id.tp_date)
-        mTpTime = view.findViewById(R.id.tp_time)
+        mLlDate = view.findViewById(R.id.ll_ando_date_time)
+        mTpDate = view.findViewById(R.id.dp_ando_date)
+        mTpTime = view.findViewById(R.id.tp_ando_time)
         if (Y_M_D.equals(mType, true)) {
             mLlDate.removeView(mTpTime)
         }
         if (H_M.equals(mType, true)) {
             mLlDate.removeView(mTpDate)
         }
+        context?.apply { initConfiguration(this) }
 
         mTpDate.init(
             Utils.getYear(getDate()),
             Utils.getMonth(getDate()),
             Utils.getDay(getDate())
         ) { v, year, monthOfYear, dayOfMonth ->
-            mListener?.onDateChanged(v, year, monthOfYear, dayOfMonth)
+            mCallBack?.onDateChanged(v, year, monthOfYear, dayOfMonth)
         }
 
         mTpTime.setIs24HourView(true)
         mTpTime.currentHour = Utils.getHour(getDate())
         mTpTime.currentMinute = Utils.getMinute(getDate())
+        mTpTime.setOnTimeChangedListener { v, hourOfDay, minute ->
+            mCallBack?.onTimeChanged(v, hourOfDay, minute)
+        }
 
-        mBtnCancel = view.findViewById(R.id.btn_cancel)
-        mBtnCertain = view.findViewById(R.id.btn_certain)
+        mBtnCancel = view.findViewById(R.id.bt_ando_cancel)
+        mBtnCertain = view.findViewById(R.id.bt_ando_certain)
         mBtnCancel.setOnClickListener { dismiss() }
 
         mBtnCertain.setOnClickListener {
@@ -94,12 +114,24 @@ class DateTimePickerDialog : BaseDialogFragment() {
             val minute = mTpTime.currentMinute
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
-            mListener?.onClick(Utils.getFormattedDate(calendar.time, mType))
+            val time = calendar.time
+            mCallBack?.onClick(time, Utils.getFormattedDate(time, mType))
 
-            //
             dismiss()
         }
         return view
+    }
+
+    private fun initConfiguration(context: Context) {
+        mLlDate.orientation = context.resources.configuration.orientation
+        context.registerComponentCallbacks(object : ComponentCallbacks {
+            override fun onConfigurationChanged(newConfig: Configuration?) {
+                newConfig?.orientation?.apply { mLlDate.orientation = this }
+            }
+
+            override fun onLowMemory() {
+            }
+        })
     }
 
     private fun getDate(): Date = mDate ?: Date()
@@ -110,11 +142,6 @@ class DateTimePickerDialog : BaseDialogFragment() {
 
     fun setType(type: String) {
         mType = type
-    }
-
-    interface CallBack {
-        fun onClick(dateTime: String)
-        fun onDateChanged(v: DatePicker, year: Int, monthOfYear: Int, dayOfMonth: Int)
     }
 
     internal object Utils {

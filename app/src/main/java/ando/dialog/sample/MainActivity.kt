@@ -17,10 +17,9 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.animation.AnimationUtils
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ProgressBar
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import java.util.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -72,6 +71,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun changeDialogSize() {
         findViewById<View>(R.id.bt_loading_progressbar_imageview).postDelayed({
+            if (!DialogManager.isShowing()) return@postDelayed
+
             //改变弹窗宽高(Change the width and height of the dialog)
             DialogManager.setWidth(280)
             DialogManager.setHeight(280)
@@ -153,8 +154,43 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showDateTimePickerDialog() {
         DialogManager.dismiss()
-        DateTimePickerDialog().show(this)
-        changeDialogSize()
+
+        //支持三种类型: Y_M_D , Y_M_D_H_M , H_M
+
+        //日期 + 时间
+        val dateTimeDialog = DateTimePickerDialog()
+        dateTimeDialog.setType(DateTimePickerDialog.Y_M_D_H_M)
+        dateTimeDialog.setCallBack(object : DateTimePickerDialog.CallBack {
+            override fun onClick(originalTime: Date, dateTime: String) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "$originalTime\n\n$dateTime", Toast.LENGTH_LONG
+                ).show()
+            }
+
+            override fun onDateChanged(
+                v: DatePicker?,
+                year: Int,
+                monthOfYear: Int,
+                dayOfMonth: Int
+            ) {
+
+            }
+
+            override fun onTimeChanged(view: TimePicker?, hourOfDay: Int, minute: Int) {}
+
+        })
+        dateTimeDialog.show(this)
+
+        //日期
+        //val dateDialog = DateTimePickerDialog()
+        //dateDialog.setType(DateTimePickerDialog.Y_M_D)
+        //dateDialog.show(this)
+
+        //时间
+        //val timeDialog = DateTimePickerDialog()
+        //timeDialog.setType(DateTimePickerDialog.Y_M_D_H_M)
+        //timeDialog.show(this)
     }
 
     private fun replaceDialog() {

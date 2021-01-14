@@ -3,34 +3,34 @@
 
 - [**Blog**](https://juejin.cn/post/6916791502161051656/)👉<https://juejin.cn/post/6916791502161051656/>
 
-## 预览(Preview)
+## 一、预览(Preview)
 <img src="https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif" width="310" height="620"/>
 
-## 导入(Import)
-> 🍎很轻量, 目前只有五个类
+## 二、导入(Import)
+> 🍎很轻量, 目前只有五个类 (Very lightweight, currently there are only five classes)
 
 ```
 repositories {
   maven { url "https://dl.bintray.com/javakam/AndoDialog" }
 }
 
-implementation 'ando.dialog:core:1.1.0'
-implementation 'ando.dialog:usage:1.1.0'
+implementation 'ando.dialog:core:1.2.0'
+implementation 'ando.dialog:usage:1.2.0'
 ```
 
-## 用法(Usage)
+## 三、用法(Usage)
 ```kotlin
 fun showLoadingDialog() {
-      DialogManager.with(this, R.style.AndoLoadingDialog) //建议设置一个主题样式
+      DialogManager.with(this, R.style.AndoLoadingDialog) //建议设置一个主题样式 (It is recommended to set a theme style)
           .useDialogFragment()//默认为`DialogFragment`实现, useDialog()表示由`Dialog`实现
-          .setContentView(R.layout.layout_ando_dialog_loading) { v -> //设置显示布局
+          .setContentView(R.layout.layout_ando_dialog_loading) { v -> //设置显示布局 (Set display layout)
               v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
           }
-          .setTitle("Title")//在配置了 `<item name="android:windowNoTitle">false</item>` 后才会生效
+          .setTitle("Title")//Need Config `<item name="android:windowNoTitle">false</item>`
           .setWidth(200)//设置宽
           .setHeight(200)//设置高
-          .setSize(200, 200)//设置宽高
-          .setAnimationId(R.style.AndoBottomDialogAnimation)//设置动画
+          .setSize(200, 200)//设置宽高(Set width and height)
+          .setAnimationId(R.style.AndoBottomDialogAnimation)//设置动画(Set up animation)
           .setCancelable(true)
           .setCanceledOnTouchOutside(true)
           .setDimAmount(0.7F) //设置背景透明度, 0 ~ 1 之间,0为透明,1为不透明. 只要该值不是 -1, 就会应用该值
@@ -42,68 +42,70 @@ fun showLoadingDialog() {
           .setOnShowListener {}//显示监听
           .apply {
               //显示之前配置,如:
+              //Display the previous configuration, such as:
               //dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
           }
           .show()
           .apply {
               //显示之后配置, 效果和`setOnShowListener`相同
+              //Configure after display, the effect is the same as `setOnShowListener`
           }
 
       //Dialog是否正在显示
+      //Whether Dialog is showing
       DialogManager.isShowing()
-      
-      //Dialog显示后动态改变一些参数
+
+      //Dialog显示后动态改变展示效果
+      //Dynamically change the display effect after Dialog is displayed
       changeDialogSize()
 }
 
 /**
  * 动态改变显示中的Dialog位置/宽高/动画等
+ * Dynamically change the width and height animation of the Dialog in the display, etc.
  */
-fun changeDialogSize() {
+private fun changeDialogSize() {
     View.postDelayed({
-        //改变弹窗宽高(Change the width and height of the dialog)
+        if (!DialogManager.isShowing()) return@postDelayed
+
+        //改变弹窗宽高 (Change the width and height of the dialog)
         DialogManager.setWidth(280)
         DialogManager.setHeight(280)
         DialogManager.applySize()
-        
-        //控制背景亮度(Control background brightness)
+
+        //控制背景亮度 (Control background brightness)
         DialogManager.setDimAmount(0.3F)
         DialogManager.applyDimAmount()
-        
-        //or 直接移除背景变暗(Directly remove the background darkening)
+        //or 直接移除背景变暗 (Directly remove the background darkening)
         //DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
     }, 1500)
+}
 ```
 
-## 同时支持`Dialog`和`DialogFragment`(Support both `Dialog` and `Dialog Fragment`)
-- Dialog: useDialog() ; DialogFragment: useDialogFragment()
+- 同时支持`Dialog`和`DialogFragment`(Support both `Dialog` and `Dialog Fragment`):
+```kotlin
+Dialog: useDialog() ; DialogFragment: useDialogFragment()
+```
+- 控制背景变暗(Control the darkening of the background)
+```kotlin
+Window.addFlags/clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+```
 
-## 控制背景变暗(Control the darkening of the background)
-- Window.addFlags/clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-
-## `Dialog.Window`设置(`Dialog.Window` settings)
+## 四、`Dialog.Window Setting`
 ### 1. `show()`之前设置(Set before `Dialog.show`)
-
-- Dialog/Window.requestWindowFeature(Window.FEATURE_LEFT_ICON)
-
+```kotlin
+Dialog/Window.requestWindowFeature(Window.FEATURE_LEFT_ICON)
+```
 ### 2. `show()`之后设置(Set after `Dialog.show`)
-- `Window`相关属性(WindowManager.LayoutParams), 如动态改变`Dialog`的位置、宽高、动画、背景等
+- `Window`相关属性(`WindowManager.LayoutParams`), 如动态改变`Dialog`的位置、宽高、动画、背景等
 
-`Window` related properties (WindowManager.LayoutParams), such as dynamically changing the position, width, height, animation, background, etc. of `Dialog`
-
-- `setFeatureXXX` 相关方法, 如 `setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha`
-
-`setFeatureXXX` related methods, such as `setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha`
+- `setFeatureXXX` 相关方法, 如: `setFeatureDrawable/setFeatureDrawableResource/setFeatureDrawableUri/setFeatureDrawableAlpha`
 
 - `setFeatureXXX` 方法必须在`Dialog.show`之前设置`requestWindowFeature`才能生效,
 否则出现BUG:java.lang.RuntimeException: The feature has not been requested
 
-The `setFeatureXXX` method must set `requestWindowFeature` before `Dialog.show` to take effect,
-otherwise a BUG:java.lang.RuntimeException: The feature has not been requested
-
 - 🍎 通常在`show`执行后或者`setOnShowListener`中设置`window`属性
-
-Usually set the `window` property after `show` is executed or in `set On Show Listener`
 
 ```kotlin
 setOnShowListener {
@@ -120,8 +122,8 @@ setOnShowListener {
 }
 ```
 
-## `Dialog`设置动画(`Dialog` set animation)
-### 1. 准备配置文件
+## 五、`Dialog`设置动画(`Dialog` set animation)
+### 1. 准备配置文件(Prepare configuration file)
 `anim_ando_dialog_bottom_in.xml`
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -156,7 +158,7 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
 > 注意: `Dialog`设置动画在`new BottomDialog(context, R.style.AndoBottomDialogAnimation)`时设置是无效的, 必须在`show`之后再对`Window`
 设置动画(`setWindowAnimations`)才能生效。经实际测试发现 API 5.0~11都是如此。
 
-## `Dialog`设置圆角(`Dialog` set rounded corners)
+## 六、`Dialog`设置圆角(`Dialog` set rounded corners)
 > 在`Dialog`的`setContentView`之后(即`show`之后)设置`window.setBackgroundDrawableResource(R.drawable.rectangle_ando_dialog_bottom)`
 
 `rectangle_ando_dialog_bottom.xml`
@@ -171,9 +173,9 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
     <solid android:color="@android:color/white" />
 </shape>
 ```
-就是给`Window`加上个`background`
+就是给`Window`加上个`background`, 详见👉[Dialog 圆角问题](https://juejin.cn/post/6915323090620645389)
 
-## `Dialog`设置宽高(`Dialog` set width and height)
+## 七、`Dialog`设置宽高(`Dialog` set width and height)
 > 要在`setContentView`外包一层`FrameLayout`防止宽高设置无效问题
 
 🍎 `LoadingDialog`样式的弹窗提供了两种实现方案,一种是`animated-rotate`/`rotate`直接配置动画方式,另一种是`android.view.animation.AnimationUtils`;
@@ -201,11 +203,11 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
 而后者用的是`mContentParent.addView(view)`即`LayoutInflater.inflate(view,null,false)` . 我们看下`inflate`方法的特性:
 
 ### inflate(view, null);/inflate(resource, null, true/false);
-只创建view，view没有LayoutParams值，然后直接返回view.
-xml布局中最外层的layout_width、layout_height将失效
+只创建`view`，`view`没有`LayoutParams`值，然后直接返回`view`
+布局中最外层的`layout_width`、`layout_height`将失效
 
-### inflate(resource, root);/inflate(resource, root, true);
-创建view, 然后执行root.addView(view, params), 最后返回root
+### inflate(resource, mContentParent);/inflate(resource, root, true);
+创建`view`, 然后执行`mContentParent.addView(view, params)`, 最后返回`mContentParent`
 
 > 综上所述, `Dialog`宽高无效问题, 本质上就是`LayoutInflater.inflate`不同方法之间差异的问题.
 其中的`mContentParent:ViewGroup`由`PhoneWindow.installDecor()`创建. 详见: `PhoneWindow.setContentView`
@@ -229,13 +231,13 @@ fun setContentView(
 }
 ```
 
-## 总结(Summary)
+## 八、总结(Summary)
 
 1. DialogFragment源码中加载视图用的是 Dialog.setContentView(View)
 
 2. 如果要改变`Window`属性, 可以在`onStart`中处理。因为`DialogFragment.onStart`中执行了`Dialog.show()`
 
-## 感谢(Thanks)
+## 九、感谢(Thanks)
 `Android源码在线阅读` <https://www.androidos.net.cn>
 
 `Android Dialog - Rounded Corners and Transparency` <https://stackoverflow.com/questions/16861310/android-dialog-rounded-corners-and-transparency>
@@ -244,7 +246,7 @@ fun setContentView(
 
 `LayoutInflater中inflate方法的区别` <https://blog.csdn.net/u012702547/article/details/52628453>
 
-## 遇到的BUG(BUG encountered)
+## 十、遇到的BUG(BUG encountered)
 - java.lang.RuntimeException: The feature has not been requested
 
 Fixed: `see above`
@@ -263,7 +265,8 @@ Fixed: <https://stackoverflow.com/questions/2224676/android-view-not-attached-to
 has leaked window DecorView@54f9439[MainActivity] that was originally added here
 
 如果只是处理`Dialog`在`Acticity.onConfigurationChanged`出现的问题
-(If you just deal with the problem of `Dialog` in `Activity.onConfigurationChanged`)
+
+EN: If you just deal with the problem of `Dialog` in `Activity.onConfigurationChanged`
 
 ```kotlin
 //若`AndroidManifest.xml`中已经配置了`android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"`则不需要设置该项

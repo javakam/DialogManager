@@ -3,17 +3,18 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
+def config = rootProject.ext.android
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
-
+    compileSdkVersion config.compileSdkVersion
+    buildToolsVersion config.buildToolsVersion
     defaultConfig {
-        applicationId "ando.dialog.usage"
-        minSdkVersion 21
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.1.0"
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+        versionCode config.versionCode
+        versionName config.versionName
+
+        applicationId config.applicationId
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

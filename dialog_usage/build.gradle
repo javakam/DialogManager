@@ -54,7 +54,7 @@ dependencies {
 }
 
 publish {
-    repoName = 'AndoDialog'
+    repoName = config.repoName
     userOrg = 'javakam'
     groupId = 'ando.dialog'
     artifactId = 'usage'

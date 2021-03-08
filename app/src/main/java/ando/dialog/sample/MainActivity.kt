@@ -3,6 +3,7 @@ package ando.dialog.sample
 import ando.dialog.core.DialogManager
 import ando.dialog.usage.BottomDialog
 import ando.dialog.usage.DateTimePickerDialog
+import ando.dialog.usage.loadingDialog
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
@@ -16,7 +17,6 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
-import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import java.util.*
@@ -104,18 +104,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun showLoadingDialogByImageView() {
-        DialogManager.with(this, R.style.AndoLoadingDialog)
-            .setContentView(R.layout.layout_ando_dialog_loading) { v ->
-                val imageView: ImageView = v.findViewById(R.id.iv_ando_dialog_loading)
-                imageView.visibility = View.VISIBLE
-                val anim = AnimationUtils.loadAnimation(
-                    this,
-                    R.anim.anim_ando_dialog_loading
-                )
-                imageView.startAnimation(anim)
-            }
+        loadingDialog(this)
             .setDimmedBehind(false)
-            .setCancelable(true)
             .setCanceledOnTouchOutside(false)
             .setSize(390, 280)
             .setOnShowListener {
@@ -154,7 +144,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun showDateTimePickerDialog() {
         DialogManager.dismiss()
-
         //支持三种类型: Y_M_D , Y_M_D_H_M , H_M
 
         //日期 + 时间
@@ -174,11 +163,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 monthOfYear: Int,
                 dayOfMonth: Int
             ) {
-
             }
 
             override fun onTimeChanged(view: TimePicker?, hourOfDay: Int, minute: Int) {}
-
         })
         dateTimeDialog.show(this)
 
@@ -240,6 +227,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         override fun getLayoutId(): Int = R.layout.layout_dialog_bottom
     }
 
+    @Suppress("DEPRECATION")
     private fun showProgressDialog() {
         val progressDialog = ProgressDialog(this, R.style.AndoLoadingDialogLight)
         progressDialog.setTitle("ProgressDialog")

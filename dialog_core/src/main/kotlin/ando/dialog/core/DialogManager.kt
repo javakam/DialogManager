@@ -1,5 +1,6 @@
 package ando.dialog.core
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -35,6 +36,7 @@ import androidx.fragment.app.FragmentActivity
  * @author javakam
  * @date 2021/1/5  10:00
  */
+@SuppressLint("StaticFieldLeak")
 object DialogManager {
 
     private var mContext: Context? = null
@@ -98,10 +100,11 @@ object DialogManager {
     private fun createInternalDialog(externalDialog: Dialog?) {
         dialog = externalDialog
         mContext?.apply {
-            if (isDialogType && this is Activity) dialog?.setOwnerActivity(this)
+            if (isDialogType && this is Activity) dialog?.ownerActivity = this
         }
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private fun isContextIllegal(dialog: Dialog?): Boolean {
         dialog?.context?.apply {
             if (this is Activity) {
@@ -138,6 +141,8 @@ object DialogManager {
 
                 dialog?.dismiss()
                 dialog = null
+
+                mContext = null
             }
         }
     }

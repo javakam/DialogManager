@@ -9,7 +9,9 @@ import android.view.Window
 import android.view.WindowManager
 
 /**
- * # 从底部弹出的Dialog
+ * # BottomDialog
+ *
+ * 从底部弹出的Dialog
  *
  * @author javakam
  */

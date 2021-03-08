@@ -17,14 +17,10 @@ import android.view.Window
  */
 abstract class BaseDialog : Dialog {
 
-    constructor(
-        context: Context
-    ) : this(context, 0)
+    constructor(context: Context) : this(context, 0)
 
-    constructor(
-        context: Context,
-        themeResId: Int = android.R.style.Theme_Dialog
-    ) : super(context, themeResId)
+    constructor(context: Context, themeResId: Int = android.R.style.Theme_Dialog) :
+            super(context, themeResId)
 
     constructor(
         context: Context, cancelable: Boolean,

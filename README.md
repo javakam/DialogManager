@@ -13,7 +13,7 @@
 
 ```
 repositories {
-  maven { url "https://dl.bintray.com/javakam/AndoDialog" }
+  maven { url "https://dl.bintray.com/javakam/maven" }
 }
 
 implementation 'ando.dialog:core:1.3.0'

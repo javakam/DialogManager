@@ -16,8 +16,8 @@ repositories {
   maven { url "https://dl.bintray.com/javakam/AndoDialog" }
 }
 
-implementation 'ando.dialog:core:1.2.0'
-implementation 'ando.dialog:usage:1.2.0'
+implementation 'ando.dialog:core:1.3.0'
+implementation 'ando.dialog:usage:1.3.0'
 ```
 
 ## 三、用法(Usage)

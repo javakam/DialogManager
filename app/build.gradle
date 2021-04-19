@@ -42,7 +42,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    implementation project(':dialog_core')
-    implementation project(':dialog_usage')
+//    implementation project(':dialog_core')
+//    implementation project(':dialog_usage')
+
+    implementation 'com.github.javakam:dialog.core:1.4.0@aar'
+    implementation 'com.github.javakam:dialog.usage:1.4.0@aar'
 
 }

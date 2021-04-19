@@ -12,8 +12,8 @@
 > 🍎很轻量, 目前只有五个类 (Very lightweight, currently there are only five classes)
 
 ```groovy
-implementation 'com.github.javakam:dialog.core:1.3.5@aar'
-implementation 'com.github.javakam:dialog.usage:1.3.5@aar'
+implementation 'com.github.javakam:dialog.core:1.4.0@aar'
+implementation 'com.github.javakam:dialog.usage:1.4.0@aar'
 ```
 
 ## 三、用法(Usage)

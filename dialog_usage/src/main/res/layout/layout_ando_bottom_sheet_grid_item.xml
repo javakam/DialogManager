@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ando.dialog.usage.bottomsheet.BottomSheetItemView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="84dp"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/grid_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@android:drawable/sym_def_app_icon" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/grid_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:textColor="#353C46"
+        android:textSize="15sp"
+        tools:text="XXX" />
+</ando.dialog.usage.bottomsheet.BottomSheetItemView>

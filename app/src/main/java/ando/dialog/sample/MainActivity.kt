@@ -3,6 +3,8 @@ package ando.dialog.sample
 import ando.dialog.core.DialogManager
 import ando.dialog.usage.BottomDialog
 import ando.dialog.usage.DateTimePickerDialog
+import ando.dialog.usage.bottomsheet.BottomSheet
+import ando.dialog.usage.bottomsheet.BottomSheetItemView
 import ando.dialog.usage.loadingDialog
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<Button>(R.id.bt_dialog_progress_param).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_configuration).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_edit_text).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_dialog_bottom_sheet).setOnClickListener(this)
 
     }
 
@@ -63,6 +66,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_dialog_progress_param -> showProgressDialog()
             R.id.bt_dialog_configuration -> showDialogConfiguration()
             R.id.bt_dialog_edit_text -> showDialogEditText()
+            R.id.bt_dialog_bottom_sheet -> showBottomSheet()
         }
     }
 
@@ -282,4 +286,44 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(Intent(this, EditTextActivity::class.java))
     }
 
+    private fun showBottomSheet() {
+        val builder = BottomSheet.BottomGridSheetBuilder(this)
+        builder
+            .addItem(
+                R.drawable.umeng_socialize_wechat,
+                "微信",
+                BottomSheet.BottomGridSheetBuilder.FIRST_LINE
+            )
+            .addItem(
+                R.drawable.umeng_socialize_wxcircle,
+                "朋友圈",
+                BottomSheet.BottomGridSheetBuilder.FIRST_LINE
+            ).addItem(
+                R.drawable.umeng_socialize_fav,
+                "微信收藏",
+                BottomSheet.BottomGridSheetBuilder.FIRST_LINE
+            )
+            .addItem(
+                R.drawable.umeng_socialize_qq,
+                "QQ",
+                BottomSheet.BottomGridSheetBuilder.FIRST_LINE
+            ).addItem(
+                R.drawable.umeng_socialize_qzone,
+                "QQ空间",
+                BottomSheet.BottomGridSheetBuilder.SECOND_LINE
+            )
+            .addItem(
+                R.drawable.umeng_socialize_sina,
+                "微博",
+                BottomSheet.BottomGridSheetBuilder.SECOND_LINE
+            )
+            .setOnSheetItemClickListener { dialog, itemView ->
+                dialog.dismiss()
+                val tag = itemView.tag
+                Log.i("123", "tag:$tag, content:$itemView") //tag:微博, content:微博
+                Toast.makeText(this, "$tag", Toast.LENGTH_SHORT).show()
+            }
+
+        builder.build().show()
+    }
 }

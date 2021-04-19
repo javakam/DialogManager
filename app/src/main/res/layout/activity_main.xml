@@ -154,5 +154,12 @@
             android:text="输入框(EditText)"
             android:textAllCaps="false" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_bottom_sheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BottomSheet"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

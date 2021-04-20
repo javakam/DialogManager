@@ -38,4 +38,7 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
     </style>
 
+    <!-- dialog_bottom_sheet 样式 -->
+    <color name="modalBottomBackground">#ccc</color>
+
 </resources>

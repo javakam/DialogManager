@@ -1,3 +1,4 @@
+include ':dialog_bottom_sheet'
 include ':dialog_usage'
 include ':dialog_core'
 include ':app'

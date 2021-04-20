@@ -47,6 +47,7 @@ publishing {
             // Self-explanatory metadata for the most part
             pom {
                 name = PUBLISH_ARTIFACT_ID
+                version PUBLISH_VERSION
                 description = 'Ando Dialog Manager.'
                 // If your project has a dedicated site, use its URL here
                 url = "https://github.com/javakam/${rootProject.name}"

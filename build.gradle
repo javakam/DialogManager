@@ -4,10 +4,12 @@ apply from: "config.gradle"
 buildscript {
     ext.kotlin_version = "1.4.32"
     repositories {
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+        maven { url "https://s01.oss.sonatype.org/content/repositories/releases" }
+
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
     }
     dependencies {
@@ -18,10 +20,12 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
+        maven { url "https://s01.oss.sonatype.org/content/repositories/releases" }
+
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
     }
     tasks.withType(Javadoc) {

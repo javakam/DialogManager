@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_qq"
+        android:icon="@drawable/umeng_socialize_qq"
+        android:title="QQ" />
+
+    <item
+        android:id="@+id/action_qzone"
+        android:icon="@drawable/umeng_socialize_qzone"
+        android:title="QQ空间" />
+
+    <item
+        android:id="@+id/action_wechat"
+        android:icon="@drawable/umeng_socialize_wechat"
+        android:title="微信" />
+
+    <item
+        android:id="@+id/action_wxcircle"
+        android:icon="@drawable/umeng_socialize_wxcircle"
+        android:title="朋友圈" />
+
+    <item
+        android:id="@+id/action_fav"
+        android:icon="@drawable/umeng_socialize_fav"
+        android:title="微信收藏" />
+
+    <item
+        android:id="@+id/action_sina"
+        android:icon="@drawable/umeng_socialize_sina"
+        android:title="微博" />
+
+</menu>

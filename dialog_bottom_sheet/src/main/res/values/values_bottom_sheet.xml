@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="id_ando_bottom_sheet_container" type="id" />
+    <item name="id_ando_bottom_sheet_title" type="id" />
+    <item name="id_ando_bottom_sheet_recycler" type="id" />
+    <item name="id_ando_bottom_sheet_close" type="id" />
+    <item name="id_ando_bottom_sheet_close_tv" type="id" />
+    <item name="id_ando_bottom_sheet_item_icon" type="id" />
+    <item name="id_ando_bottom_sheet_item_title" type="id" />
+
+    <dimen name="modalBottomItemImageSize">32dp</dimen>
+    <dimen name="modalBottomCornerRadius">16dp</dimen>
+    <dimen name="modalBottomItemPadding">15dp</dimen>
+    <dimen name="modalBottomItemTextSize">15sp</dimen>
+
+    <color name="modalBottomBackground">#E1FFFF</color>
+    <color name="modalBottomHeaderColor">#666666</color>
+    <color name="modalBottomDividerColor">#CCCCCC</color>
+    <color name="modalBottomItemTextColor">#2E2E2E</color>
+
+    <string name="modalBottomClose">关闭</string>
+
+    <!-- 注: 背景透明时候, 布局中设置的圆角才会生效 -->
+    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
+    </style>
+
+    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+</resources>

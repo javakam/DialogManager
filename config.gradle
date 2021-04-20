@@ -1,14 +1,15 @@
 ext {
 
     android = [
-            applicationId    : "ando.dialog.sample",
-            compileSdkVersion: 30,
-            buildToolsVersion: '30.0.3',
-            minSdkVersion    : 21,
-            targetSdkVersion : 30,
-            versionCode      : 7,
-            versionName      : "1.4.0",
-            repoName         : "maven"
+            applicationId         : "ando.dialog.sample",
+            compileSdkVersion     : 30,
+            buildToolsVersion     : '30.0.3',
+            minSdkVersion         : 21,
+            targetSdkVersion      : 30,
+            versionCode           : 7,
+            versionName           : "1.5.0",
+            versionNameBottomSheet: "1.0.0",
+            repoName              : "maven"
     ]
 
 }

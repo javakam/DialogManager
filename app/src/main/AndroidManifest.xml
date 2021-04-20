@@ -27,6 +27,10 @@
             android:name=".EditTextActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
 
+        <activity
+            android:name=".ModalActivity"
+            android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
+
     </application>
 
 </manifest>

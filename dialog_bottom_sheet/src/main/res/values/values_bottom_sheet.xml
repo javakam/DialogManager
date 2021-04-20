@@ -20,12 +20,20 @@
 
     <string name="modalBottomClose">关闭</string>
 
-    <!-- 注: 背景透明时候, 布局中设置的圆角才会生效 -->
-    <style name="BottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="bottomSheetStyle">@style/bottomSheetStyleWrapper</item>
-    </style>
+    <!-- 注: 背景透明时候, 布局中设置的圆角才会生效
+     AAPT Error -> bottomSheetStyle
+     Theme.Design.Light.BottomSheetDialog
+     Base.V7.Theme.AppCompat.Light.Dialog
+     -->
+    <style name="BottomSheetDialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
 
-    <style name="bottomSheetStyleWrapper" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 

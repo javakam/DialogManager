@@ -12,7 +12,6 @@ task androidSourcesJar(type: Jar) {
 //查看Sonatype信息 https://issues.sonatype.org/issues/?filter=-2
 ext {
     PUBLISH_GROUP_ID = "com.github.javakam"
-    PUBLISH_VERSION = rootProject.ext.android.versionName
 }
 ext["signing.keyId"] = ''
 ext["signing.password"] = ''
@@ -47,7 +46,6 @@ publishing {
             // Self-explanatory metadata for the most part
             pom {
                 name = PUBLISH_ARTIFACT_ID
-                version PUBLISH_VERSION
                 description = 'Ando Dialog Manager.'
                 // If your project has a dedicated site, use its URL here
                 url = "https://github.com/javakam/${rootProject.name}"

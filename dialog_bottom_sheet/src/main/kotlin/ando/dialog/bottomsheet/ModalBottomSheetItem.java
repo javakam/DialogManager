@@ -5,7 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * # ItemBean
+ * # ModalBottomSheetItem
  *
  * @author javakam
  * @date 2021/4/20  9:36
@@ -55,13 +55,11 @@ public class ModalBottomSheetItem implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(this.id);
         dest.writeString(this.title);
-        dest.writeValue(this.icon);
     }
 
     protected ModalBottomSheetItem(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.title = in.readString();
-        this.icon = in.readParcelable(Drawable.class.getClassLoader());
     }
 
     public static final Creator<ModalBottomSheetItem> CREATOR = new Creator<ModalBottomSheetItem>() {

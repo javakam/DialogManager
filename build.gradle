@@ -4,6 +4,7 @@ apply from: "config.gradle"
 buildscript {
     ext.kotlin_version = "1.4.32"
     repositories {
+        mavenLocal()
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases" }
 
@@ -20,6 +21,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         maven { url "https://s01.oss.sonatype.org/content/groups/public" }
         maven { url "https://s01.oss.sonatype.org/content/repositories/releases" }
 

@@ -9,12 +9,12 @@
 <img src="https://raw.githubusercontent.com/javakam/DialogManager/master/screenshot/func.gif" width="310" height="620"/>
 
 ## 二、导入(Import)
-> 🍎很轻量, 目前只有五个类 (Very lightweight, currently there are only five classes)
+🍎🍎🍎 很轻量, 目前总共只有五个类 (Very lightweight, currently there are only five classes)
 
 ```groovy
-implementation 'com.github.javakam:dialog.core:1.5.0@aar'        //核心
-implementation 'com.github.javakam:dialog.usage:1.5.0@aar'       //需要依赖 core
-implementation 'com.github.javakam:dialog.bottomsheet:1.5.0@aar' //可以单独使用
+implementation 'com.github.javakam:dialog.core:1.5.0@aar'        //15KB, 核心
+implementation 'com.github.javakam:dialog.usage:1.5.0@aar'       //25KB, 常用样式(如: 加载中弹窗)
+implementation 'com.github.javakam:dialog.bottomsheet:1.5.0@aar' //23KB, 底部弹窗, 可以单独使用
 ```
 
 ## 三、用法(Usage)

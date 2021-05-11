@@ -13,7 +13,7 @@
     <dimen name="modalBottomItemPadding">15dp</dimen>
     <dimen name="modalBottomItemTextSize">15sp</dimen>
 
-    <color name="modalBottomBackground">#E1FFFF</color>
+    <color name="modalBottomBackground">#FFFFFF</color> <!-- E1FFFF -->
     <color name="modalBottomHeaderColor">#666666</color>
     <color name="modalBottomDividerColor">#CCCCCC</color>
     <color name="modalBottomItemTextColor">#2E2E2E</color>

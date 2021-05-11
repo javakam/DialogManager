@@ -100,7 +100,7 @@ object DialogManager {
     private fun createInternalDialog(externalDialog: Dialog?) {
         dialog = externalDialog
         mContext?.apply {
-            if (isDialogType && this is Activity) dialog?.ownerActivity = this
+            if (isDialogType && this is Activity) dialog?.setOwnerActivity(this)
         }
     }
 

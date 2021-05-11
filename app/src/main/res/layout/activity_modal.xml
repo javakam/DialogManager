@@ -17,50 +17,56 @@
                 android:id="@+id/buttonWithHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="With Header"
+                android:text="带标题 With Header"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/buttonWithoutHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Without Header"
+                android:text="不带标题 Without Header"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/buttonGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Grid Layout"
+                android:text="网格 Grid Layout"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/buttonCustomLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Custom Header Layout"
+                android:text="自定义头布局 Custom Header Layout"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/buttonScrollableList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Scroll Layout"
+                android:text="滑动控制 Scroll Layout"
                 android:textAllCaps="false" />
 
             <Button
                 android:id="@+id/buttonRounded"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rounded Layout"
+                android:text="圆角 Rounded Layout"
                 android:textAllCaps="false" />
-
 
             <Button
                 android:id="@+id/buttonShare"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Share"
+                android:text="分享弹窗 Share"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/buttonFullPage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="全屏显示, 滑动关闭"
                 android:textAllCaps="false" />
 
         </LinearLayout>

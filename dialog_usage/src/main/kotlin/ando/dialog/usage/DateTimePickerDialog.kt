@@ -125,8 +125,8 @@ class DateTimePickerDialog : BaseDialogFragment() {
     private fun initConfiguration(context: Context) {
         mLlDate.orientation = context.resources.configuration.orientation
         context.registerComponentCallbacks(object : ComponentCallbacks {
-            override fun onConfigurationChanged(newConfig: Configuration?) {
-                newConfig?.orientation?.apply { mLlDate.orientation = this }
+            override fun onConfigurationChanged(newConfig: Configuration) {
+                newConfig.orientation.apply { mLlDate.orientation = this }
             }
 
             override fun onLowMemory() {

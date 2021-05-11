@@ -254,7 +254,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         progressDialog.progress = 20
 
         val handle: Handler = object : Handler(Looper.getMainLooper()) {
-            override fun handleMessage(msg: Message?) {
+            override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 progressDialog.incrementProgressBy(2) // Incremented By Value 2
                 progressDialog.incrementSecondaryProgressBy(5)

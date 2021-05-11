@@ -1,5 +1,6 @@
 package ando.dialog.sample
 
+import ando.dialog.bottomsheet.AbsBottomSheetDialogFragment
 import ando.dialog.bottomsheet.ModalBottomSheetDialogFragment
 import ando.dialog.bottomsheet.ModalBottomSheetItem
 import android.os.Bundle
@@ -73,8 +74,9 @@ class ModalActivity : AppCompatActivity() {
                 .setItemDirection(false)
                 .setDraggable(true)
                 .setTopRounded(false)
+                .setFullScreen(false)
                 .setListener(listener)
-                .setCallback(object : ModalBottomSheetDialogFragment.OnDialogCreatedCallback {
+                .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogCreatedCallback {
                     override fun onDialogCreated(dialog: BottomSheetDialog) {
                         dialog.behavior.setPeekHeight(350, true)
                     }
@@ -110,6 +112,22 @@ class ModalActivity : AppCompatActivity() {
                 .build()
 
             dismissibleDialog?.show(supportFragmentManager, "Share")
+        }
+
+        findViewById<View>(R.id.buttonFullPage).setOnClickListener {
+
+            val dialogFull = AbsBottomSheetDialogFragment.obtain(
+                R.layout.layout_bottom_sheet_custom, isFullScreen = true, isTopRounded = false,
+                isDraggable = true, object : AbsBottomSheetDialogFragment.OnDialogCreatedCallback {
+                    override fun onDialogCreated(dialog: BottomSheetDialog) {
+                        dialog.setCanceledOnTouchOutside(false)
+
+                        //350
+                        dialog.behavior.setPeekHeight(resources.displayMetrics.heightPixels, true)
+                    }
+                })
+
+            dialogFull.show(supportFragmentManager, "FullScreen")
         }
     }
 

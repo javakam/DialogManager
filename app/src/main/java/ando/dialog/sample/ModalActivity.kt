@@ -23,7 +23,7 @@ class ModalActivity : AppCompatActivity() {
                 .setTitle("Title of modal")
                 .addItem(this, R.menu.options)
                 .setShowClose(false)
-                .setListener(listener)
+                .setOnItemClickListener(onItemClickListener)
                 .build()
 
             dismissibleDialog?.show(supportFragmentManager, "WithHeader")
@@ -33,7 +33,7 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
                 .addItem(this, R.menu.options)
                 .setShowClose(false)
-                .setListener(listener)
+                .setOnItemClickListener(onItemClickListener)
                 .build()
 
             dismissibleDialog?.show(supportFragmentManager, "WithoutHeader")
@@ -44,7 +44,7 @@ class ModalActivity : AppCompatActivity() {
                 .setTitle("Grid bottom layout")
                 .addItem(this, R.menu.options)
                 .setColumns(3)
-                .setListener(listener)
+                .setOnItemClickListener(onItemClickListener)
                 .show(supportFragmentManager, "GridLayout")
         }
 
@@ -61,7 +61,7 @@ class ModalActivity : AppCompatActivity() {
                 .addItem(list)
                 .setItemLayout(R.layout.layout_bottom_sheet_fragment_item)
                 .setColumns(3)
-                .setListener(listener)
+                .setOnItemClickListener(onItemClickListener)
                 .show(supportFragmentManager, "CustomHeader")
         }
 
@@ -75,8 +75,8 @@ class ModalActivity : AppCompatActivity() {
                 .setDraggable(true)
                 .setTopRounded(false)
                 .setFullScreen(false)
-                .setListener(listener)
-                .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogCreatedCallback {
+                .setOnItemClickListener(onItemClickListener)
+                .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
                     override fun onDialogCreated(dialog: BottomSheetDialog) {
                         dialog.behavior.setPeekHeight(350, true)
                     }
@@ -94,7 +94,7 @@ class ModalActivity : AppCompatActivity() {
             ModalBottomSheetItem(5, "收藏", null, true),
             ModalBottomSheetItem(6, "钉钉", null, false),
         )
-       val decoration= LinearItemDecoration.Builder()
+        val decoration = LinearItemDecoration.Builder()
             .color(ContextCompat.getColor(this, android.R.color.holo_blue_light))
             .dividerSize(dp2px(0.5F))
             .marginStart(dp2px(15F))
@@ -106,12 +106,25 @@ class ModalActivity : AppCompatActivity() {
             ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Rounded layout")
                 .setTopRounded(true)
-                .setShowCheckBox(true)
+                .setCheckMode(isSingleChoice = true) //isSingleChoice true 单选;false 多选
                 .setCheckBoxTriggerByItemView(true)
                 .setItemViewDirection(false)
                 .setItemDecoration(decoration)
                 .addItem(listCheckBox)
-                .setListener(listener)
+                //.setOnItemClickListener(onItemClickListener)
+                .setOnSelectedCallBack(object : ModalBottomSheetDialogFragment.OnSelectedCallBack {
+                    override fun onSelected(items: List<ModalBottomSheetItem>) {
+                        val sb = StringBuilder()
+                        items.filter { it.isChecked }.forEach {
+                            sb.append("${it.id}. ${it.title}").append("\n")
+                        }
+                        Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG).show()
+                    }
+                })
+                .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
+                    override fun onDialogCreated(dialog: BottomSheetDialog) {
+                    }
+                })
                 .show(supportFragmentManager, "RoundedLayout")
         }
 
@@ -123,7 +136,7 @@ class ModalActivity : AppCompatActivity() {
                 .setItemViewDirection(true)
                 .setColumns(3)
                 .setDraggable(true)
-                .setListener(object : ModalBottomSheetDialogFragment.OnItemClickListener {
+                .setOnItemClickListener(object : ModalBottomSheetDialogFragment.OnItemClickListener {
                     override fun onItemSelected(item: ModalBottomSheetItem) {
                         Toast.makeText(applicationContext, "Inner clicked on: " + item.title, Toast.LENGTH_SHORT).show()
                     }
@@ -137,7 +150,7 @@ class ModalActivity : AppCompatActivity() {
 
             val dialogFull = AbsBottomSheetDialogFragment.obtain(
                 R.layout.layout_bottom_sheet_custom, isFullScreen = true, isTopRounded = false,
-                isDraggable = true, object : AbsBottomSheetDialogFragment.OnDialogCreatedCallback {
+                isDraggable = true, object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
                     override fun onDialogCreated(dialog: BottomSheetDialog) {
                         dialog.setCanceledOnTouchOutside(false)
 
@@ -150,7 +163,7 @@ class ModalActivity : AppCompatActivity() {
         }
     }
 
-    private val listener = object : ModalBottomSheetDialogFragment.OnItemClickListener {
+    private val onItemClickListener = object : ModalBottomSheetDialogFragment.OnItemClickListener {
         override fun onItemSelected(item: ModalBottomSheetItem) {
             Toast.makeText(applicationContext, "clicked on: " + item.title, Toast.LENGTH_SHORT).show()
             //dismissibleDialog.dismiss();

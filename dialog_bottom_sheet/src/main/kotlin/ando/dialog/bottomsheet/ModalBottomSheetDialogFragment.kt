@@ -3,6 +3,8 @@ package ando.dialog.bottomsheet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.*
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -28,10 +30,12 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         private const val KEY_TITLE_LAYOUT = "title_layout" //title layout
         private const val KEY_GRID_COLUMNS = "columns"      //grid columns
         private const val KEY_SHOW_CLOSE = "isShowClose"    //close button
-        private const val KEY_SHOW_CHECK_BOX = "isShowCheckBox"              //checkbox
-        private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "isTriggerItem"  //checkbox
+        private const val KEY_SHOW_CHECK_BOX = "showBox"               //Checkbox
+        private const val KEY_SHOW_CHECK_BOX_MODE = "choiceMode"       //单选or多选(Single choice or multiple choice)
+        private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger"  //点击 Adapter.ItemView 触发 checkbox
         private var itemDecoration: RecyclerView.ItemDecoration? = null
         private var listener: OnItemClickListener? = null
+        private var selectedCallBack: OnSelectedCallBack? = null
 
         private val LAYOUT_TITLE: Int by lazy { R.layout.bottom_sheet_fragment_header }
         private val LAYOUT_ITEM_VERTICAL: Int by lazy { R.layout.bottom_sheet_fragment_item_vertical }
@@ -49,16 +53,20 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             args.putBoolean(KEY_DRAGGABLE, builder.isDraggable)
             args.putBoolean(KEY_SHOW_CLOSE, builder.isShowClose)
             args.putBoolean(KEY_SHOW_CHECK_BOX, builder.isShowCheckBox)
+            args.putBoolean(KEY_SHOW_CHECK_BOX_MODE, builder.isSingleChoice)
             args.putBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, builder.isCheckBoxTriggerByItemView)
             itemDecoration = builder.itemDecoration
             callback = builder.callback
             listener = builder.listener
+            selectedCallBack = builder.selectedCallBack
 
             val fragment = ModalBottomSheetDialogFragment()
             fragment.arguments = args
             return fragment
         }
     }
+
+    private val mAdapter: Adapter = Adapter(listener)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         applyDialogConfig()
@@ -73,20 +81,21 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         if (arguments?.getBoolean(KEY_SHOW_CLOSE, false) == true) vClose.visibility = View.VISIBLE
         else vClose.visibility = View.GONE
 
-        //CheckBox
-        if (arguments?.getBoolean(KEY_SHOW_CHECK_BOX, false) == true) vClose.visibility = View.VISIBLE
-        else vClose.visibility = View.INVISIBLE
-
         val recycler: RecyclerView = view.findViewById(R.id.id_ando_bottom_sheet_recycler)
+        mAdapter.setTitle(arguments?.getString(KEY_TITLE))
+        mAdapter.setTitleLayoutResource(arguments?.getInt(KEY_TITLE_LAYOUT) ?: LAYOUT_TITLE)
+        mAdapter.setItemLayoutRes(arguments?.getInt(KEY_ITEM_LAYOUT) ?: LAYOUT_ITEM_HORIZONTAL)
         val items: List<ModalBottomSheetItem> = arguments?.getParcelableArrayList(KEY_ITEMS) ?: emptyList()
-        val adapter = Adapter(listener)
-        adapter.setTitle(arguments?.getString(KEY_TITLE))
-        adapter.setTitleLayoutResource(arguments?.getInt(KEY_TITLE_LAYOUT) ?: LAYOUT_TITLE)
-        adapter.setItems(items)
-        adapter.setItemLayoutRes(arguments?.getInt(KEY_ITEM_LAYOUT) ?: LAYOUT_ITEM_HORIZONTAL)
-        adapter.setCheckMode(arguments?.getBoolean(KEY_SHOW_CHECK_BOX, false) ?: false)
-        adapter.setCheckTriggerByItemView(arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false)
-        recycler.adapter = adapter
+        mAdapter.setItems(items)
+
+        //CheckBox
+        (arguments?.getBoolean(KEY_SHOW_CHECK_BOX, false) ?: false).apply {
+            if (this) {
+                mAdapter.setCheckMode(arguments?.getBoolean(KEY_SHOW_CHECK_BOX_MODE, false) ?: false)
+                mAdapter.setCheckTriggerByItemView(arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false)
+            }
+        }
+        recycler.adapter = mAdapter
 
         val columns = arguments?.getInt(KEY_GRID_COLUMNS) ?: 1
         val manager: RecyclerView.LayoutManager
@@ -94,7 +103,7 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             manager = GridLayoutManager(context, columns)
             manager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
-                    return if (adapter.title != null && position == 0) columns else 1
+                    return if (mAdapter.title != null && position == 0) columns else 1
                 }
             }
         } else {
@@ -105,7 +114,20 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         itemDecoration?.apply { recycler.addItemDecoration(this) }
 
         val tvClose: TextView = view.findViewById(R.id.id_ando_bottom_sheet_close_tv)
-        tvClose.setOnClickListener { dismissAllowingStateLoss() }
+        tvClose.setOnClickListener(object : NoShakeListener() {
+            override fun onSingleClick(v: View) {
+                dismissAllowingStateLoss()
+            }
+        })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        selectedCallBack?.onSelected(mAdapter.items)
+        mAdapter.items.clear()
+        selectedCallBack = null
+        itemDecoration = null
+        listener = null
     }
 
     class Builder {
@@ -114,18 +136,20 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         internal var columns = 1
         internal var isShowClose: Boolean = true
         internal var isShowCheckBox: Boolean = false
+        internal var isSingleChoice: Boolean = false
         internal var isCheckBoxTriggerByItemView: Boolean = false
         internal var titleLayoutResource = LAYOUT_TITLE
         internal var itemLayoutResource = LAYOUT_ITEM_HORIZONTAL
         internal var listener: OnItemClickListener? = null
+        internal var selectedCallBack: OnSelectedCallBack? = null
 
         internal var isFullScreen: Boolean = false
         internal var isTopRounded: Boolean = false
         internal var isDraggable: Boolean = true
-        internal var callback: OnDialogCreatedCallback? = null
+        internal var callback: OnDialogLifeCycleCallback? = null
         internal var itemDecoration: RecyclerView.ItemDecoration? = null
 
-        fun setCallBack(callback: OnDialogCreatedCallback): Builder {
+        fun setCallBack(callback: OnDialogLifeCycleCallback): Builder {
             this.callback = callback
             return this
         }
@@ -191,8 +215,9 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         /**
          * 仅支持横向布局
          */
-        fun setShowCheckBox(isShowCheckBox: Boolean): Builder {
-            this.isShowCheckBox = isShowCheckBox
+        fun setCheckMode(isSingleChoice: Boolean): Builder {
+            this.isShowCheckBox = true
+            this.isSingleChoice = isSingleChoice
             return this
         }
 
@@ -211,8 +236,13 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             return this
         }
 
-        fun setListener(listener: OnItemClickListener): Builder {
+        fun setOnItemClickListener(listener: OnItemClickListener): Builder {
             this.listener = listener
+            return this
+        }
+
+        fun setOnSelectedCallBack(selectedCallBack: OnSelectedCallBack): Builder {
+            this.selectedCallBack = selectedCallBack
             return this
         }
 
@@ -233,22 +263,43 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         }
 
         private var isShowCheckBox: Boolean = false
+        private var isSingleChoice: Boolean = false
         private var isCheckBoxTriggerByItemView: Boolean = false
         private var titleLayoutResource = LAYOUT_TITLE
         private var itemLayoutResource = LAYOUT_ITEM_HORIZONTAL
-        private val items = ArrayList<ModalBottomSheetItem>()   //VIEW_TYPE_ITEM
-        internal var title: String? = null                      //VIEW_TYPE_HEADER
+        internal val items = ArrayList<ModalBottomSheetItem>()   //VIEW_TYPE_ITEM
+        internal var title: String? = null                       //VIEW_TYPE_HEADER
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             if (viewType == VIEW_TYPE_TITLE) {
                 return TitleViewHolder(LayoutInflater.from(parent.context).inflate(titleLayoutResource, parent, false))
             }
+
             if (viewType == VIEW_TYPE_ITEM) {
                 val view = LayoutInflater.from(parent.context).inflate(itemLayoutResource, parent, false)
                 val holder = ItemViewHolder(view)
                 val isHorizontal = (itemLayoutResource == LAYOUT_ITEM_HORIZONTAL)
                 holder.setIsHorizontal(isHorizontal)
                 holder.setCheckMode(isShowCheckBox)
+
+                holder.checkBox?.setOnCheckedChangeListener { _, isChecked ->
+                    //选择结果
+                    if (isShowCheckBox && isHorizontal) {
+                        if (isSingleChoice) {
+                            items.forEach { if (it.isChecked) it.isChecked = false }
+                        }
+
+                        val position = if (!title.isNullOrBlank()) holder.adapterPosition - 1 else holder.adapterPosition
+                        items[position].isChecked = isChecked
+
+                        if (isSingleChoice) {
+                            view.post {
+                                //https://stackoverflow.com/questions/43221847/cannot-call-this-method-while-recyclerview-is-computing-a-layout-or-scrolling-wh
+                                notifyDataSetChanged()
+                            }
+                        }
+                    }
+                }
                 view.setOnClickListener(object : NoShakeListener() {
                     override fun onSingleClick(v: View) {
                         val position = if (!title.isNullOrBlank()) holder.adapterPosition - 1 else holder.adapterPosition
@@ -302,8 +353,9 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             this.titleLayoutResource = titleLayoutResource
         }
 
-        fun setCheckMode(isShowCheckBox: Boolean) {
-            this.isShowCheckBox = isShowCheckBox
+        fun setCheckMode(isSingleChoice: Boolean) {
+            this.isShowCheckBox = true
+            this.isSingleChoice = isSingleChoice
         }
 
         fun setCheckTriggerByItemView(isCheckBoxTriggerByItemView: Boolean) {
@@ -342,7 +394,7 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             }
 
             if (isShowCheckBox && isHorizontal) {
-                checkBox?.visibility = View.VISIBLE
+                if (checkBox?.visibility == View.INVISIBLE) checkBox?.visibility = View.VISIBLE
                 checkBox?.isChecked = item.isChecked
             }
         }
@@ -373,4 +425,7 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         fun onItemSelected(item: ModalBottomSheetItem)
     }
 
+    interface OnSelectedCallBack {
+        fun onSelected(items: List<ModalBottomSheetItem>)
+    }
 }

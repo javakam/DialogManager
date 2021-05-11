@@ -24,11 +24,11 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         internal const val KEY_ROUND = "round"         //topLeft,topRight corner
         internal const val KEY_DRAGGABLE = "draggable"
 
-        internal var callback: OnDialogCreatedCallback? = null
+        internal var callback: OnDialogLifeCycleCallback? = null
 
         fun obtain(
             @LayoutRes mLayoutId: Int = -1, isFullScreen: Boolean = false,
-            isTopRounded: Boolean = false, isDraggable: Boolean = true, callback: OnDialogCreatedCallback? = null
+            isTopRounded: Boolean = false, isDraggable: Boolean = true, callback: OnDialogLifeCycleCallback? = null
         ): AbsBottomSheetDialogFragment {
 
             val args = Bundle()
@@ -111,6 +111,11 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         super.dismiss()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        callback = null
+    }
+
     open fun applyDialogConfig(): AbsBottomSheetDialogFragment {
         if (dialog is BottomSheetDialog) {
             val dialog = dialog as BottomSheetDialog
@@ -155,7 +160,7 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         protected abstract fun onSingleClick(v: View)
     }
 
-    interface OnDialogCreatedCallback {
+    interface OnDialogLifeCycleCallback {
         fun onDialogCreated(dialog: BottomSheetDialog)
     }
 

@@ -7,11 +7,13 @@
     <item name="id_ando_bottom_sheet_close_tv" type="id" />
     <item name="id_ando_bottom_sheet_item_icon" type="id" />
     <item name="id_ando_bottom_sheet_item_title" type="id" />
+    <item name="id_ando_bottom_sheet_item_check_box" type="id" />
 
     <dimen name="modalBottomItemImageSize">32dp</dimen>
     <dimen name="modalBottomCornerRadius">16dp</dimen>
     <dimen name="modalBottomItemPadding">15dp</dimen>
     <dimen name="modalBottomItemTextSize">15sp</dimen>
+    <dimen name="modalBottomItemCheckBoxSize">16dp</dimen>
 
     <color name="modalBottomBackground">#FFFFFF</color> <!-- E1FFFF -->
     <color name="modalBottomHeaderColor">#666666</color>

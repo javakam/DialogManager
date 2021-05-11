@@ -71,7 +71,7 @@ class ModalActivity : AppCompatActivity() {
                 .addItem(this, R.menu.options)
                 .addItem(this, R.menu.options)
                 .addItem(this, R.menu.options)
-                .setItemDirection(false)
+                .setItemViewDirection(false)
                 .setDraggable(true)
                 .setTopRounded(false)
                 .setFullScreen(false)
@@ -86,12 +86,31 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog?.show(supportFragmentManager, "ScrollLayout")
         }
 
+        val listCheckBox = mutableListOf(
+            ModalBottomSheetItem(1, "QQ", null),
+            ModalBottomSheetItem(2, "QQ空间", null, true),
+            ModalBottomSheetItem(3, "微信", null),
+            ModalBottomSheetItem(4, "朋友圈", null, true),
+            ModalBottomSheetItem(5, "收藏", null, true),
+            ModalBottomSheetItem(6, "钉钉", null, false),
+        )
+       val decoration= LinearItemDecoration.Builder()
+            .color(ContextCompat.getColor(this, android.R.color.holo_blue_light))
+            .dividerSize(dp2px(0.5F))
+            .marginStart(dp2px(15F))
+            .marginEnd(dp2px(15F))
+            //.hideDividerForItemType(BaseQuickAdapter.HEADER_VIEW)
+            //.hideAroundDividerForItemType(BaseQuickAdapter.FOOTER_VIEW)
+            .build()
         findViewById<View>(R.id.buttonRounded).setOnClickListener {
             ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Rounded layout")
                 .setTopRounded(true)
-                .setItemDirection(false)
-                .addItem(this, R.menu.options)
+                .setShowCheckBox(true)
+                .setCheckBoxTriggerByItemView(true)
+                .setItemViewDirection(false)
+                .setItemDecoration(decoration)
+                .addItem(listCheckBox)
                 .setListener(listener)
                 .show(supportFragmentManager, "RoundedLayout")
         }
@@ -101,7 +120,7 @@ class ModalActivity : AppCompatActivity() {
                 //.setTitle("分享")
                 //.setTitleLayout(R.layout.layout_bottom_sheet_fragment_header)
                 .addItem(this, R.menu.options)
-                .setItemDirection(true)
+                .setItemViewDirection(true)
                 .setColumns(3)
                 .setDraggable(true)
                 .setListener(object : ModalBottomSheetDialogFragment.OnItemClickListener {

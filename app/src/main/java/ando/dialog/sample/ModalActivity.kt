@@ -86,30 +86,33 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog?.show(supportFragmentManager, "ScrollLayout")
         }
 
-        val listCheckBox = mutableListOf(
-            ModalBottomSheetItem(1, "QQ", null),
-            ModalBottomSheetItem(2, "QQ空间", null, true),
-            ModalBottomSheetItem(3, "微信", null),
-            ModalBottomSheetItem(4, "朋友圈", null, true),
-            ModalBottomSheetItem(5, "收藏", null, true),
-            ModalBottomSheetItem(6, "钉钉", null, false),
-        )
-        val decoration = LinearItemDecoration.Builder()
-            .color(ContextCompat.getColor(this, android.R.color.holo_blue_light))
-            .dividerSize(dp2px(0.5F))
-            .marginStart(dp2px(15F))
-            .marginEnd(dp2px(15F))
-            //.hideDividerForItemType(BaseQuickAdapter.HEADER_VIEW)
-            //.hideAroundDividerForItemType(BaseQuickAdapter.FOOTER_VIEW)
-            .build()
         findViewById<View>(R.id.buttonRounded).setOnClickListener {
+            val listCheckBox = mutableListOf(
+                ModalBottomSheetItem(1, "QQ", null),
+                ModalBottomSheetItem(2, "QQ空间", null, true),
+                ModalBottomSheetItem(3, "微信", null),
+                ModalBottomSheetItem(4, "朋友圈", null, true),
+                ModalBottomSheetItem(5, "收藏", null, true),
+                ModalBottomSheetItem(6, "钉钉", null, false),
+            )
+            val decoration = LinearItemDecoration.Builder()
+                .color(ContextCompat.getColor(this, android.R.color.holo_blue_light))
+                .dividerSize(dp2px(0.5F))
+                .marginStart(dp2px(15F))
+                .marginEnd(dp2px(15F))
+                //.hideDividerForItemType(BaseQuickAdapter.HEADER_VIEW)
+                //.hideAroundDividerForItemType(BaseQuickAdapter.FOOTER_VIEW)
+                .build()
+
             ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Rounded layout")
-                .setTopRounded(true)
-                .setCheckMode(isSingleChoice = true) //isSingleChoice true 单选;false 多选
-                .setCheckBoxTriggerByItemView(true)
-                .setItemViewDirection(false)
+                .setTopRounded(true)             //圆角, 仅支持左上角和右上角
+                .setCheckMode(false)             //是否单选或多选       单选true;多选false
+                .setCheckTriggerByItemView(true) //是否点击整个ItemView触发CheckBox事件
+                .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
+                .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
                 .setItemDecoration(decoration)
+                .setFullScreen(true)
                 .addItem(listCheckBox)
                 //.setOnItemClickListener(onItemClickListener)
                 .setOnSelectedCallBack(object : ModalBottomSheetDialogFragment.OnSelectedCallBack {

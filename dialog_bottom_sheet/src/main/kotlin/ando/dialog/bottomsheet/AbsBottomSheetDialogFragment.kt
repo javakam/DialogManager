@@ -139,13 +139,13 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    abstract class NoShakeListener : View.OnClickListener {
+    abstract class NoShakeListener(private val duration: Long = 500) : View.OnClickListener {
         private var lastClickTime: Long = 0
 
         private val isFastDoubleClick: Boolean
             get() {
                 val nowTime = System.currentTimeMillis()
-                return if (abs(nowTime - lastClickTime) < 500) {
+                return if (abs(nowTime - lastClickTime) < duration) {
                     true // 快速点击事件
                 } else {
                     lastClickTime = nowTime

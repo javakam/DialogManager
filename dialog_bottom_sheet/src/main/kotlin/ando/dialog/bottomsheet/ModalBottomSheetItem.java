@@ -7,6 +7,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 /**
  * # ModalBottomSheetItem
  *
@@ -31,6 +33,23 @@ public class ModalBottomSheetItem implements Parcelable {
         this.title = title;
         this.icon = icon;
         this.isChecked = isChecked;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof ModalBottomSheetItem)) {
+            return false;
+        }
+        ModalBottomSheetItem that = (ModalBottomSheetItem) o;
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title);
     }
 
     public Integer getId() {

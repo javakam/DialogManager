@@ -3,8 +3,7 @@ package ando.dialog.bottomsheet
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.*
 import android.widget.CheckBox
 import android.widget.ImageView
@@ -30,9 +29,10 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         private const val KEY_TITLE_LAYOUT = "title_layout" //title layout
         private const val KEY_GRID_COLUMNS = "columns"      //grid columns
         private const val KEY_SHOW_CLOSE = "isShowClose"    //close button
-        private const val KEY_SHOW_CHECK_BOX = "showBox"               //Checkbox
-        private const val KEY_SHOW_CHECK_BOX_MODE = "choiceMode"       //单选or多选(Single choice or multiple choice)
-        private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger"  //点击 Adapter.ItemView 触发 checkbox
+        private const val KEY_SHOW_CHECK_BOX = "showBox"                    //Checkbox
+        private const val KEY_SHOW_CHECK_BOX_MODE = "choiceMode"            //单选or多选(Single choice or multiple choice)
+        private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger"       //点击 Adapter.ItemView 触发 checkbox
+        private const val KEY_SHOW_CHECK_BOX_ALLOW_NOTHING = "allowNothing" //是否允许一个都不选
         private var itemDecoration: RecyclerView.ItemDecoration? = null
         private var listener: OnItemClickListener? = null
         private var selectedCallBack: OnSelectedCallBack? = null
@@ -54,7 +54,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             args.putBoolean(KEY_SHOW_CLOSE, builder.isShowClose)
             args.putBoolean(KEY_SHOW_CHECK_BOX, builder.isShowCheckBox)
             args.putBoolean(KEY_SHOW_CHECK_BOX_MODE, builder.isSingleChoice)
-            args.putBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, builder.isCheckBoxTriggerByItemView)
+            args.putBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, builder.isCheckTriggerByItemView)
+            args.putBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, builder.isCheckAllowNothing)
             itemDecoration = builder.itemDecoration
             callback = builder.callback
             listener = builder.listener
@@ -85,14 +86,24 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         mAdapter.setTitle(arguments?.getString(KEY_TITLE))
         mAdapter.setTitleLayoutResource(arguments?.getInt(KEY_TITLE_LAYOUT) ?: LAYOUT_TITLE)
         mAdapter.setItemLayoutRes(arguments?.getInt(KEY_ITEM_LAYOUT) ?: LAYOUT_ITEM_HORIZONTAL)
+
+        val isSingleChoice = (arguments?.getBoolean(KEY_SHOW_CHECK_BOX_MODE, false) ?: false)
         val items: List<ModalBottomSheetItem> = arguments?.getParcelableArrayList(KEY_ITEMS) ?: emptyList()
+        if (isSingleChoice) {
+            val index = items.indexOfFirst { it.isChecked }
+            if (index != -1) {
+                items.forEachIndexed { i, it -> if (index != i) it.isChecked = false }
+            }
+        }
+        items.forEach { Log.e("123", "${it.title} ${it.isChecked}") }
         mAdapter.setItems(items)
 
         //CheckBox
         (arguments?.getBoolean(KEY_SHOW_CHECK_BOX, false) ?: false).apply {
             if (this) {
-                mAdapter.setCheckMode(arguments?.getBoolean(KEY_SHOW_CHECK_BOX_MODE, false) ?: false)
+                mAdapter.setCheckMode(isSingleChoice)
                 mAdapter.setCheckTriggerByItemView(arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false)
+                mAdapter.setCheckAllowNothing(arguments?.getBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, true) ?: true)
             }
         }
         recycler.adapter = mAdapter
@@ -137,7 +148,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         internal var isShowClose: Boolean = true
         internal var isShowCheckBox: Boolean = false
         internal var isSingleChoice: Boolean = false
-        internal var isCheckBoxTriggerByItemView: Boolean = false
+        internal var isCheckTriggerByItemView: Boolean = false
+        internal var isCheckAllowNothing: Boolean = true
         internal var titleLayoutResource = LAYOUT_TITLE
         internal var itemLayoutResource = LAYOUT_ITEM_HORIZONTAL
         internal var listener: OnItemClickListener? = null
@@ -221,8 +233,13 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             return this
         }
 
-        fun setCheckBoxTriggerByItemView(isCheckBoxTriggerByItemView: Boolean): Builder {
-            this.isCheckBoxTriggerByItemView = isCheckBoxTriggerByItemView
+        fun setCheckTriggerByItemView(isCheckTriggerByItemView: Boolean): Builder {
+            this.isCheckTriggerByItemView = isCheckTriggerByItemView
+            return this
+        }
+
+        fun setCheckAllowNothing(isCheckAllowNothing: Boolean): Builder {
+            this.isCheckAllowNothing = isCheckAllowNothing
             return this
         }
 
@@ -262,13 +279,23 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             private const val VIEW_TYPE_ITEM = 1
         }
 
+        internal var title: String? = null                       //VIEW_TYPE_HEADER
+        internal val items = ArrayList<ModalBottomSheetItem>()   //VIEW_TYPE_ITEM
         private var isShowCheckBox: Boolean = false
         private var isSingleChoice: Boolean = false
-        private var isCheckBoxTriggerByItemView: Boolean = false
+        private var isCheckAllowNothing: Boolean = true
+        private var isCheckTriggerByItemView: Boolean = false
         private var titleLayoutResource = LAYOUT_TITLE
         private var itemLayoutResource = LAYOUT_ITEM_HORIZONTAL
-        internal val items = ArrayList<ModalBottomSheetItem>()   //VIEW_TYPE_ITEM
-        internal var title: String? = null                       //VIEW_TYPE_HEADER
+        private var currentSelectedItem: ModalBottomSheetItem? = null
+        private var preSelectIndex: Int = 0
+
+        private fun parseItems() {
+            if (isSingleChoice) {
+                preSelectIndex = items.indexOfFirst { it.isChecked }
+                currentSelectedItem = items[preSelectIndex]
+            }
+        }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
             if (viewType == VIEW_TYPE_TITLE) {
@@ -278,35 +305,65 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             if (viewType == VIEW_TYPE_ITEM) {
                 val view = LayoutInflater.from(parent.context).inflate(itemLayoutResource, parent, false)
                 val holder = ItemViewHolder(view)
+
                 val isHorizontal = (itemLayoutResource == LAYOUT_ITEM_HORIZONTAL)
-                holder.setIsHorizontal(isHorizontal)
-                holder.setCheckMode(isShowCheckBox)
-
-                holder.checkBox?.setOnCheckedChangeListener { _, isChecked ->
-                    //选择结果
-                    if (isShowCheckBox && isHorizontal) {
-                        if (isSingleChoice) {
-                            items.forEach { if (it.isChecked) it.isChecked = false }
-                        }
-
-                        val position = if (!title.isNullOrBlank()) holder.adapterPosition - 1 else holder.adapterPosition
-                        items[position].isChecked = isChecked
-
-                        if (isSingleChoice) {
-                            view.post {
-                                //https://stackoverflow.com/questions/43221847/cannot-call-this-method-while-recyclerview-is-computing-a-layout-or-scrolling-wh
-                                notifyDataSetChanged()
+                if (isShowCheckBox && isHorizontal) {
+                    holder.setIsHorizontal(isHorizontal)
+                    holder.setCheckMode(isShowCheckBox)
+                    //至少选择一项
+                    holder.checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
+                        if (!isCheckAllowNothing && !isChecked) {
+                            if (isSingleChoice) {
+                                if (currentSelectedItem == items[getRealPosition(holder)]) {
+                                    buttonView.isChecked = true
+                                }
+                            } else {
+                                //多选
+                                if (items.filter { it.isChecked }.size > 1) {
+                                    return@setOnCheckedChangeListener
+                                }
+                                items.find { it.isChecked }?.let {
+                                    if (it == items[getRealPosition(holder)]) {
+                                        buttonView.isChecked = true
+                                    }
+                                }
                             }
                         }
                     }
-                }
-                view.setOnClickListener(object : NoShakeListener() {
-                    override fun onSingleClick(v: View) {
-                        val position = if (!title.isNullOrBlank()) holder.adapterPosition - 1 else holder.adapterPosition
-                        if (isShowCheckBox && isHorizontal && isCheckBoxTriggerByItemView) {
-                            holder.checkBox?.isChecked = !(holder.checkBox?.isChecked ?: false)
+                    holder.checkBox?.setOnClickListener {
+                        val isChecked = (it as CheckBox).isChecked
+                        val position = getRealPosition(holder)
+                        val itemSheet = items[position]
+                        if (isSingleChoice) {
+                            if (currentSelectedItem != itemSheet) {
+                                currentSelectedItem?.isChecked = false
+
+                                //取消之前的选项 notifyItemChanged(preSelectIndex,1)
+                                view.post {
+                                    notifyDataSetChanged()
+                                    itemSheet.isChecked = isChecked
+                                    preSelectIndex = position
+                                    currentSelectedItem = itemSheet
+                                }
+                            }
+                        } else {
+                            itemSheet.isChecked = isChecked
+                            view.post { notifyDataSetChanged() }
                         }
-                        listener?.onItemSelected(items[position])
+                        Log.e(
+                            "123", "pos=$position preSelectIndex=$preSelectIndex " +
+                                    " ${currentSelectedItem?.title} ${currentSelectedItem?.isChecked} ;" +
+                                    " ${itemSheet.title} ${itemSheet.isChecked}"
+                        )
+                    }
+                }
+
+                view.setOnClickListener(object : NoShakeListener(300) {
+                    override fun onSingleClick(v: View) {
+                        if (isShowCheckBox && isHorizontal && isCheckTriggerByItemView) {
+                            holder.checkBox?.performClick()//not toggle
+                        }
+                        listener?.onItemSelected(items[getRealPosition(holder)])
                     }
                 })
                 return holder
@@ -317,8 +374,7 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             val correctPosition = if (title == null) position else position - 1
             if (holder is ItemViewHolder) {
-                val item = items[correctPosition]
-                holder.bind(item)
+                holder.bind(items[correctPosition])
             } else if (holder is TitleViewHolder) {
                 holder.bind(title)
             }
@@ -335,10 +391,14 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             return VIEW_TYPE_ITEM
         }
 
+        fun getRealPosition(holder: RecyclerView.ViewHolder): Int {
+            return if (!title.isNullOrBlank()) holder.adapterPosition - 1 else holder.adapterPosition
+        }
+
         fun setItems(items: List<ModalBottomSheetItem>) {
             this.items.clear()
             this.items.addAll(items)
-            notifyDataSetChanged()
+            parseItems()
         }
 
         fun setTitle(title: String?) {
@@ -358,8 +418,12 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             this.isSingleChoice = isSingleChoice
         }
 
-        fun setCheckTriggerByItemView(isCheckBoxTriggerByItemView: Boolean) {
-            this.isCheckBoxTriggerByItemView = isCheckBoxTriggerByItemView
+        fun setCheckTriggerByItemView(isCheckTriggerByItemView: Boolean) {
+            this.isCheckTriggerByItemView = isCheckTriggerByItemView
+        }
+
+        fun setCheckAllowNothing(isCheckAllowNothing: Boolean) {
+            this.isCheckAllowNothing = isCheckAllowNothing
         }
     }
 

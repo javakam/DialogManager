@@ -53,7 +53,7 @@ dependencies {
 }
 
 ext {
-    PUBLISH_ARTIFACT_ID = 'widget.option.list'
+    PUBLISH_ARTIFACT_ID = 'widget.optionview'
     PUBLISH_VERSION = config.versionOptionList
 }
 apply from: "${rootProject.projectDir}/publish.gradle"

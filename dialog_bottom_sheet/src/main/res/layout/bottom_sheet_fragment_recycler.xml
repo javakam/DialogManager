@@ -8,8 +8,16 @@
     android:orientation="vertical"
     tools:background="@drawable/bg_bottom_sheet_dialog_fragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@id/id_ando_bottom_sheet_recycler"
+    <!--<androidx.recyclerview.widget.RecyclerView
+        android:id="@id/id_ando_optional_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+        app:fastScrollEnabled="false" />-->
+
+    <ando.widget.option.list.OptionView
+        android:id="@id/id_ando_optional_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:overScrollMode="never"
@@ -29,8 +37,8 @@
             android:gravity="center"
             android:padding="15dp"
             android:text="@string/modalBottomClose"
-            android:textColor="@color/modalBottomItemTextColor"
-            android:textSize="@dimen/modalBottomItemTextSize" />
+            android:textColor="@color/color_ando_option_item_text"
+            android:textSize="@dimen/dimen_ando_option_item_text" />
 
         <View
             android:layout_width="match_parent"

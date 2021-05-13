@@ -1,4 +1,4 @@
-package ando.dialog.bottomsheet;
+package ando.widget.option.list;
 
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -10,25 +10,23 @@ import androidx.annotation.Nullable;
 import java.util.Objects;
 
 /**
- * # ModalBottomSheetItem
- *
  * @author javakam
  * @date 2021/4/20  9:36
  */
-public class ModalBottomSheetItem implements Parcelable {
+public class OptionItem implements Parcelable {
 
     private Integer id;
     private String title;
     private Drawable icon;
     private boolean isChecked = false;
 
-    public ModalBottomSheetItem(Integer id, String title, @Nullable Drawable icon) {
+    public OptionItem(Integer id, String title, @Nullable Drawable icon) {
         this.id = id;
         this.title = title;
         this.icon = icon;
     }
 
-    public ModalBottomSheetItem(Integer id, String title, @Nullable Drawable icon, boolean isChecked) {
+    public OptionItem(Integer id, String title, @Nullable Drawable icon, boolean isChecked) {
         this.id = id;
         this.title = title;
         this.icon = icon;
@@ -40,10 +38,10 @@ public class ModalBottomSheetItem implements Parcelable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ModalBottomSheetItem)) {
+        if (!(o instanceof OptionItem)) {
             return false;
         }
-        ModalBottomSheetItem that = (ModalBottomSheetItem) o;
+        OptionItem that = (OptionItem) o;
         return Objects.equals(id, that.id) && Objects.equals(title, that.title);
     }
 
@@ -99,7 +97,7 @@ public class ModalBottomSheetItem implements Parcelable {
         }
     }
 
-    protected ModalBottomSheetItem(Parcel in) {
+    protected OptionItem(Parcel in) {
         this.id = (Integer) in.readValue(Integer.class.getClassLoader());
         this.title = in.readString();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -107,15 +105,15 @@ public class ModalBottomSheetItem implements Parcelable {
         }
     }
 
-    public static final Creator<ModalBottomSheetItem> CREATOR = new Creator<ModalBottomSheetItem>() {
+    public static final Creator<OptionItem> CREATOR = new Creator<OptionItem>() {
         @Override
-        public ModalBottomSheetItem createFromParcel(Parcel source) {
-            return new ModalBottomSheetItem(source);
+        public OptionItem createFromParcel(Parcel source) {
+            return new OptionItem(source);
         }
 
         @Override
-        public ModalBottomSheetItem[] newArray(int size) {
-            return new ModalBottomSheetItem[size];
+        public OptionItem[] newArray(int size) {
+            return new OptionItem[size];
         }
     };
 

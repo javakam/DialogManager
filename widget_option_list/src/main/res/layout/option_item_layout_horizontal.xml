@@ -7,15 +7,15 @@
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/modalBottomItemPadding"
+    android:padding="@dimen/dimen_ando_option_item_padding"
     tools:ignore="UnusedAttribute">
 
     <ImageView
         android:id="@id/id_ando_bottom_sheet_item_icon"
-        android:layout_width="@dimen/modalBottomItemImageSize"
-        android:layout_height="@dimen/modalBottomItemImageSize"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_width="@dimen/dimen_ando_option_item_image"
+        android:layout_height="@dimen/dimen_ando_option_item_image"
+        android:layout_marginEnd="@dimen/dimen_ando_option_item_hor_image_margin_end"
+        android:layout_marginRight="@dimen/dimen_ando_option_item_hor_image_margin_end"
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
@@ -26,8 +26,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
-        android:textColor="@color/modalBottomItemTextColor"
-        android:textSize="@dimen/modalBottomItemTextSize"
+        android:textColor="@color/color_ando_option_item_text"
+        android:textSize="@dimen/dimen_ando_option_item_text"
         tools:text="Item title" />
 
     <Space
@@ -37,9 +37,9 @@
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@id/id_ando_bottom_sheet_item_check_box"
-        android:layout_width="@dimen/modalBottomItemCheckBoxSize"
-        android:layout_height="@dimen/modalBottomItemCheckBoxSize"
-        android:background="@drawable/sel_item_check"
+        android:layout_width="@dimen/dimen_ando_option_item_checkbox"
+        android:layout_height="@dimen/dimen_ando_option_item_checkbox"
+        android:background="@drawable/sel_ando_option_checkbox"
         android:button="@null"
         android:checked="false"
         android:padding="0dp"

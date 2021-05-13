@@ -2,7 +2,8 @@ package ando.dialog.sample
 
 import ando.dialog.bottomsheet.AbsBottomSheetDialogFragment
 import ando.dialog.bottomsheet.ModalBottomSheetDialogFragment
-import ando.dialog.bottomsheet.ModalBottomSheetItem
+import ando.widget.option.list.OptionItem
+import ando.widget.option.list.OptionView
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -49,10 +50,26 @@ class ModalActivity : AppCompatActivity() {
         }
 
         val list = mutableListOf(
-            ModalBottomSheetItem(1, "QQ", ContextCompat.getDrawable(this, R.drawable.umeng_socialize_qq)),
-            ModalBottomSheetItem(2, "QQ空间", ContextCompat.getDrawable(this, R.drawable.umeng_socialize_qzone)),
-            ModalBottomSheetItem(3, "微信", ContextCompat.getDrawable(this, R.drawable.umeng_socialize_wechat)),
-            ModalBottomSheetItem(4, "朋友圈", ContextCompat.getDrawable(this, R.drawable.umeng_socialize_wxcircle)),
+            OptionItem(
+                1,
+                "QQ",
+                ContextCompat.getDrawable(this, R.drawable.umeng_socialize_qq)
+            ),
+            OptionItem(
+                2,
+                "QQ空间",
+                ContextCompat.getDrawable(this, R.drawable.umeng_socialize_qzone)
+            ),
+            OptionItem(
+                3,
+                "微信",
+                ContextCompat.getDrawable(this, R.drawable.umeng_socialize_wechat)
+            ),
+            OptionItem(
+                4,
+                "朋友圈",
+                ContextCompat.getDrawable(this, R.drawable.umeng_socialize_wxcircle)
+            ),
         )
         findViewById<View>(R.id.buttonCustomLayout).setOnClickListener {
             ModalBottomSheetDialogFragment.Builder()
@@ -88,12 +105,12 @@ class ModalActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.buttonRounded).setOnClickListener {
             val listCheckBox = mutableListOf(
-                ModalBottomSheetItem(1, "QQ", null),
-                ModalBottomSheetItem(2, "QQ空间", null, true),
-                ModalBottomSheetItem(3, "微信", null),
-                ModalBottomSheetItem(4, "朋友圈", null, true),
-                ModalBottomSheetItem(5, "收藏", null, true),
-                ModalBottomSheetItem(6, "钉钉", null, false),
+                OptionItem(1, "QQ", null),
+                OptionItem(2, "QQ空间", null, true),
+                OptionItem(3, "微信", null),
+                OptionItem(4, "朋友圈", null, true),
+                OptionItem(5, "收藏", null, true),
+                OptionItem(6, "钉钉", null, false),
             )
             val decoration = LinearItemDecoration.Builder()
                 .color(ContextCompat.getColor(this, android.R.color.holo_blue_light))
@@ -116,7 +133,7 @@ class ModalActivity : AppCompatActivity() {
                 .addItem(listCheckBox)
                 //.setOnItemClickListener(onItemClickListener)
                 .setOnSelectedCallBack(object : ModalBottomSheetDialogFragment.OnSelectedCallBack {
-                    override fun onSelected(items: List<ModalBottomSheetItem>) {
+                    override fun onSelected(items: List<OptionItem>) {
                         val sb = StringBuilder()
                         items.filter { it.isChecked }.forEach {
                             sb.append("${it.id}. ${it.title}").append("\n")
@@ -139,8 +156,8 @@ class ModalActivity : AppCompatActivity() {
                 .setItemViewDirection(true)
                 .setColumns(3)
                 .setDraggable(true)
-                .setOnItemClickListener(object : ModalBottomSheetDialogFragment.OnItemClickListener {
-                    override fun onItemSelected(item: ModalBottomSheetItem) {
+                .setOnItemClickListener(object : OptionView.OnItemClickListener {
+                    override fun onItemSelected(item: OptionItem) {
                         Toast.makeText(applicationContext, "Inner clicked on: " + item.title, Toast.LENGTH_SHORT).show()
                     }
                 })
@@ -166,8 +183,8 @@ class ModalActivity : AppCompatActivity() {
         }
     }
 
-    private val onItemClickListener = object : ModalBottomSheetDialogFragment.OnItemClickListener {
-        override fun onItemSelected(item: ModalBottomSheetItem) {
+    private val onItemClickListener = object : OptionView.OnItemClickListener {
+        override fun onItemSelected(item: OptionItem) {
             Toast.makeText(applicationContext, "clicked on: " + item.title, Toast.LENGTH_SHORT).show()
             //dismissibleDialog.dismiss();
         }

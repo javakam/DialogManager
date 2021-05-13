@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="id_ando_bottom_sheet_item_head_title" type="id" />
+    <item name="id_ando_bottom_sheet_item_icon" type="id" />
+    <item name="id_ando_bottom_sheet_item_title" type="id" />
+    <item name="id_ando_bottom_sheet_item_check_box" type="id" />
+
+    <color name="color_ando_option_head_title">#666666</color>
+    <color name="color_ando_option_item_text">#2E2E2E</color>
+
+    <dimen name="dimen_ando_option_head_title_padding">12dp</dimen>
+    <dimen name="dimen_ando_option_head_title_text">16sp</dimen>
+    <dimen name="dimen_ando_option_item_image">32dp</dimen>
+    <dimen name="dimen_ando_option_item_ver_image_margin_top">12dp</dimen>
+    <dimen name="dimen_ando_option_item_hor_image_margin_end">15dp</dimen>
+    <dimen name="dimen_ando_option_item_padding">15dp</dimen>
+    <dimen name="dimen_ando_option_item_text">15sp</dimen>
+    <dimen name="dimen_ando_option_item_checkbox">16dp</dimen>
+
+</resources>

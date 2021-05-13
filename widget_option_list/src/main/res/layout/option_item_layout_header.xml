@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@id/id_ando_bottom_sheet_title"
+    android:id="@id/id_ando_bottom_sheet_item_head_title"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:padding="12dp"
-    android:textColor="@color/modalBottomHeaderColor"
-    android:textSize="16sp"
+    android:padding="@dimen/dimen_ando_option_head_title_padding"
+    android:textColor="@color/color_ando_option_head_title"
+    android:textSize="@dimen/dimen_ando_option_head_title_text"
     tools:text="Header title" />

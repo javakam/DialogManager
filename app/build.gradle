@@ -45,6 +45,7 @@ dependencies {
     implementation project(':dialog_core')
     implementation project(':dialog_usage')
     implementation project(':dialog_bottom_sheet')
+    implementation project(':widget_option_list')
 
 //    implementation 'com.github.javakam:dialog.core:1.5.0@aar'
 //    implementation 'com.github.javakam:dialog.usage:1.5.0@aar'

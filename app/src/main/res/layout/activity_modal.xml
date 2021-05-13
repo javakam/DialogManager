@@ -69,6 +69,13 @@
                 android:text="全屏显示, 滑动关闭"
                 android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/buttonSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="列表单选 or 多选"
+                android:textAllCaps="false" />
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

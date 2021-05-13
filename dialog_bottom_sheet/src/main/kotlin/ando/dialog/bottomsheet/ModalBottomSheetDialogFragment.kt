@@ -28,15 +28,16 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         private const val KEY_TITLE = "title"               //title
         private const val KEY_TITLE_LAYOUT = "title_layout" //title layout
         private const val KEY_GRID_COLUMNS = "columns"      //grid columns
-        private const val KEY_SHOW_CLOSE = "isShowClose"    //close button
+        private const val KEY_SHOW_CLOSE = "showClose"      //close button
         private const val KEY_SHOW_CHECK_BOX = "showBox"                    //Checkbox
         private const val KEY_SHOW_CHECK_BOX_MODE = "choiceMode"            //单选or多选(Single choice or multiple choice)
         private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger"       //点击 Adapter.ItemView 触发 checkbox
         private const val KEY_SHOW_CHECK_BOX_ALLOW_NOTHING = "allowNothing" //是否允许一个都不选
 
         private var itemDecoration: RecyclerView.ItemDecoration? = null
-        private var listener: OptionView.OnItemClickListener? = null
-        private var selectedCallBack: OnSelectedCallBack? = null
+        private var mOnItemViewCallBack: OptionView.OnItemViewCallBack? = null
+        private var mOnItemClickListener: OptionView.OnItemClickListener? = null
+        private var mOnSelectedCallBack: OnSelectedCallBack? = null
 
         private fun newInstance(builder: Builder): ModalBottomSheetDialogFragment {
             val args = Bundle()
@@ -54,9 +55,10 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             args.putBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, builder.isCheckTriggerByItemView)
             args.putBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, builder.isCheckAllowNothing)
             itemDecoration = builder.itemDecoration
-            callback = builder.callback
-            listener = builder.listener
-            selectedCallBack = builder.selectedCallBack
+            mLifeCycleCallback = builder.callback
+            mOnItemViewCallBack = builder.onItemViewCallBack
+            mOnItemClickListener = builder.onItemClickListener
+            mOnSelectedCallBack = builder.selectedCallBack
 
             val fragment = ModalBottomSheetDialogFragment()
             fragment.arguments = args
@@ -75,6 +77,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (!this::optionView.isInitialized) {
             this.optionView = view.findViewById(R.id.id_ando_optional_recycler)
+            itemDecoration?.apply { optionView.addItemDecoration(this) }
+
             this.optionView.obtain(
                 OptionView.OptConfig(
                     arguments?.getString(KEY_TITLE),
@@ -88,7 +92,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
                     )
                 ),
                 data = arguments?.getParcelableArrayList(KEY_ITEMS) ?: emptyList(),
-                listener
+                mOnItemViewCallBack,
+                mOnItemClickListener
             )
         }
 
@@ -107,12 +112,12 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
 
     override fun onDestroyView() {
         if (this::optionView.isInitialized) {
-            selectedCallBack?.onSelected(optionView.getData())
+            mOnSelectedCallBack?.onSelected(optionView.getData())
         }
         super.onDestroyView()
-        selectedCallBack = null
+        mOnSelectedCallBack = null
         itemDecoration = null
-        listener = null
+        mOnItemClickListener = null
     }
 
     class Builder {
@@ -126,7 +131,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         internal var isCheckAllowNothing: Boolean = true
         internal var titleLayoutResource = LAYOUT_TITLE
         internal var itemLayoutResource = LAYOUT_ITEM_HORIZONTAL
-        internal var listener: OptionView.OnItemClickListener? = null
+        internal var onItemViewCallBack: OptionView.OnItemViewCallBack? = null
+        internal var onItemClickListener: OptionView.OnItemClickListener? = null
         internal var selectedCallBack: OnSelectedCallBack? = null
 
         internal var isFullScreen: Boolean = false
@@ -231,8 +237,13 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             return this
         }
 
-        fun setOnItemClickListener(listener: OptionView.OnItemClickListener): Builder {
-            this.listener = listener
+        fun setOnItemViewCallBack(onItemViewCallBack: OptionView.OnItemViewCallBack): Builder {
+            this.onItemViewCallBack = onItemViewCallBack
+            return this
+        }
+
+        fun setOnItemClickListener(onItemClickListener: OptionView.OnItemClickListener): Builder {
+            this.onItemClickListener = onItemClickListener
             return this
         }
 

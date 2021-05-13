@@ -19,30 +19,31 @@ import kotlin.math.abs
 open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     companion object {
-        internal const val KEY_LAYOUT_ID = "layoutId"
+        internal const val KEY_LAYOUT_ID = "layout"
         internal const val KEY_FULL = "full"
-        internal const val KEY_ROUND = "round"         //topLeft,topRight corner
-        internal const val KEY_DRAGGABLE = "draggable"
+        internal const val KEY_ROUND = "round"      //Only Support topLeft & topRight corner
+        internal const val KEY_DRAGGABLE = "drag"
 
-        internal var callback: OnDialogLifeCycleCallback? = null
+        internal var mLifeCycleCallback: OnDialogLifeCycleCallback? = null
 
         fun obtain(
             @LayoutRes mLayoutId: Int = -1, isFullScreen: Boolean = false,
-            isTopRounded: Boolean = false, isDraggable: Boolean = true, callback: OnDialogLifeCycleCallback? = null
+            isTopRounded: Boolean = false, isDraggable: Boolean = true, lifeCycleCallback: OnDialogLifeCycleCallback? = null
         ): AbsBottomSheetDialogFragment {
-
             val args = Bundle()
             args.putInt(KEY_LAYOUT_ID, mLayoutId)
             args.putBoolean(KEY_FULL, isFullScreen)
             args.putBoolean(KEY_ROUND, isTopRounded)
             args.putBoolean(KEY_DRAGGABLE, isDraggable)
-            this.callback = callback
+            mLifeCycleCallback = lifeCycleCallback
 
             val fragment = AbsBottomSheetDialogFragment()
             fragment.arguments = args
             return fragment
         }
     }
+
+    private lateinit var mContentView: View
 
     override fun getTheme(): Int {
         return if (arguments?.getBoolean(KEY_ROUND, false) == true) R.style.BottomSheetDialog else super.getTheme()
@@ -52,13 +53,15 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         applyDialogConfig()
 
         val layoutId = arguments?.getInt(KEY_LAYOUT_ID, -1) ?: -1
-        return if (layoutId != -1) inflater.inflate(layoutId, container, false)
+        mContentView = if (layoutId != -1) inflater.inflate(layoutId, container, false)
         else FrameLayout(requireContext())
+        return mContentView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyDialogCorner(view)
+        mLifeCycleCallback?.onViewCreated(view, savedInstanceState)
     }
 
     /**
@@ -112,8 +115,11 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun onDestroyView() {
+        if (this::mContentView.isInitialized) {
+            mLifeCycleCallback?.onDialogDestroy(mContentView)
+        }
         super.onDestroyView()
-        callback = null
+        mLifeCycleCallback = null
     }
 
     open fun applyDialogConfig(): AbsBottomSheetDialogFragment {
@@ -121,7 +127,7 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
             val dialog = dialog as BottomSheetDialog
             dialog.setCanceledOnTouchOutside(true)
             dialog.behavior.isDraggable = arguments?.getBoolean(KEY_DRAGGABLE, true) ?: true
-            callback?.onDialogCreated(dialog)
+            mLifeCycleCallback?.onDialogCreated(dialog)
         }
         return this
     }
@@ -161,7 +167,9 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     interface OnDialogLifeCycleCallback {
-        fun onDialogCreated(dialog: BottomSheetDialog)
+        fun onDialogCreated(dialog: BottomSheetDialog) {}
+        fun onViewCreated(view: View, savedInstanceState: Bundle?) {}
+        fun onDialogDestroy(view: View) {}
     }
 
 }

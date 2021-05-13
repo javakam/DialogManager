@@ -28,6 +28,9 @@ class OptionView @JvmOverloads constructor(
         val LAYOUT_TITLE: Int by lazy { R.layout.option_item_layout_header }
         val LAYOUT_ITEM_VERTICAL: Int by lazy { R.layout.option_item_layout_vertical }
         val LAYOUT_ITEM_HORIZONTAL: Int by lazy { R.layout.option_item_layout_horizontal }
+
+        const val VIEW_TYPE_TITLE = 0
+        const val VIEW_TYPE_ITEM = 1
     }
 
     data class OptConfig(
@@ -44,53 +47,66 @@ class OptionView @JvmOverloads constructor(
         var isCheckAllowNothing: Boolean = true,
     )
 
+    private lateinit var mConfig: OptConfig
     private lateinit var mAdapter: Adapter
     private var isShowCheckBox: Boolean = false
-    var listener: OnItemClickListener? = null
+    private var onItemViewCallBack: OnItemViewCallBack? = null
+    private var onItemClickListener: OnItemClickListener? = null
+
+    override fun onDetachedFromWindow() {
+        onItemViewCallBack = null
+        onItemClickListener = null
+        super.onDetachedFromWindow()
+    }
 
     fun obtain(
         isItemVertical: Boolean,
         setting: OptSetting,
         data: List<OptionItem>? = null,
-        listener: OnItemClickListener?,
+        onItemViewCallBack: OnItemViewCallBack?,
+        onItemClickListener: OnItemClickListener?,
     ) {
         if (isItemVertical) {
             obtain(
                 OptConfig(null, LAYOUT_TITLE, LAYOUT_ITEM_VERTICAL, 1, setting),
-                data, listener
+                data, onItemViewCallBack, onItemClickListener
             )
         } else {
             obtain(
                 OptConfig(null, LAYOUT_TITLE, LAYOUT_ITEM_HORIZONTAL, 1, setting),
-                data, listener
+                data, onItemViewCallBack, onItemClickListener
             )
         }
     }
 
-    fun obtain(config: OptConfig?, data: List<OptionItem>? = null, listener: OnItemClickListener?) {
-        val cfg = config ?: OptConfig(
+    fun obtain(
+        config: OptConfig?, data: List<OptionItem>? = null,
+        onItemViewCallBack: OnItemViewCallBack?, onItemClickListener: OnItemClickListener?
+    ) {
+        this.mConfig = config ?: OptConfig(
             null, LAYOUT_TITLE, LAYOUT_ITEM_HORIZONTAL, 1,
             OptSetting(null, isCheckTriggerByItemView = false, true)
         )
-        this.listener = listener
-        this.isShowCheckBox = (cfg.setting.isSingleChoice != null)
+        this.onItemViewCallBack = onItemViewCallBack
+        this.onItemClickListener = onItemClickListener
+        this.isShowCheckBox = (mConfig.setting.isSingleChoice != null)
 
         if (!this::mAdapter.isInitialized) {
-            this.mAdapter = Adapter(this.listener)
+            this.mAdapter = Adapter(this.onItemClickListener)
         }
 
         val items: List<OptionItem> = data ?: emptyList()
-        if (cfg.setting.isSingleChoice == true) {
+        if (mConfig.setting.isSingleChoice == true) {
             val index = items.indexOfFirst { it.isChecked }
             if (index != -1) {
                 items.forEachIndexed { i, it -> if (index != i) it.isChecked = false }
             }
         }
         //items.forEach { Log.e("123", "${it.title} ${it.isChecked}") }
-        mAdapter.applyConfig(cfg, data)
+        mAdapter.applyConfig(data)
         adapter = mAdapter
 
-        val columns = cfg.columns
+        val columns = mConfig.columns
         layoutManager = if (columns > 1) {
             GridLayoutManager(context, columns).apply {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -109,28 +125,18 @@ class OptionView @JvmOverloads constructor(
         return emptyList()
     }
 
-    internal class Adapter(private val listener: OnItemClickListener?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        companion object {
-            private const val VIEW_TYPE_TITLE = 0
-            private const val VIEW_TYPE_ITEM = 1
-        }
-
-        private var optConfig: OptConfig? = null
-        private var isShowCheckBox: Boolean = false
-        private var currentSelectedItem: OptionItem? = null
-        private var preSelectIndex: Int = 0
-
+    inner class Adapter(private val listener: OnItemClickListener?) : RecyclerView.Adapter<ViewHolder>() {
         internal var title: String? = null
         internal val items = ArrayList<OptionItem>()
 
-        fun applyConfig(cfg: OptConfig, data: List<OptionItem>?) {
-            this.optConfig = cfg
+        private var currentSelectedItem: OptionItem? = null
+        private var preSelectIndex: Int = 0
 
-            this.isShowCheckBox = (optConfig?.setting?.isSingleChoice != null)
-            this.title = optConfig?.title
+        fun applyConfig(data: List<OptionItem>?) {
+            this.title = mConfig.title
             this.items.clear()
             this.items.addAll(data ?: emptyList())
-            if (optConfig?.setting?.isSingleChoice == true) {
+            if (mConfig.setting.isSingleChoice == true) {
                 preSelectIndex = items.indexOfFirst { it.isChecked }
                 currentSelectedItem = items[preSelectIndex]
             }
@@ -138,24 +144,25 @@ class OptionView @JvmOverloads constructor(
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             if (viewType == VIEW_TYPE_TITLE) {
-                return TitleViewHolder(
-                    LayoutInflater.from(parent.context).inflate(optConfig?.titleLayoutResource ?: LAYOUT_TITLE, parent, false)
-                )
+                val header = LayoutInflater.from(parent.context).inflate(mConfig.titleLayoutResource, parent, false)
+                onItemViewCallBack?.onHeaderCreated(header)
+                return TitleViewHolder(header)
             }
 
             if (viewType == VIEW_TYPE_ITEM) {
                 val view = LayoutInflater.from(parent.context).inflate(
-                    optConfig?.itemLayoutResource ?: LAYOUT_ITEM_HORIZONTAL, parent, false
+                    mConfig.itemLayoutResource, parent, false
                 )
+                onItemViewCallBack?.onItemCreated(view)
                 val holder = ItemViewHolder(view)
-                val isHorizontal = (optConfig?.itemLayoutResource ?: LAYOUT_ITEM_HORIZONTAL == LAYOUT_ITEM_HORIZONTAL)
+                val isHorizontal = (mConfig.itemLayoutResource == LAYOUT_ITEM_HORIZONTAL)
                 if (isShowCheckBox && isHorizontal) {
                     holder.setIsHorizontal(isHorizontal)
                     holder.setCheckMode(isShowCheckBox)
                     //至少选择一项
                     holder.checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
-                        if (optConfig?.setting?.isCheckAllowNothing == false && !isChecked) {
-                            if (optConfig?.setting?.isSingleChoice == true) {
+                        if (!mConfig.setting.isCheckAllowNothing && !isChecked) {
+                            if (mConfig.setting.isSingleChoice == true) {
                                 if (currentSelectedItem == items[getRealPosition(holder)]) {
                                     buttonView.isChecked = true
                                 }
@@ -176,10 +183,9 @@ class OptionView @JvmOverloads constructor(
                         val isChecked = (it as CheckBox).isChecked
                         val position = getRealPosition(holder)
                         val itemSheet = items[position]
-                        if (optConfig?.setting?.isSingleChoice == true) {
+                        if (mConfig.setting.isSingleChoice == true) {
                             if (currentSelectedItem != itemSheet) {
                                 currentSelectedItem?.isChecked = false
-
                                 //取消之前的选项 notifyItemChanged(preSelectIndex,1)
                                 view.post {
                                     notifyDataSetChanged()
@@ -202,7 +208,7 @@ class OptionView @JvmOverloads constructor(
 
                 view.setOnClickListener(object : NoShakeListener(300) {
                     override fun onSingleClick(v: View) {
-                        if (isShowCheckBox && isHorizontal && optConfig?.setting?.isCheckTriggerByItemView == true) {
+                        if (isShowCheckBox && isHorizontal && mConfig.setting.isCheckTriggerByItemView) {
                             holder.checkBox?.performClick()//not toggle
                         }
                         listener?.onItemSelected(items[getRealPosition(holder)])
@@ -227,18 +233,18 @@ class OptionView @JvmOverloads constructor(
         }
 
         override fun getItemViewType(position: Int): Int {
-            if (!title.isNullOrBlank()) {
+            if (title != null) {
                 if (position == 0) return VIEW_TYPE_TITLE
             }
             return VIEW_TYPE_ITEM
         }
 
         private fun getRealPosition(holder: ViewHolder): Int {
-            return if (!title.isNullOrBlank()) holder.adapterPosition - 1 else holder.adapterPosition
+            return if (title != null) holder.adapterPosition - 1 else holder.adapterPosition
         }
     }
 
-    internal class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
         private var isHorizontal: Boolean = false
         private var isShowCheckBox: Boolean = false
         private var tvTitle: TextView? = null
@@ -284,7 +290,7 @@ class OptionView @JvmOverloads constructor(
         }
     }
 
-    internal class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal class TitleViewHolder(itemView: View) : ViewHolder(itemView) {
         private var text: TextView? = null
         fun bind(header: String?) {
             text?.text = header
@@ -317,8 +323,13 @@ class OptionView @JvmOverloads constructor(
         protected abstract fun onSingleClick(v: View)
     }
 
+    interface OnItemViewCallBack {
+        fun onHeaderCreated(v: View) {}
+        fun onItemCreated(v: View) {}
+    }
+
     interface OnItemClickListener {
-        fun onItemSelected(item: OptionItem)
+        fun onItemSelected(item: OptionItem) {}
     }
 
 }

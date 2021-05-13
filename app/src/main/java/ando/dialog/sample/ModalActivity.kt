@@ -6,6 +6,7 @@ import ando.widget.option.list.OptionItem
 import ando.widget.option.list.OptionView
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -167,7 +168,6 @@ class ModalActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.buttonFullPage).setOnClickListener {
-
             val dialogFull = AbsBottomSheetDialogFragment.obtain(
                 R.layout.layout_bottom_sheet_custom, isFullScreen = true, isTopRounded = false,
                 isDraggable = true, object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
@@ -178,8 +178,104 @@ class ModalActivity : AppCompatActivity() {
                         dialog.behavior.setPeekHeight(resources.displayMetrics.heightPixels, true)
                     }
                 })
-
             dialogFull.show(supportFragmentManager, "FullScreen")
+        }
+
+        findViewById<View>(R.id.buttonSelect).setOnClickListener {
+            val listCheckBox = mutableListOf(
+                OptionItem(0, "食物", null, true),
+                OptionItem(1, "建筑", null),
+                OptionItem(2, "节日", null),
+                OptionItem(3, "商务", null),
+                OptionItem(4, "医疗", null),
+                OptionItem(5, "科技", null),
+                OptionItem(6, "教育", null),
+                OptionItem(7, "自然", null),
+            )
+            val decoration = LinearItemDecoration.Builder()
+                .color(ContextCompat.getColor(this, android.R.color.holo_blue_light))
+                .dividerSize(dp2px(0.5F))
+                .marginStart(dp2px(15F))
+                .marginEnd(dp2px(15F))
+                //.hideDividerForItemType(BaseQuickAdapter.HEADER_VIEW)
+                //.hideAroundDividerForItemType(BaseQuickAdapter.FOOTER_VIEW)
+                .build()
+
+            //方式一
+            /*
+            AbsBottomSheetDialogFragment
+                .obtain(
+                    R.layout.layout_bottom_sheet_classify,
+                    isFullScreen = true,
+                    isTopRounded = false,
+                    isDraggable = true,
+                    object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
+                        override fun onDialogCreated(dialog: BottomSheetDialog) {
+                            dialog.setCanceledOnTouchOutside(false)
+                        }
+
+                        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+                            val optionView: OptionView = view.findViewById(R.id.optionView)
+                            optionView.addItemDecoration(decoration)
+                            optionView.obtain(
+                                false, OptionView.OptSetting(
+                                    isSingleChoice = true,
+                                    isCheckTriggerByItemView = true,
+                                    isCheckAllowNothing = false
+                                ), listCheckBox, null
+                            )
+                        }
+
+                        override fun onDialogDestroy(view: View) {
+                            val optionView: OptionView = view.findViewById(R.id.optionView)
+                            val sb = StringBuilder()
+                            optionView.getData().filter { it.isChecked }.forEach {
+                                sb.append("${it.id}. ${it.title}").append("\n")
+                            }
+                            Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG).show()
+                        }
+                    })
+                .show(supportFragmentManager, "classify")
+                */
+
+            //方式二
+            dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
+                .setTitle("")
+                .setTitleLayout(R.layout.layout_bottom_sheet_custom_head)
+                .setTopRounded(false)            //圆角, 仅支持左上角和右上角
+                .setCheckMode(true)              //是否单选或多选       单选true;多选false
+                .setCheckTriggerByItemView(true) //是否点击整个ItemView触发CheckBox事件
+                .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
+                .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
+                .setItemDecoration(decoration)
+                .setFullScreen(true)
+                .addItem(listCheckBox)
+                .setOnItemViewCallBack(object : OptionView.OnItemViewCallBack {
+                    override fun onHeaderCreated(v: View) {
+                        val ivBack = v.findViewById<ImageView>(R.id.iv_back)
+                        ivBack.setOnClickListener {
+                            dismissibleDialog?.dismissAllowingStateLoss()
+                        }
+                    }
+                })
+                //.setOnItemClickListener(onItemClickListener)
+                .setOnSelectedCallBack(object : ModalBottomSheetDialogFragment.OnSelectedCallBack {
+                    override fun onSelected(items: List<OptionItem>) {
+                        val sb = StringBuilder()
+                        items.filter { it.isChecked }.forEach {
+                            sb.append("${it.id}. ${it.title}").append("\n")
+                        }
+                        Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG).show()
+                    }
+                })
+                .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
+                    override fun onDialogCreated(dialog: BottomSheetDialog) {
+                    }
+                })
+                .build()
+
+            dismissibleDialog?.show(supportFragmentManager, "classify")
+
         }
     }
 

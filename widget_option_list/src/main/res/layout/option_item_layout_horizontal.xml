@@ -8,6 +8,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:padding="@dimen/dimen_ando_option_item_padding"
+    tools:background="@android:color/darker_gray"
     tools:ignore="UnusedAttribute">
 
     <ImageView
@@ -43,6 +44,7 @@
         android:button="@null"
         android:checked="false"
         android:padding="0dp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        tools:visibility="visible" />
 
 </LinearLayout>

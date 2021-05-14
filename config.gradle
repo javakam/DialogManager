@@ -9,7 +9,7 @@ ext {
             versionCode           : 8,
             versionName           : "3.0.0",
             versionNameBottomSheet: "3.3.0",
-            versionOptionList     : "2.0.0",
+            versionOptionList     : "3.0.0",
             repoName              : "maven"
     ]
 

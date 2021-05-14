@@ -65,7 +65,7 @@ class OptionView @JvmOverloads constructor(
         data: List<OptionItem>? = null,
         onItemViewCallBack: OnItemViewCallBack?,
         onItemClickListener: OnItemClickListener?,
-    ) {
+    ): OptionView {
         if (isItemVertical) {
             obtain(
                 OptConfig(null, LAYOUT_TITLE, LAYOUT_ITEM_VERTICAL, 1, setting),
@@ -77,12 +77,13 @@ class OptionView @JvmOverloads constructor(
                 data, onItemViewCallBack, onItemClickListener
             )
         }
+        return this
     }
 
     fun obtain(
         config: OptConfig?, data: List<OptionItem>? = null,
         onItemViewCallBack: OnItemViewCallBack?, onItemClickListener: OnItemClickListener?
-    ) {
+    ): OptionView {
         this.mConfig = config ?: OptConfig(
             null, LAYOUT_TITLE, LAYOUT_ITEM_HORIZONTAL, 1,
             OptSetting(null, isCheckTriggerByItemView = false, true)
@@ -91,9 +92,16 @@ class OptionView @JvmOverloads constructor(
         this.onItemClickListener = onItemClickListener
         this.isShowCheckBox = (mConfig.setting.isSingleChoice != null)
 
-        if (!this::mAdapter.isInitialized) {
-            this.mAdapter = Adapter(this.onItemClickListener)
-        }
+        val columns = mConfig.columns
+        layoutManager = if (columns > 1) {
+            GridLayoutManager(context, columns).apply {
+                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                    override fun getSpanSize(position: Int): Int {
+                        return if (mConfig.title != null && position == 0) columns else 1
+                    }
+                }
+            }
+        } else LinearLayoutManager(context)
 
         val items: List<OptionItem> = data ?: emptyList()
         if (mConfig.setting.isSingleChoice == true) {
@@ -103,32 +111,25 @@ class OptionView @JvmOverloads constructor(
             }
         }
         //items.forEach { Log.e("123", "${it.title} ${it.isChecked}") }
+        if (!this::mAdapter.isInitialized) {
+            this.mAdapter = Adapter(this.onItemClickListener)
+        }
         mAdapter.applyConfig(data)
         adapter = mAdapter
-
-        val columns = mConfig.columns
-        layoutManager = if (columns > 1) {
-            GridLayoutManager(context, columns).apply {
-                spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                    override fun getSpanSize(position: Int): Int {
-                        return if (mAdapter.title != null && position == 0) columns else 1
-                    }
-                }
-            }
-        } else LinearLayoutManager(context)
+        return this
     }
 
     fun getData(): List<OptionItem> {
         if (this::mAdapter.isInitialized) {
-            return mAdapter.items
+            return mAdapter.getItems()
         }
         return emptyList()
     }
 
     inner class Adapter(private val listener: OnItemClickListener?) : RecyclerView.Adapter<ViewHolder>() {
-        internal var title: String? = null
-        internal val items = ArrayList<OptionItem>()
 
+        private var title: String? = null
+        private val items = ArrayList<OptionItem>()
         private var currentSelectedItem: OptionItem? = null
         private var preSelectIndex: Int = 0
 
@@ -141,6 +142,8 @@ class OptionView @JvmOverloads constructor(
                 currentSelectedItem = items[preSelectIndex]
             }
         }
+
+        fun getItems(): List<OptionItem> = items
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             if (viewType == VIEW_TYPE_TITLE) {

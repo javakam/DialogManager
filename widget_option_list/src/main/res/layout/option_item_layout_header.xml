@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center_vertical"
-    android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:padding="@dimen/dimen_ando_option_head_title_padding"
     android:textColor="@color/color_ando_option_head_title"

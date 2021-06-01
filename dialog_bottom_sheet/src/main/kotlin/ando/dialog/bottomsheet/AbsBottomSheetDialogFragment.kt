@@ -24,26 +24,26 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
         internal const val KEY_ROUND = "round"      //Only Support topLeft & topRight corner
         internal const val KEY_DRAGGABLE = "drag"
 
-        internal var mLifeCycleCallback: OnDialogLifeCycleCallback? = null
-
         fun obtain(
             @LayoutRes mLayoutId: Int = -1, isFullScreen: Boolean = false,
-            isTopRounded: Boolean = false, isDraggable: Boolean = true, lifeCycleCallback: OnDialogLifeCycleCallback? = null
+            isTopRounded: Boolean = false, isDraggable: Boolean = true,
+            callback: OnDialogLifeCycleCallback? = null
         ): AbsBottomSheetDialogFragment {
             val args = Bundle()
             args.putInt(KEY_LAYOUT_ID, mLayoutId)
             args.putBoolean(KEY_FULL, isFullScreen)
             args.putBoolean(KEY_ROUND, isTopRounded)
             args.putBoolean(KEY_DRAGGABLE, isDraggable)
-            mLifeCycleCallback = lifeCycleCallback
 
             val fragment = AbsBottomSheetDialogFragment()
             fragment.arguments = args
+            fragment.setCallBack(callback)
             return fragment
         }
     }
 
     private lateinit var mContentView: View
+    private var mLifeCycleCallback: OnDialogLifeCycleCallback? = null
 
     override fun getTheme(): Int {
         return if (arguments?.getBoolean(KEY_ROUND, false) == true) R.style.BottomSheetDialog else super.getTheme()
@@ -135,6 +135,10 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     open fun applyDialogCorner(view: View) {
         if (arguments?.getBoolean(KEY_ROUND, false) == false) view.setBackgroundColor(Color.TRANSPARENT)
         else view.setBackgroundResource(R.drawable.bg_bottom_sheet_dialog_fragment)
+    }
+
+    open fun setCallBack(callback: OnDialogLifeCycleCallback?) {
+        this.mLifeCycleCallback = callback
     }
 
     open fun hideKeyBoard() {

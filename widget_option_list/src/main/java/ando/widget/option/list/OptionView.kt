@@ -33,23 +33,9 @@ class OptionView @JvmOverloads constructor(
         const val VIEW_TYPE_ITEM = 1
     }
 
-    data class OptConfig(
-        var title: String?,
-        var titleLayoutResource: Int = LAYOUT_TITLE,
-        var itemLayoutResource: Int = LAYOUT_ITEM_HORIZONTAL,
-        var columns: Int = 1,
-        var setting: OptSetting = OptSetting(null, isCheckTriggerByItemView = false, true),
-    )
-
-    data class OptSetting(
-        var isSingleChoice: Boolean? = null,            //null表示不显示CheckBox ; true单选 ; false多选
-        var isCheckTriggerByItemView: Boolean = false,
-        var isCheckAllowNothing: Boolean = true,
-    )
-
     private lateinit var mConfig: OptConfig
     private lateinit var mAdapter: Adapter
-    private var isShowCheckBox: Boolean = false
+    private var isCheckShow: Boolean = false
     private var onItemViewCallBack: OnItemViewCallBack? = null
     private var onItemClickListener: OnItemClickListener? = null
 
@@ -86,11 +72,11 @@ class OptionView @JvmOverloads constructor(
     ): OptionView {
         this.mConfig = config ?: OptConfig(
             null, LAYOUT_TITLE, LAYOUT_ITEM_HORIZONTAL, 1,
-            OptSetting(null, isCheckTriggerByItemView = false, true)
+            OptSetting(MODE_CHECK_NONE, isCheckTriggerByItemView = false, true)
         )
         this.onItemViewCallBack = onItemViewCallBack
         this.onItemClickListener = onItemClickListener
-        this.isShowCheckBox = (mConfig.setting.isSingleChoice != null)
+        this.isCheckShow = (mConfig.setting.isCheckShow())
 
         val columns = mConfig.columns
         layoutManager = if (columns > 1) {
@@ -104,7 +90,7 @@ class OptionView @JvmOverloads constructor(
         } else LinearLayoutManager(context)
 
         val items: List<OptionItem> = data ?: emptyList()
-        if (mConfig.setting.isSingleChoice == true) {
+        if (mConfig.setting.isCheckSingle()) {
             val index = items.indexOfFirst { it.isChecked }
             if (index != -1) {
                 items.forEachIndexed { i, it -> if (index != i) it.isChecked = false }
@@ -137,7 +123,7 @@ class OptionView @JvmOverloads constructor(
             this.title = mConfig.title
             this.items.clear()
             this.items.addAll(data ?: emptyList())
-            if (mConfig.setting.isSingleChoice == true) {
+            if (mConfig.setting.isCheckSingle()) {
                 preSelectIndex = items.indexOfFirst { it.isChecked }
                 currentSelectedItem = items[preSelectIndex]
             }
@@ -159,13 +145,13 @@ class OptionView @JvmOverloads constructor(
                 onItemViewCallBack?.onItemCreated(view)
                 val holder = ItemViewHolder(view)
                 val isHorizontal = (mConfig.itemLayoutResource == LAYOUT_ITEM_HORIZONTAL)
-                if (isShowCheckBox && isHorizontal) {
+                if (isCheckShow && isHorizontal) {
                     holder.setIsHorizontal(isHorizontal)
-                    holder.setCheckMode(isShowCheckBox)
+                    holder.setCheckMode(isCheckShow)
                     //至少选择一项
                     holder.checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
                         if (!mConfig.setting.isCheckAllowNothing && !isChecked) {
-                            if (mConfig.setting.isSingleChoice == true) {
+                            if (mConfig.setting.isCheckSingle()) {
                                 if (currentSelectedItem == items[getRealPosition(holder)]) {
                                     buttonView.isChecked = true
                                 }
@@ -186,7 +172,7 @@ class OptionView @JvmOverloads constructor(
                         val isChecked = (it as CheckBox).isChecked
                         val position = getRealPosition(holder)
                         val itemSheet = items[position]
-                        if (mConfig.setting.isSingleChoice == true) {
+                        if (mConfig.setting.isCheckSingle()) {
                             if (currentSelectedItem != itemSheet) {
                                 currentSelectedItem?.isChecked = false
                                 //取消之前的选项 notifyItemChanged(preSelectIndex,1)
@@ -211,7 +197,7 @@ class OptionView @JvmOverloads constructor(
 
                 view.setOnClickListener(object : NoShakeListener(300) {
                     override fun onSingleClick(v: View) {
-                        if (isShowCheckBox && isHorizontal && mConfig.setting.isCheckTriggerByItemView) {
+                        if (isCheckShow && isHorizontal && mConfig.setting.isCheckTriggerByItemView) {
                             holder.checkBox?.performClick()//not toggle
                         }
                         listener?.onItemSelected(items[getRealPosition(holder)])
@@ -249,7 +235,7 @@ class OptionView @JvmOverloads constructor(
 
     internal class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
         private var isHorizontal: Boolean = false
-        private var isShowCheckBox: Boolean = false
+        private var isCheckShow: Boolean = false
         private var tvTitle: TextView? = null
         private var ivIcon: ImageView? = null
         internal var checkBox: CheckBox? = null
@@ -258,8 +244,8 @@ class OptionView @JvmOverloads constructor(
             this.isHorizontal = isHorizontal
         }
 
-        fun setCheckMode(isShowCheckBox: Boolean) {
-            this.isShowCheckBox = isShowCheckBox
+        fun setCheckMode(isCheckShow: Boolean) {
+            this.isCheckShow = isCheckShow
         }
 
         fun bind(item: OptionItem) {
@@ -277,10 +263,10 @@ class OptionView @JvmOverloads constructor(
                 ivIcon?.setImageDrawable(item.icon)
             }
 
-            if (isShowCheckBox && isHorizontal) {
+            if (isCheckShow && isHorizontal) {
                 if (checkBox?.visibility == View.INVISIBLE) checkBox?.visibility = View.VISIBLE
                 checkBox?.isChecked = item.isChecked
-            }
+            } else checkBox?.visibility = View.INVISIBLE
         }
 
         init {

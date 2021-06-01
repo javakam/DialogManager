@@ -1,7 +1,6 @@
 package ando.dialog.bottomsheet
 
-import ando.widget.option.list.OptionItem
-import ando.widget.option.list.OptionView
+import ando.widget.option.list.*
 import ando.widget.option.list.OptionView.Companion.LAYOUT_ITEM_HORIZONTAL
 import ando.widget.option.list.OptionView.Companion.LAYOUT_ITEM_VERTICAL
 import ando.widget.option.list.OptionView.Companion.LAYOUT_TITLE
@@ -29,8 +28,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         private const val KEY_TITLE_LAYOUT = "title_layout" //title layout
         private const val KEY_GRID_COLUMNS = "columns"      //grid columns
         private const val KEY_SHOW_CLOSE = "showClose"      //close button
-        private const val KEY_SHOW_CHECK_BOX = "showBox"                    //Checkbox
-        private const val KEY_SHOW_CHECK_BOX_MODE = "choiceMode"            //单选or多选(Single choice or multiple choice)
+        private const val KEY_SHOW_CHECK_BOX_MODE =
+            "checkMode"             //不显示or单选or多选(Do not show or Single choice or multiple choice)
         private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger"       //点击 Adapter.ItemView 触发 checkbox
         private const val KEY_SHOW_CHECK_BOX_ALLOW_NOTHING = "allowNothing" //是否允许一个都不选
 
@@ -46,22 +45,21 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             args.putString(KEY_TITLE, builder.title)
             args.putInt(KEY_TITLE_LAYOUT, builder.titleLayoutResource)
             args.putInt(KEY_GRID_COLUMNS, builder.columns)
+            args.putInt(KEY_SHOW_CHECK_BOX_MODE, builder.checkMode)
             args.putBoolean(KEY_FULL, builder.isFullScreen)
             args.putBoolean(KEY_ROUND, builder.isTopRounded)
             args.putBoolean(KEY_DRAGGABLE, builder.isDraggable)
             args.putBoolean(KEY_SHOW_CLOSE, builder.isShowClose)
-            args.putBoolean(KEY_SHOW_CHECK_BOX, builder.isShowCheckBox)
-            args.putBoolean(KEY_SHOW_CHECK_BOX_MODE, builder.isSingleChoice)
             args.putBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, builder.isCheckTriggerByItemView)
             args.putBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, builder.isCheckAllowNothing)
             itemDecoration = builder.itemDecoration
-            mLifeCycleCallback = builder.callback
             mOnItemViewCallBack = builder.onItemViewCallBack
             mOnItemClickListener = builder.onItemClickListener
             mOnSelectedCallBack = builder.selectedCallBack
 
             val fragment = ModalBottomSheetDialogFragment()
             fragment.arguments = args
+            fragment.setCallBack(builder.callback)
             return fragment
         }
     }
@@ -80,15 +78,15 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             itemDecoration?.apply { optionView.addItemDecoration(this) }
 
             this.optionView.obtain(
-                OptionView.OptConfig(
+                OptConfig(
                     arguments?.getString(KEY_TITLE),
                     arguments?.getInt(KEY_TITLE_LAYOUT) ?: LAYOUT_TITLE,
                     arguments?.getInt(KEY_ITEM_LAYOUT) ?: LAYOUT_ITEM_HORIZONTAL,
                     columns = arguments?.getInt(KEY_GRID_COLUMNS) ?: 1,
-                    OptionView.OptSetting(
-                        arguments?.getBoolean(KEY_SHOW_CHECK_BOX_MODE, false) ?: false,
-                        arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false,
-                        arguments?.getBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, true) ?: true,
+                    OptSetting(
+                        checkMode = arguments?.getInt(KEY_SHOW_CHECK_BOX_MODE, MODE_CHECK_NONE) ?: MODE_CHECK_NONE,
+                        isCheckTriggerByItemView = arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false,
+                        isCheckAllowNothing = arguments?.getBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, true) ?: true,
                     )
                 ),
                 data = arguments?.getParcelableArrayList(KEY_ITEMS) ?: emptyList(),
@@ -125,8 +123,9 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         internal var title: String? = null
         internal var columns = 1
         internal var isShowClose: Boolean = true
-        internal var isShowCheckBox: Boolean = false
-        internal var isSingleChoice: Boolean = false
+
+        @CheckMode
+        internal var checkMode: Int = MODE_CHECK_NONE
         internal var isCheckTriggerByItemView: Boolean = false
         internal var isCheckAllowNothing: Boolean = true
         internal var titleLayoutResource = LAYOUT_TITLE
@@ -211,9 +210,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         /**
          * 仅支持横向布局
          */
-        fun setCheckMode(isSingleChoice: Boolean): Builder {
-            this.isShowCheckBox = true
-            this.isSingleChoice = isSingleChoice
+        fun setCheckMode(@CheckMode mode: Int): Builder {
+            this.checkMode = mode
             return this
         }
 

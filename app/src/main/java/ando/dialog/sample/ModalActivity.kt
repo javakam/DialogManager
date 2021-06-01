@@ -2,6 +2,8 @@ package ando.dialog.sample
 
 import ando.dialog.bottomsheet.AbsBottomSheetDialogFragment
 import ando.dialog.bottomsheet.ModalBottomSheetDialogFragment
+import ando.widget.option.list.MODE_CHECK_MULTI
+import ando.widget.option.list.MODE_CHECK_SINGLE
 import ando.widget.option.list.OptionItem
 import ando.widget.option.list.OptionView
 import android.os.Bundle
@@ -125,7 +127,7 @@ class ModalActivity : AppCompatActivity() {
             ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Rounded layout")
                 .setTopRounded(true)             //圆角, 仅支持左上角和右上角
-                .setCheckMode(false)             //是否单选或多选       单选true;多选false
+                .setCheckMode(MODE_CHECK_MULTI)  //是否单选或多选       单选true;多选false
                 .setCheckTriggerByItemView(true) //是否点击整个ItemView触发CheckBox事件
                 .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
                 .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
@@ -219,7 +221,7 @@ class ModalActivity : AppCompatActivity() {
                             optionView.addItemDecoration(decoration)
                             optionView.obtain(
                                 false, OptionView.OptSetting(
-                                    isSingleChoice = true,
+                                    isCheckSingle = true,
                                     isCheckTriggerByItemView = true,
                                     isCheckAllowNothing = false
                                 ), listCheckBox, null
@@ -242,8 +244,8 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
                 .setTitle("")
                 .setTitleLayout(R.layout.layout_bottom_sheet_custom_head)
-                .setTopRounded(false)            //圆角, 仅支持左上角和右上角
-                .setCheckMode(true)              //是否单选或多选       单选true;多选false
+                .setTopRounded(false)            //圆角, 仅支持左上角和右上角]
+                .setCheckMode(MODE_CHECK_SINGLE) //是否单选或多选       单选true;多选false
                 .setCheckTriggerByItemView(true) //是否点击整个ItemView触发CheckBox事件
                 .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
                 .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
@@ -258,7 +260,14 @@ class ModalActivity : AppCompatActivity() {
                         }
                     }
                 })
-                //.setOnItemClickListener(onItemClickListener)
+                .setOnItemClickListener(object : OptionView.OnItemClickListener {
+                    override fun onItemSelected(item: OptionItem) {
+                        Toast.makeText(applicationContext, "onItemSelected: " + item.title, Toast.LENGTH_SHORT).show()
+
+                        //选择完后直接关闭页面
+                        dismissibleDialog?.dismissAllowingStateLoss()
+                    }
+                })
                 .setOnSelectedCallBack(object : ModalBottomSheetDialogFragment.OnSelectedCallBack {
                     override fun onSelected(items: List<OptionItem>) {
                         val sb = StringBuilder()

@@ -39,7 +39,7 @@
     </style>
 
     <!-- dialog_bottom_sheet 样式 -->
-    <color name="modalBottomBackground">#CCCCCC</color>
+    <color name="modalBottomBackground">#DDDDDD</color>
 
     <!-- OptionView -->
     <!-- 自定义外部 CheckBox 样式 -->

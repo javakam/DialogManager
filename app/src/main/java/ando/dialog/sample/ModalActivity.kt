@@ -183,10 +183,11 @@ class ModalActivity : AppCompatActivity() {
             dialogFull.show(supportFragmentManager, "FullScreen")
         }
 
+        //列表单选 or 多选
         findViewById<View>(R.id.buttonSelect).setOnClickListener {
             val listCheckBox = mutableListOf(
-                OptionItem(0, "食物", null, true),
-                OptionItem(1, "建筑", null),
+                OptionItem(0, "食物", null),
+                OptionItem(1, "建筑", null, true),
                 OptionItem(2, "节日", null),
                 OptionItem(3, "商务", null),
                 OptionItem(4, "医疗", null),

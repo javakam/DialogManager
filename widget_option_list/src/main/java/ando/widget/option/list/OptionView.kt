@@ -150,7 +150,7 @@ class OptionView @JvmOverloads constructor(
                     holder.setCheckMode(isCheckShow)
                     //至少选择一项
                     holder.checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
-                        if (!mConfig.setting.isCheckAllowNothing && !isChecked) {
+                        if (!isChecked && !mConfig.setting.isCheckAllowNothing) {
                             if (mConfig.setting.isCheckSingle()) {
                                 if (currentSelectedItem == items[getRealPosition(holder)]) {
                                     buttonView.isChecked = true
@@ -181,6 +181,14 @@ class OptionView @JvmOverloads constructor(
                                     itemSheet.isChecked = isChecked
                                     preSelectIndex = position
                                     currentSelectedItem = itemSheet
+                                }
+
+                                //由 ItemView 触发
+                                if (!mConfig.setting.isCheckAllowNothing && mConfig.setting.isCheckTriggerByItemView) {
+                                    holder.checkBox?.isChecked = true
+                                    holder.checkBox?.postDelayed({
+                                        listener?.onItemSelected(itemSheet)
+                                    }, 80)
                                 }
                             }
                         } else {

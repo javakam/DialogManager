@@ -8,8 +8,8 @@ ext {
             targetSdkVersion      : 30,
             versionCode           : 8,
             versionName           : "3.0.0",
-            versionNameBottomSheet: "3.5.0",
-            versionOptionList     : "3.1.0",
+            versionNameBottomSheet: "3.6.0",
+            versionOptionList     : "3.6.6",
             repoName              : "maven"
     ]
 

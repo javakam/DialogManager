@@ -184,11 +184,15 @@ class OptionView @JvmOverloads constructor(
                                 }
 
                                 //由 ItemView 触发
-                                if (!mConfig.setting.isCheckAllowNothing && mConfig.setting.isCheckTriggerByItemView) {
-                                    holder.checkBox?.isChecked = true
-                                    holder.checkBox?.postDelayed({
+                                performSingleCheckDirectReturn(mConfig, holder.checkBox) {
+                                    listener?.onItemSelected(itemSheet)
+                                }
+                            } else {
+                                if (isChecked) {
+                                    //单选时,点击已经选中的 CheckBox 时处理
+                                    performSingleCheckDirectReturn(mConfig, holder.checkBox) {
                                         listener?.onItemSelected(itemSheet)
-                                    }, 80)
+                                    }
                                 }
                             }
                         } else {
@@ -238,6 +242,14 @@ class OptionView @JvmOverloads constructor(
 
         private fun getRealPosition(holder: ViewHolder): Int {
             return if (title != null) holder.adapterPosition - 1 else holder.adapterPosition
+        }
+
+        private fun performSingleCheckDirectReturn(config: OptConfig, checkBox: CheckBox?, block: () -> Unit) {
+            //由 ItemView 触发
+            if (!config.setting.isCheckAllowNothing && config.setting.isCheckTriggerByItemView) {
+                checkBox?.isChecked = true
+                checkBox?.postDelayed({ block() }, 80)
+            }
         }
     }
 

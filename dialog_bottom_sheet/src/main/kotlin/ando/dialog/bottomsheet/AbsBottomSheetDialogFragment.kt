@@ -95,6 +95,9 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
                         }
                         BottomSheetBehavior.STATE_HIDDEN -> {
                         }
+                        BottomSheetBehavior.STATE_HALF_EXPANDED -> {
+                            TODO()
+                        }
                     }
                 }
 

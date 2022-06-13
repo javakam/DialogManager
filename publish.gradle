@@ -89,6 +89,9 @@ publishing {
     repositories {
         // The repository to publish to, Sonatype/MavenCentral
         maven {
+            //Failed to publish publication 'release' to repository 'maven'
+            //https://blog.csdn.net/chuyouyinghe/article/details/122424202
+            allowInsecureProtocol = true
             // This is an arbitrary name, you may also use "mavencentral" or
             // any other name that's descriptive for you
             name = "maven"

@@ -17,7 +17,7 @@
      Theme.Design.Light.BottomSheetDialog
      Base.V7.Theme.AppCompat.Light.Dialog
      -->
-    <style name="BottomSheetDialog">
+    <style name="AndoBottomSheetDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/Animation.Design.BottomSheetDialog</item>
 

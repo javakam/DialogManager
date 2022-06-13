@@ -32,10 +32,16 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    //https://www.jianshu.com/p/4933ab2f3599
+    configurations.all {
+        resolutionStrategy {
+            force 'androidx.appcompat:appcompat:1.4.0'
+            force 'com.google.android.material:material:1.5.0'
+        }
+    }
 }
 
 dependencies {
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.5.0'
@@ -46,8 +52,9 @@ dependencies {
     implementation project(':dialog_bottom_sheet')
     implementation project(':widget_option_list')
 
-//    implementation 'com.github.javakam:dialog.core:1.5.0@aar'
-//    implementation 'com.github.javakam:dialog.usage:1.5.0@aar'
-//    implementation 'com.github.javakam:dialog.bottomsheet:1.5.0@aar'
+//    implementation 'com.github.javakam:dialog.core:5.0.0@aar'
+//    implementation 'com.github.javakam:dialog.usage:5.0.0@aar'
+//    implementation 'com.github.javakam:dialog.bottomsheet:5.0.0@aar'
+//    implementation 'com.github.javakam:widget.optionview:5.0.0@aar'
 
 }

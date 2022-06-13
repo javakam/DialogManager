@@ -46,7 +46,7 @@ open class AbsBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var mLifeCycleCallback: OnDialogLifeCycleCallback? = null
 
     override fun getTheme(): Int {
-        return if (arguments?.getBoolean(KEY_ROUND, false) == true) R.style.BottomSheetDialog else super.getTheme()
+        return if (arguments?.getBoolean(KEY_ROUND, false) == true) R.style.AndoBottomSheetDialog else super.getTheme()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

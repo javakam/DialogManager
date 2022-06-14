@@ -72,7 +72,7 @@ class OptionView @JvmOverloads constructor(
     ): OptionView {
         this.mConfig = config ?: OptConfig(
             null, LAYOUT_TITLE, LAYOUT_ITEM_HORIZONTAL, 1,
-            OptSetting(MODE_CHECK_NONE, isCheckTriggerByItemView = false, true)
+            OptSetting(MODE_CHECK_NONE, isItemViewHorizontal = true, isCheckTriggerByItemView = false, isCheckAllowNothing = true)
         )
         this.onItemViewCallBack = onItemViewCallBack
         this.onItemClickListener = onItemClickListener
@@ -112,8 +112,7 @@ class OptionView @JvmOverloads constructor(
         return emptyList()
     }
 
-    inner class Adapter(private val listener: OnItemClickListener?) : RecyclerView.Adapter<ViewHolder>() {
-
+    private inner class Adapter(private val listener: OnItemClickListener?) : RecyclerView.Adapter<ViewHolder>() {
         private var title: String? = null
         private val items = ArrayList<OptionItem>()
         private var currentSelectedItem: OptionItem? = null
@@ -123,6 +122,7 @@ class OptionView @JvmOverloads constructor(
             this.title = mConfig.title
             this.items.clear()
             this.items.addAll(data ?: emptyList())
+            //单选模式下, 设置预选位置
             if (mConfig.setting.isCheckSingle()) {
                 preSelectIndex = items.indexOfFirst { it.isChecked }
                 currentSelectedItem = items[preSelectIndex]
@@ -144,7 +144,7 @@ class OptionView @JvmOverloads constructor(
                 )
                 onItemViewCallBack?.onItemCreated(view)
                 val holder = ItemViewHolder(view)
-                val isHorizontal = (mConfig.itemLayoutResource == LAYOUT_ITEM_HORIZONTAL)
+                val isHorizontal = (mConfig.setting.isItemViewHorizontal)
                 if (isCheckShow && isHorizontal) {
                     holder.setIsHorizontal(isHorizontal)
                     holder.setCheckMode(isCheckShow)
@@ -207,7 +207,7 @@ class OptionView @JvmOverloads constructor(
                     }
                 }
 
-                view.setOnClickListener(object : NoShakeListener(300) {
+                view.setOnClickListener(object : NoShakeListener(500) {
                     override fun onSingleClick(v: View) {
                         if (isCheckShow && isHorizontal && mConfig.setting.isCheckTriggerByItemView) {
                             holder.checkBox?.performClick()//not toggle
@@ -248,7 +248,7 @@ class OptionView @JvmOverloads constructor(
             //由 ItemView 触发
             if (!config.setting.isCheckAllowNothing && config.setting.isCheckTriggerByItemView) {
                 checkBox?.isChecked = true
-                checkBox?.postDelayed({ block() }, 80)
+                checkBox?.postDelayed({ block() }, 30)
             }
         }
     }

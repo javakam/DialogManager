@@ -125,6 +125,7 @@ class OptionView @JvmOverloads constructor(
             //单选模式下, 设置预选位置
             if (mConfig.setting.isCheckSingle()) {
                 preSelectIndex = items.indexOfFirst { it.isChecked }
+                if (preSelectIndex < 0) preSelectIndex = 0 //防止 indexOfFirst 返回 -1 导致的数组越界
                 currentSelectedItem = items[preSelectIndex]
             }
         }

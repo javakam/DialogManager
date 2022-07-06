@@ -89,19 +89,30 @@ class OptionView @JvmOverloads constructor(
             }
         } else LinearLayoutManager(context)
 
-        val items: List<OptionItem> = data ?: emptyList()
-        if (mConfig.setting.isCheckSingle()) {
-            val index = items.indexOfFirst { it.isChecked }
-            if (index != -1) {
-                items.forEachIndexed { i, it -> if (index != i) it.isChecked = false }
-            }
-        }
-        //items.forEach { Log.e("123", "${it.title} ${it.isChecked}") }
         if (!this::mAdapter.isInitialized) {
             this.mAdapter = Adapter(this.onItemClickListener)
         }
-        mAdapter.applyConfig(data)
+        //没有数据时候, 会有 Adapter.Title
+        if (data.isNullOrEmpty()) visibility = View.GONE else {
+            visibility = View.VISIBLE
+            setData(data)
+        }
         adapter = mAdapter
+        return this
+    }
+
+    fun setData(data: List<OptionItem>?): OptionView {
+        if (data.isNullOrEmpty()) return this
+        //data.forEach { Log.e("123", "${it.title} ${it.isChecked}") }
+        if (mConfig.setting.isCheckSingle()) {
+            val index = data.indexOfFirst { it.isChecked }
+            if (index != -1) {
+                data.forEachIndexed { i, it -> if (index != i) it.isChecked = false }
+            }
+        }
+        mAdapter.applyConfig(data = data)
+        visibility = if (mAdapter.getItems().isEmpty()) View.GONE else View.VISIBLE
+        mAdapter.notifyDataSetChanged()
         return this
     }
 
@@ -120,10 +131,11 @@ class OptionView @JvmOverloads constructor(
 
         fun applyConfig(data: List<OptionItem>?) {
             this.title = mConfig.title
+            if (data.isNullOrEmpty()) return
             this.items.clear()
-            this.items.addAll(data ?: emptyList())
+            this.items.addAll(data)
             //单选模式下, 设置预选位置
-            if (mConfig.setting.isCheckSingle()) {
+            if (items.isNotEmpty() && mConfig.setting.isCheckSingle()) {
                 preSelectIndex = items.indexOfFirst { it.isChecked }
                 if (preSelectIndex < 0) preSelectIndex = 0 //防止 indexOfFirst 返回 -1 导致的数组越界
                 currentSelectedItem = items[preSelectIndex]

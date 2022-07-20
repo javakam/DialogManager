@@ -181,43 +181,45 @@ class OptionView @JvmOverloads constructor(
                             }
                         }
                     }
-                    holder.checkBox?.setOnClickListener {
-                        val isChecked = (it as CheckBox).isChecked
-                        val position = getRealPosition(holder)
-                        val itemSheet = items[position]
-                        if (mConfig.setting.isCheckSingle()) {
-                            if (currentSelectedItem != itemSheet) {
-                                currentSelectedItem?.isChecked = false
-                                //取消之前的选项 notifyItemChanged(preSelectIndex,1)
-                                view.post {
-                                    notifyDataSetChanged()
-                                    itemSheet.isChecked = isChecked
-                                    preSelectIndex = position
-                                    currentSelectedItem = itemSheet
-                                }
+                    holder.checkBox?.setOnClickListener(object : NoShakeListener(600) {
+                        override fun onSingleClick(v: View) {
+                            val isChecked = (v as CheckBox).isChecked
+                            val position = getRealPosition(holder)
+                            val itemSheet = items[position]
+                            if (mConfig.setting.isCheckSingle()) {
+                                if (currentSelectedItem != itemSheet) {
+                                    currentSelectedItem?.isChecked = false
+                                    //取消之前的选项 notifyItemChanged(preSelectIndex,1)
+                                    view.post {
+                                        notifyDataSetChanged()
+                                        itemSheet.isChecked = isChecked
+                                        preSelectIndex = position
+                                        currentSelectedItem = itemSheet
+                                    }
 
-                                //由 ItemView 触发
-                                performSingleCheckDirectReturn(mConfig, holder.checkBox) {
-                                    listener?.onItemSelected(itemSheet)
-                                }
-                            } else {
-                                if (isChecked) {
-                                    //单选时,点击已经选中的 CheckBox 时处理
+                                    //由 ItemView 触发
                                     performSingleCheckDirectReturn(mConfig, holder.checkBox) {
                                         listener?.onItemSelected(itemSheet)
                                     }
+                                } else {
+                                    if (isChecked) {
+                                        //单选时,点击已经选中的 CheckBox 时处理
+                                        performSingleCheckDirectReturn(mConfig, holder.checkBox) {
+                                            listener?.onItemSelected(itemSheet)
+                                        }
+                                    }
                                 }
+                            } else {
+                                itemSheet.isChecked = isChecked
+                                view.post { notifyDataSetChanged() }
                             }
-                        } else {
-                            itemSheet.isChecked = isChecked
-                            view.post { notifyDataSetChanged() }
-                        }
 //                        Log.e(
 //                            "123", "pos=$position preSelectIndex=$preSelectIndex " +
 //                                    " ${currentSelectedItem?.title} ${currentSelectedItem?.isChecked} ;" +
 //                                    " ${itemSheet.title} ${itemSheet.isChecked}"
 //                        )
-                    }
+                        }
+                    })
                 }
 
                 view.setOnClickListener(object : NoShakeListener(500) {

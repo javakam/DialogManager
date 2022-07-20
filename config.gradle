@@ -11,7 +11,7 @@ ext {
             versionCore       : "5.0.0",
             versionUsage      : "5.0.0",
             versionBottomSheet: "5.0.0",
-            versionOptionList : "5.9.0"
+            versionOptionList : "5.9.1"
     ]
 
 }

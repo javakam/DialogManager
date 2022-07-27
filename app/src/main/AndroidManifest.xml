@@ -12,7 +12,10 @@
         android:theme="@style/Theme.DialogManager"
         tools:ignore="AllowBackup">
         <activity
-            android:name="ando.dialog.sample.MainActivity"
+            android:name=".OptionViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,19 +23,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ConfigurationActivity"
             android:configChanges="uiMode|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize" />
-
         <activity
             android:name=".EditTextActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
-
         <activity
             android:name=".ModalActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
-
     </application>
 
 </manifest>

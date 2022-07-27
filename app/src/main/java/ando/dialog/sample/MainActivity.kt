@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<Button>(R.id.bt_dialog_configuration).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_edit_text).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_bottom_sheet).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_option_list_single).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_option_list_multi).setOnClickListener(this)
 
     }
 
@@ -65,6 +67,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_dialog_configuration -> showDialogConfiguration()
             R.id.bt_dialog_edit_text -> showDialogEditText()
             R.id.bt_dialog_bottom_sheet -> showBottomSheet()
+            R.id.bt_option_list_single -> OptionViewActivity.open(this, isMultiChoiceMode = false)
+            R.id.bt_option_list_multi -> OptionViewActivity.open(this, isMultiChoiceMode = true)
         }
     }
 

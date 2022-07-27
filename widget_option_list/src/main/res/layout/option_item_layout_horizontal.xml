@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
+    android:descendantFocusability="blocksDescendants"
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:orientation="horizontal"
@@ -36,15 +38,15 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@id/id_ando_bottom_sheet_item_check_box"
         android:layout_width="@dimen/dimen_ando_option_item_checkbox"
         android:layout_height="@dimen/dimen_ando_option_item_checkbox"
-        android:background="@drawable/sel_ando_option_checkbox"
         android:button="@null"
         android:checked="false"
         android:padding="0dp"
         android:visibility="invisible"
+        app:srcCompat="@drawable/sel_ando_option_checkbox"
         tools:visibility="visible" />
 
 </LinearLayout>

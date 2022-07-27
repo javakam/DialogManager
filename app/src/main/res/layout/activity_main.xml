@@ -104,6 +104,41 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
+            android:text="OptionView"
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
+            android:background="#ABABAB" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_option_list_single"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="列表单选"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_option_list_multi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="列表多选"
+            android:textAllCaps="false" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="15dp"
             android:text="Others"
             android:textAllCaps="false"
             android:textColor="@color/black"

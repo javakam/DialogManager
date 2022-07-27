@@ -18,6 +18,6 @@
     <dimen name="dimen_ando_option_item_hor_image_margin_end">15dp</dimen>
     <dimen name="dimen_ando_option_item_padding">15dp</dimen>
     <dimen name="dimen_ando_option_item_text">15sp</dimen>
-    <dimen name="dimen_ando_option_item_checkbox">19dp</dimen>
+    <dimen name="dimen_ando_option_item_checkbox">22dp</dimen>
 
 </resources>

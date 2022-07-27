@@ -5,13 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import java.util.ArrayList
 import kotlin.math.abs
 
 /**
@@ -34,7 +33,7 @@ class OptionView @JvmOverloads constructor(
     }
 
     private lateinit var mConfig: OptConfig
-    private lateinit var mAdapter: Adapter
+    private lateinit var mAdapter: CheckAdapter
     private var isCheckShow: Boolean = false
     private var onItemViewCallBack: OnItemViewCallBack? = null
     private var onItemClickListener: OnItemClickListener? = null
@@ -90,7 +89,18 @@ class OptionView @JvmOverloads constructor(
         } else LinearLayoutManager(context)
 
         if (!this::mAdapter.isInitialized) {
-            this.mAdapter = Adapter(this.onItemClickListener)
+            this.mAdapter = CheckAdapter()
+
+            this.mAdapter.selectMode = if (mConfig.setting.isCheckSingle()) EasyAdapter.SelectMode.SINGLE_SELECT
+            else EasyAdapter.SelectMode.MULTI_SELECT
+
+            this.mAdapter.setOnItemSingleSelectListener { itemPosition, isSelected ->
+                Toast.makeText(
+                    context,
+                    "selectedPosition:" + itemPosition + " == " + mAdapter.singleSelectedPosition + ";isSelected=$isSelected",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
         //没有数据时候, 会有 Adapter.Title
         if (data.isNullOrEmpty()) visibility = View.GONE else {
@@ -123,12 +133,11 @@ class OptionView @JvmOverloads constructor(
         return emptyList()
     }
 
-    private inner class Adapter(private val listener: OnItemClickListener?) : RecyclerView.Adapter<ViewHolder>() {
+    private inner class CheckAdapter : EasyAdapter<ViewHolder>() {
         private var title: String? = null
         private val items = ArrayList<OptionItem>()
         private var currentSelectedItem: OptionItem? = null
         private var preSelectIndex: Int = 0
-
         fun applyConfig(data: List<OptionItem>?) {
             this.title = mConfig.title
             if (data.isNullOrEmpty()) return
@@ -143,106 +152,6 @@ class OptionView @JvmOverloads constructor(
         }
 
         fun getItems(): List<OptionItem> = items
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            if (viewType == VIEW_TYPE_TITLE) {
-                val header = LayoutInflater.from(parent.context).inflate(mConfig.titleLayoutResource, parent, false)
-                onItemViewCallBack?.onHeaderCreated(header)
-                return TitleViewHolder(header)
-            }
-
-            if (viewType == VIEW_TYPE_ITEM) {
-                val view = LayoutInflater.from(parent.context).inflate(
-                    mConfig.itemLayoutResource, parent, false
-                )
-                onItemViewCallBack?.onItemCreated(view)
-                val holder = ItemViewHolder(view)
-                val isHorizontal = (mConfig.setting.isItemViewHorizontal)
-                if (isCheckShow && isHorizontal) {
-                    holder.setIsHorizontal(isHorizontal)
-                    holder.setCheckMode(isCheckShow)
-                    //至少选择一项
-                    holder.checkBox?.setOnCheckedChangeListener { buttonView, isChecked ->
-                        if (!isChecked && !mConfig.setting.isCheckAllowNothing) {
-                            if (mConfig.setting.isCheckSingle()) {
-                                if (currentSelectedItem == items[getRealPosition(holder)]) {
-                                    buttonView.isChecked = true
-                                }
-                            } else {
-                                //多选
-                                if (items.filter { it.isChecked }.size > 1) {
-                                    return@setOnCheckedChangeListener
-                                }
-                                items.find { it.isChecked }?.let {
-                                    if (it == items[getRealPosition(holder)]) {
-                                        buttonView.isChecked = true
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    holder.checkBox?.setOnClickListener(object : NoShakeListener(600) {
-                        override fun onSingleClick(v: View) {
-                            val isChecked = (v as CheckBox).isChecked
-                            val position = getRealPosition(holder)
-                            val itemSheet = items[position]
-                            if (mConfig.setting.isCheckSingle()) {
-                                if (currentSelectedItem != itemSheet) {
-                                    currentSelectedItem?.isChecked = false
-                                    //取消之前的选项 notifyItemChanged(preSelectIndex,1)
-                                    view.post {
-                                        notifyDataSetChanged()
-                                        itemSheet.isChecked = isChecked
-                                        preSelectIndex = position
-                                        currentSelectedItem = itemSheet
-                                    }
-
-                                    //由 ItemView 触发
-                                    performSingleCheckDirectReturn(mConfig, holder.checkBox) {
-                                        listener?.onItemSelected(itemSheet)
-                                    }
-                                } else {
-                                    if (isChecked) {
-                                        //单选时,点击已经选中的 CheckBox 时处理
-                                        performSingleCheckDirectReturn(mConfig, holder.checkBox) {
-                                            listener?.onItemSelected(itemSheet)
-                                        }
-                                    }
-                                }
-                            } else {
-                                itemSheet.isChecked = isChecked
-                                view.post { notifyDataSetChanged() }
-                            }
-//                        Log.e(
-//                            "123", "pos=$position preSelectIndex=$preSelectIndex " +
-//                                    " ${currentSelectedItem?.title} ${currentSelectedItem?.isChecked} ;" +
-//                                    " ${itemSheet.title} ${itemSheet.isChecked}"
-//                        )
-                        }
-                    })
-                }
-
-                view.setOnClickListener(object : NoShakeListener(500) {
-                    override fun onSingleClick(v: View) {
-                        if (isCheckShow && isHorizontal && mConfig.setting.isCheckTriggerByItemView) {
-                            holder.checkBox?.performClick()//not toggle
-                        }
-                        listener?.onItemSelected(items[getRealPosition(holder)])
-                    }
-                })
-                return holder
-            }
-            throw IllegalStateException("Can't recognize this type")
-        }
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            val correctPosition = if (title == null) position else position - 1
-            if (holder is ItemViewHolder) {
-                holder.bind(items[correctPosition])
-            } else if (holder is TitleViewHolder) {
-                holder.bind(title)
-            }
-        }
 
         override fun getItemCount(): Int {
             return if (title == null) items.size else items.size + 1
@@ -259,27 +168,77 @@ class OptionView @JvmOverloads constructor(
             return if (title != null) holder.adapterPosition - 1 else holder.adapterPosition
         }
 
-        private fun performSingleCheckDirectReturn(config: OptConfig, checkBox: CheckBox?, block: () -> Unit) {
-            //由 ItemView 触发
-            if (!config.setting.isCheckAllowNothing && config.setting.isCheckTriggerByItemView) {
-                checkBox?.isChecked = true
-                checkBox?.postDelayed({ block() }, 30)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            if (viewType == VIEW_TYPE_TITLE) {
+                val header = LayoutInflater.from(parent.context).inflate(mConfig.titleLayoutResource, parent, false)
+                onItemViewCallBack?.onHeaderCreated(header)
+                return TitleViewHolder(header)
             }
+
+            if (viewType == VIEW_TYPE_ITEM) {
+                val view = LayoutInflater.from(parent.context).inflate(mConfig.itemLayoutResource, parent, false)
+                onItemViewCallBack?.onItemCreated(view)
+                val holder = ItemViewHolder(view)
+                val isHorizontal = (mConfig.setting.isItemViewHorizontal)
+                if (isCheckShow && isHorizontal) {
+                    holder.setIsHorizontal(isHorizontal)
+                    holder.setShowCheckBox(isCheckShow)
+                    //至少选择一项
+                    //holder.ivCheckBox?.
+                }
+                return holder
+            }
+            throw IllegalStateException("Can't recognize this type")
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            /////////////////////////// EasyAdapter.onBindViewHolder 是没有 Title, 需要调整下 position ///////////////////////////
+            //super.onBindViewHolder(holder, position)
+            val correctPosition = if (title == null) position else position - 1
+            holder.itemView.tag = correctPosition
+            holder.itemView.setOnClickListener(this)
+            when (selectMode) {
+                SelectMode.CLICK -> { //点击
+                    holder.itemView.isSelected = false
+                }
+                SelectMode.SINGLE_SELECT -> { //单选
+                    holder.itemView.isSelected = singleSelected == correctPosition
+                }
+                SelectMode.MULTI_SELECT -> { //多选
+                    holder.itemView.isSelected = multiSelectedPosition.contains(correctPosition)
+                }
+                else -> {}
+            }
+            /////////////////////////// END ///////////////////////////
+
+            if (holder is ItemViewHolder) {
+                holder.bind(items[correctPosition])
+
+                val isSelected = isSelected(correctPosition)
+                holder.ivCheckBox?.isSelected = isSelected
+                items[correctPosition].isChecked = isSelected  //修改 Bean 的 Check 状态
+                //Log.w("123", "vh = $correctPosition -> $isSelected -> haveTitle=${(title == null)}")
+            } else if (holder is TitleViewHolder) {
+                holder.bind(title)
+            }
+        }
+
+        override fun whenBindViewHolder(holder: ViewHolder?, position: Int) {
         }
     }
 
     internal class ItemViewHolder(itemView: View) : ViewHolder(itemView) {
-        private var isHorizontal: Boolean = false
-        private var isCheckShow: Boolean = false
-        private var tvTitle: TextView? = null
-        private var ivIcon: ImageView? = null
-        internal var checkBox: CheckBox? = null
+        var isHorizontal: Boolean = false
+        var isCheckShow: Boolean = false
+        var tvTitle: TextView? = null
+        var ivIcon: ImageView? = null
+        var ivCheckBox: ImageView? = null
 
         fun setIsHorizontal(isHorizontal: Boolean) {
             this.isHorizontal = isHorizontal
         }
 
-        fun setCheckMode(isCheckShow: Boolean) {
+        fun setShowCheckBox(isCheckShow: Boolean) {
             this.isCheckShow = isCheckShow
         }
 
@@ -299,15 +258,15 @@ class OptionView @JvmOverloads constructor(
             }
 
             if (isCheckShow && isHorizontal) {
-                if (checkBox?.visibility == View.INVISIBLE) checkBox?.visibility = View.VISIBLE
-                checkBox?.isChecked = item.isChecked
-            } else checkBox?.visibility = View.INVISIBLE
+                if (ivCheckBox?.visibility == View.INVISIBLE) ivCheckBox?.visibility = View.VISIBLE
+                ivCheckBox?.isSelected = item.isChecked
+            } else ivCheckBox?.visibility = View.INVISIBLE
         }
 
         init {
             tvTitle = itemView.findViewById(R.id.id_ando_bottom_sheet_item_title)
             ivIcon = itemView.findViewById(R.id.id_ando_bottom_sheet_item_icon)
-            checkBox = itemView.findViewById(R.id.id_ando_bottom_sheet_item_check_box)
+            ivCheckBox = itemView.findViewById(R.id.id_ando_bottom_sheet_item_check_box)
             check(!(tvTitle == null && ivIcon == null)) {
                 "At least define a TextView with id 'id_ando_bottom_sheet_item_title' or an ImageView with id 'id_ando_bottom_sheet_item_icon' in the item resource"
             }
@@ -315,7 +274,7 @@ class OptionView @JvmOverloads constructor(
     }
 
     internal class TitleViewHolder(itemView: View) : ViewHolder(itemView) {
-        private var text: TextView? = null
+        var text: TextView? = null
         fun bind(header: String?) {
             text?.text = header
         }

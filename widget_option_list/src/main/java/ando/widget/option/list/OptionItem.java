@@ -34,6 +34,15 @@ public class OptionItem implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return "OptionItem{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", isChecked=" + isChecked +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

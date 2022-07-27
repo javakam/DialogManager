@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -94,12 +93,8 @@ class OptionView @JvmOverloads constructor(
             this.mAdapter.selectMode = if (mConfig.setting.isCheckSingle()) EasyAdapter.SelectMode.SINGLE_SELECT
             else EasyAdapter.SelectMode.MULTI_SELECT
 
-            this.mAdapter.setOnItemSingleSelectListener { itemPosition, isSelected ->
-                Toast.makeText(
-                    context,
-                    "selectedPosition:" + itemPosition + " == " + mAdapter.singleSelectedPosition + ";isSelected=$isSelected",
-                    Toast.LENGTH_SHORT
-                ).show()
+            this.mAdapter.setOnItemSingleSelectListener { itemPosition, _ ->
+                this.onItemClickListener?.onItemSelected(mAdapter.getItems()[itemPosition])
             }
         }
         //没有数据时候, 会有 Adapter.Title
@@ -136,18 +131,24 @@ class OptionView @JvmOverloads constructor(
     private inner class CheckAdapter : EasyAdapter<ViewHolder>() {
         private var title: String? = null
         private val items = ArrayList<OptionItem>()
-        private var currentSelectedItem: OptionItem? = null
-        private var preSelectIndex: Int = 0
         fun applyConfig(data: List<OptionItem>?) {
             this.title = mConfig.title
             if (data.isNullOrEmpty()) return
             this.items.clear()
             this.items.addAll(data)
-            //单选模式下, 设置预选位置
-            if (items.isNotEmpty() && mConfig.setting.isCheckSingle()) {
-                preSelectIndex = items.indexOfFirst { it.isChecked }
-                if (preSelectIndex < 0) preSelectIndex = 0 //防止 indexOfFirst 返回 -1 导致的数组越界
-                currentSelectedItem = items[preSelectIndex]
+            //设置预选位置
+            if (items.isNotEmpty()) {
+                if (mConfig.setting.isCheckSingle()) {//单选
+                    var preSelectIndex: Int = items.indexOfFirst { it.isChecked }
+                    if (preSelectIndex < 0) preSelectIndex = 0 //防止 indexOfFirst 返回 -1 导致的数组越界
+                    setSelected(preSelectIndex)
+                } else {//多选
+                    var preSelectIndexList = intArrayOf()
+                    items.forEachIndexed { i, item ->
+                        if (item.isChecked) preSelectIndexList = preSelectIndexList.plus(i)
+                    }
+                    if (preSelectIndexList.isNotEmpty()) setSelected(*preSelectIndexList)
+                }
             }
         }
 
@@ -202,7 +203,7 @@ class OptionView @JvmOverloads constructor(
                     holder.itemView.isSelected = false
                 }
                 SelectMode.SINGLE_SELECT -> { //单选
-                    holder.itemView.isSelected = singleSelected == correctPosition
+                    holder.itemView.isSelected = (singleSelected == correctPosition)
                 }
                 SelectMode.MULTI_SELECT -> { //多选
                     holder.itemView.isSelected = multiSelectedPosition.contains(correctPosition)

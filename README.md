@@ -12,10 +12,10 @@
 🍎🍎🍎 很轻量, 目前总共只有五个类 (Very lightweight, currently there are only five classes)
 
 ```groovy
-implementation 'com.github.javakam:dialog.core:5.0.0@aar'        //15KB, 核心
-implementation 'com.github.javakam:dialog.usage:5.0.0@aar'       //25KB, 常用样式(如: 加载中弹窗)
-implementation 'com.github.javakam:dialog.bottomsheet:5.0.0@aar' //23KB, 底部弹窗, 可以单独使用
-implementation 'com.github.javakam:widget.optionview:5.1.0@aar'  //RecyclerView实现的单选/多选列表
+implementation 'com.github.javakam:dialog.core:6.0.0@aar'        //15KB, 核心
+implementation 'com.github.javakam:dialog.usage:6.0.0@aar'       //25KB, 常用样式(如: 加载中弹窗)
+implementation 'com.github.javakam:dialog.bottomsheet:6.0.0@aar' //23KB, 底部弹窗, 可以单独使用
+implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //RecyclerView实现的单选/多选列表
 ```
 
 ## 三、用法(Usage)

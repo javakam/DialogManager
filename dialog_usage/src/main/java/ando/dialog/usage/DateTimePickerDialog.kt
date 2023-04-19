@@ -89,7 +89,9 @@ class DateTimePickerDialog : BaseDialogFragment() {
         }
 
         mTpTime.setIs24HourView(true)
+        @Suppress("DEPRECATION")
         mTpTime.currentHour = Utils.getHour(getDate())
+        @Suppress("DEPRECATION")
         mTpTime.currentMinute = Utils.getMinute(getDate())
         mTpTime.setOnTimeChangedListener { v, hourOfDay, minute ->
             mCallBack?.onTimeChanged(v, hourOfDay, minute)
@@ -110,8 +112,8 @@ class DateTimePickerDialog : BaseDialogFragment() {
             calendar.set(Calendar.DAY_OF_MONTH, day)
 
             //Time
-            val hour = mTpTime.currentHour
-            val minute = mTpTime.currentMinute
+            @Suppress("DEPRECATION") val hour = mTpTime.currentHour
+            @Suppress("DEPRECATION") val minute = mTpTime.currentMinute
             calendar.set(Calendar.HOUR_OF_DAY, hour)
             calendar.set(Calendar.MINUTE, minute)
             val time = calendar.time

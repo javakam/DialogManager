@@ -15,9 +15,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class ModalActivity : AppCompatActivity() {
-
     var dismissibleDialog: ModalBottomSheetDialogFragment? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modal)

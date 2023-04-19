@@ -36,7 +36,7 @@
 
     <!-- ==================== LoadingDialog中ProgressBar、ImageView和文字样式 ==================== -->
     <string name="str_ando_dialog_loading_text">加载中…</string>
-    <dimen name="dimen_ando_dialog_loading_width">150dp</dimen>
+    <dimen name="dimen_ando_dialog_loading_width">120dp</dimen>
     <dimen name="dimen_ando_dialog_loading_height">108dp</dimen>
     <dimen name="dimen_ando_dialog_loading_radius">5dp</dimen>
     <color name="color_ando_dialog_loading_bg">#80000000</color>
@@ -45,8 +45,8 @@
     <integer name="integer_ando_dialog_loading_duration">1300</integer>
 
     <style name="AndoLoadingDialogProgressBarStyle">
-        <item name="android:layout_width">35dp</item>
-        <item name="android:layout_height">35dp</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
         <item name="android:indeterminateDrawable">@drawable/rotate_ando_dialog_loading</item>
         <item name="android:indeterminateDuration">@integer/integer_ando_dialog_loading_duration
         </item>
@@ -57,8 +57,8 @@
     </style>
 
     <style name="AndoLoadingDialogImageViewStyle">
-        <item name="android:layout_width">40dp</item>
-        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">30dp</item>
+        <item name="android:layout_height">30dp</item>
         <item name="android:scaleType">centerCrop</item>
         <item name="android:tint">@android:color/white</item>
         <item name="android:src">@drawable/ic_ando_dialog_loading_point</item>
@@ -67,7 +67,7 @@
     <style name="AndoLoadingDialogTextStyle">
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginTop">18dp</item>
         <item name="android:text">@string/str_ando_dialog_loading_text</item>
         <item name="android:textColor">@android:color/white</item>
     </style>

@@ -18,8 +18,7 @@ fun loadingDialog(context: Context): DialogManager =
         .setContentView(R.layout.layout_ando_dialog_loading) { v ->
             val image: ImageView = v.findViewById(R.id.iv_ando_dialog_loading)
             image.visibility = View.VISIBLE
-            val anim =
-                AnimationUtils.loadAnimation(context, R.anim.anim_ando_dialog_loading)
+            val anim = AnimationUtils.loadAnimation(context, R.anim.anim_ando_dialog_loading)
             image.startAnimation(anim)
         }
         .setDimmedBehind(true)

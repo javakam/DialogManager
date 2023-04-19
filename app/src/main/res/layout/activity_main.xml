@@ -3,12 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fadeScrollbars="false"
     android:overScrollMode="always"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
+    android:scrollbarSize="8dp"
+    android:scrollbarStyle="insideInset"
+    android:scrollbars="vertical"
     tools:context="ando.dialog.sample.MainActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -34,34 +39,28 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
             android:text="Dialog"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/teal_700"
             android:textSize="13sp"
             android:textStyle="bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="10dp"
-            android:background="#ABABAB" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_loading_progressbar_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="加载中弹窗(LoadingDialog)\nProgressBar + png"
-            android:textAllCaps="false" />
+            android:text="加载中弹窗(LoadingDialog): ProgressBar + png"
+            android:textAllCaps="false"
+            android:textSize="13sp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_loading_imageview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="加载中弹窗(LoadingDialog)\nImageView + AnimationUtils"
-            android:textAllCaps="false" />
+            android:text="加载中弹窗(LoadingDialog): ImageView + AnimationUtils"
+            android:textAllCaps="false"
+            android:textSize="13sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -69,20 +68,12 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
             android:text="DialogFragment"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/teal_700"
             android:textSize="13sp"
             android:textStyle="bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="10dp"
-            android:background="#ABABAB" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_dialog_fragment_usage"
@@ -104,20 +95,12 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
+            android:layout_marginBottom="5dp"
             android:text="OptionView"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/teal_700"
             android:textSize="13sp"
             android:textStyle="bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="10dp"
-            android:background="#ABABAB" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/bt_option_list_single"
@@ -139,26 +122,18 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="15dp"
-            android:text="Others"
+            android:layout_marginBottom="5dp"
+            android:text="其它用例(Other use cases)"
             android:textAllCaps="false"
-            android:textColor="@color/black"
+            android:textColor="@color/teal_700"
             android:textSize="13sp"
             android:textStyle="bold" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginBottom="10dp"
-            android:background="#ABABAB" />
-
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_dialog_replace"
+            android:id="@+id/bt_dialog_bottom_sheet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="替换弹窗(replaceDialog)"
+            android:text="菜单弹窗(BottomSheet)"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -190,10 +165,10 @@
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/bt_dialog_bottom_sheet"
+            android:id="@+id/bt_dialog_replace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BottomSheet"
+            android:text="替换弹窗(replaceDialog)"
             android:textAllCaps="false" />
 
     </LinearLayout>

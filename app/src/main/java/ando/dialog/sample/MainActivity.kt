@@ -9,6 +9,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,12 +18,15 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.Window
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 import java.util.*
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
 
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+    private val mActivityContainer: LinearLayout by lazy { findViewById(R.id.linearLayout) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -75,7 +79,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     /**
      * 动态改变显示中的Dialog位置/宽高/动画等
      */
-    private fun changeDialogSize() {
+    private fun changeDialogSize(delayMillis: Long = 1500) {
         findViewById<View>(R.id.bt_loading_progressbar_imageview).postDelayed({
             if (!DialogManager.isShowing()) return@postDelayed
 
@@ -90,29 +94,57 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             //or 直接移除背景变暗(Directly remove the background darkening)
             //DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
 
-        }, 1500)
+        }, delayMillis)
     }
 
+    //加载中弹窗(LoadingDialog): ProgressBar + png
     private fun showLoadingDialogByProgressBarImageView() {
+        showSnackbar(text = "六秒后动态改变窗口!", gravity = Gravity.TOP, duration = 5000)
+
         DialogManager.with(this, R.style.AndoLoadingDialog)
             .setContentView(R.layout.layout_ando_dialog_loading) { v ->
-                v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility =
-                    View.VISIBLE
+                v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
             }
-            .setAnimationId(R.style.AndoBottomDialogAnimation)
+            //.setAnimationId(R.style.AndoBottomDialogAnimation)
             .setCancelable(true)
             .setCanceledOnTouchOutside(true)
             .setDimAmount(0.7F)
             .setOnDismissListener {}
             .show()
 
-        changeDialogSize()
+        //过n秒改变窗口样式
+        //changeDialogSize(delayMillis = 6000)
+        findViewById<View>(R.id.bt_loading_progressbar_imageview).postDelayed({
+            //实用性用法, 动态改变窗口文本: "加载中" -> "已完成"
+            DialogManager.contentView?.findViewById<TextView>(R.id.tv_ando_dialog_loading_text)?.text = "已完成"
+
+            //实用性用法, 动态改变转圈儿图片
+            DialogManager.contentView?.findViewById<ProgressBar>(ando.dialog.usage.R.id.progressbar_ando_dialog_loading)?.visibility =
+                View.GONE
+            val image: ImageView? = DialogManager.contentView?.findViewById(ando.dialog.usage.R.id.iv_ando_dialog_loading)
+            image?.visibility = View.VISIBLE
+            val anim = AnimationUtils.loadAnimation(this, ando.dialog.usage.R.anim.anim_ando_dialog_loading)
+            image?.startAnimation(anim)
+
+            //改变弹窗宽高(Change the width and height of the dialog)
+            DialogManager.setWidth(280)
+            DialogManager.setHeight(280)
+            DialogManager.applySize()
+
+            //控制背景亮度(Control background brightness)
+            DialogManager.setDimAmount(0.3F)
+            DialogManager.applyDimAmount()
+            //or 直接移除背景变暗(Directly remove the background darkening)
+            //DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+
+        }, 6000)
     }
 
+    //加载中弹窗(LoadingDialog): ImageView + AnimationUtils
     private fun showLoadingDialogByImageView() {
         loadingDialog(this)
             .setDimmedBehind(false)
-            .setCanceledOnTouchOutside(false)
+            .setCanceledOnTouchOutside(true)
             .setSize(390, 280)
             .setOnShowListener {
                 findViewById<View>(R.id.bt_loading_imageview).postDelayed({
@@ -131,6 +163,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //changeDialogSize()
     }
 
+    //简单用法(Simple usage)
     private fun showDialogFragmentSimpleUsage() {
         DialogManager.with(this, R.style.AndoLoadingDialog)
             .useDialogFragment()
@@ -148,6 +181,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         changeDialogSize()
     }
 
+    //日期/时间选择器(DateTimePicker)
     private fun showDateTimePickerDialog() {
         DialogManager.dismiss()
         //支持三种类型: Y_M_D , Y_M_D_H_M , H_M
@@ -186,6 +220,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         //timeDialog.show(this)
     }
 
+    //替换弹窗(replaceDialog)
     private fun replaceDialog() {
         val externalDialog = Dialog(this, android.R.style.Theme_Dialog)
 
@@ -208,6 +243,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         changeDialogSize()
     }
 
+    //底部弹窗(BottomDialog)
     private fun showBottomDialog() {
         val bottomDialog = CustomBottomDialog(this)
         DialogManager.replaceDialog(bottomDialog)
@@ -233,6 +269,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         override fun getLayoutId(): Int = R.layout.layout_dialog_bottom
     }
 
+    //进度弹窗(ProgressDialog)
     @Suppress("DEPRECATION")
     private fun showProgressDialog() {
         val progressDialog = ProgressDialog(this, R.style.AndoLoadingDialogLight)
@@ -280,14 +317,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }.start()
     }
 
+    //旋屏测试(Rotating Screen Test)
     private fun showDialogConfiguration() {
         startActivity(Intent(this, ConfigurationActivity::class.java))
     }
 
+    //输入框(EditText)
     private fun showDialogEditText() {
         startActivity(Intent(this, EditTextActivity::class.java))
     }
 
+    //BottomSheet
     private fun showBottomSheet() {
         startActivity(Intent(this, ModalActivity::class.java))
 //        val builder = BottomSheet.BottomGridSheetBuilder(this)
@@ -328,5 +368,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 //            }
 //
 //        builder.build().show()
+    }
+
+    private fun showSnackbar(text: String, gravity: Int = Gravity.TOP, duration: Int = 5000) {
+        val snackbar = Snackbar.make(mActivityContainer, text, Snackbar.LENGTH_INDEFINITE)
+        val snackbarView = snackbar.view
+        val params = snackbarView.layoutParams as FrameLayout.LayoutParams
+        params.gravity = gravity or Gravity.CENTER_HORIZONTAL
+        snackbarView.layoutParams = params
+        snackbar.setBackgroundTint(Color.DKGRAY)
+        snackbar.setTextColor(Color.WHITE)
+        snackbar.duration = duration
+        snackbar.show()
     }
 }

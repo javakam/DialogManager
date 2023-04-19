@@ -1,21 +1,18 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
 }
 
-def config = rootProject.ext.android
-
 android {
-    compileSdkVersion config.compileSdkVersion
-    buildToolsVersion config.buildToolsVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
-        minSdkVersion config.minSdkVersion
-        targetSdkVersion config.targetSdkVersion
-        versionCode config.versionCode
-        versionName config.versionName
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
+        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildTypes {
@@ -24,34 +21,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    sourceSets {
-        main {
-            java {
-                java.srcDirs += 'src/main/kotlin'
-            }
-        }
-    }
     lintOptions {
-        checkReleaseBuilds false
         abortOnError false
     }
+    namespace 'ando.dialog.usage'
 }
 
 dependencies {
-    compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compileOnly 'androidx.appcompat:appcompat:1.4.0'
-    compileOnly project(':dialog_core')
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+
+    //implementation 'com.github.javakam:dialog.core:6.0.0@aar'
+    implementation project(':dialog_core')
 }
 
 ext {
     PUBLISH_ARTIFACT_ID = 'dialog.usage'
-    PUBLISH_VERSION = config.versionUsage
+    PUBLISH_VERSION = rootProject.ext.versionUsage
 }
 apply from: "${rootProject.projectDir}/publish.gradle"

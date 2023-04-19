@@ -1,6 +1,6 @@
+rootProject.name = "DialogManager"
 include ':dialog_bottom_sheet'
 include ':dialog_usage'
 include ':dialog_core'
 include ':app'
-rootProject.name = "DialogManager"
 include ':widget_option_list'

@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:background="@android:color/holo_blue_dark"
+    tools:background="@android:color/black"
     tools:ignore="UselessParent">
 
     <ProgressBar
@@ -28,6 +28,7 @@
         style="@style/AndoLoadingDialogTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:singleLine="true" />
+        android:gravity="center"
+        android:maxLines="2" />
 
 </LinearLayout>

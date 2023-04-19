@@ -40,7 +40,7 @@ import androidx.fragment.app.FragmentActivity
 object DialogManager {
 
     private var mContext: Context? = null
-    private var mThemeResId: Int = R.style.Theme_AppCompat_Dialog
+    private var mThemeResId: Int = android.R.style.Theme_Dialog
     private var mAnimResId: Int = 0
     private var mWidth: Int = -3
     private var mHeight: Int = -3
@@ -122,7 +122,7 @@ object DialogManager {
     private fun reset() {
         mContext = null
         isDialogType = true
-        mThemeResId = R.style.Theme_AppCompat_Dialog
+        mThemeResId = android.R.style.Theme_Dialog
         mAnimResId = 0
         mWidth = -3
         mHeight = -3
@@ -135,13 +135,14 @@ object DialogManager {
             if (!isContextIllegal(dialog)) {
                 try {
                     dialogFragment?.dismissAllowingStateLoss()
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 }
                 dialogFragment = null
 
                 dialog?.dismiss()
                 dialog = null
 
+                contentView = null
                 mContext = null
             }
         }
@@ -149,7 +150,7 @@ object DialogManager {
 
     fun with(
         context: Context,
-        @StyleRes themeResId: Int = R.style.Theme_AppCompat_Dialog
+        @StyleRes themeResId: Int = android.R.style.Theme_Dialog
     ): DialogManager {
         reset()
         dismiss()
@@ -379,7 +380,7 @@ object DialogManager {
             }
         }
 
-        //注: 对Dialog.Window的设置需要在显示后才有效果 ╮(╯▽╰)╭
+        //注: 对 Dialog.Window 的设置需要在显示后才有效果 ╮(╯▽╰)╭
         //Note: The setting of Dialog.Window needs to be effective after display .
         currentDialog()?.apply {
             window?.apply {

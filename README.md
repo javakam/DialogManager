@@ -15,71 +15,70 @@
 implementation 'com.github.javakam:dialog.core:6.0.0@aar'        //15KB, 核心
 implementation 'com.github.javakam:dialog.usage:6.0.0@aar'       //25KB, 常用样式(如: 加载中弹窗)
 implementation 'com.github.javakam:dialog.bottomsheet:6.0.0@aar' //23KB, 底部弹窗, 可以单独使用
-implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //RecyclerView实现的单选/多选列表
+implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //RecyclerView 实现的单/多选列表
 ```
 
 ## 三、用法(Usage)
 ```kotlin
-fun showLoadingDialog() {
-      DialogManager.with(this, R.style.AndoLoadingDialog) //建议设置一个主题样式 (It is recommended to set a theme style)
-          .useDialogFragment()//默认为`DialogFragment`实现, useDialog()表示由`Dialog`实现
-          .setContentView(R.layout.layout_ando_dialog_loading) { v -> //设置显示布局 (Set display layout)
-              v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
-          }
-          .setTitle("Title")//Need Config `<item name="android:windowNoTitle">false</item>`
-          .setWidth(200)//设置宽
-          .setHeight(200)//设置高
-          .setSize(200, 200)//设置宽高(Set width and height)
-          .setAnimationId(R.style.AndoBottomDialogAnimation)//设置动画(Set up animation)
-          .setCancelable(true)
-          .setCanceledOnTouchOutside(true)
-          .setDimAmount(0.7F) //设置背景透明度, 0 ~ 1 之间,0为透明,1为不透明. 只要该值不是 -1, 就会应用该值
-          .setDimmedBehind(false) //设置背景透明, false透明, true不透明
-          .addOnGlobalLayoutListener { width, height -> }//获取显示后的真实宽高
-          .setOnCancelListener {} //取消监听
-          .setOnDismissListener {}//关闭监听
-          .setOnKeyListener { dialog, keyCode, event -> true }//按键监听
-          .setOnShowListener {}//显示监听
-          .apply {
-              //显示之前配置,如:
-              //Display the previous configuration, such as:
-              //dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
-          }
-          .show()
-          .apply {
-              //显示之后配置, 效果和`setOnShowListener`相同
-              //Configure after display, the effect is the same as `setOnShowListener`
-          }
+fun showLoadingDialog() { //以加载中弹窗为例
+    DialogManager.with(this, R.style.AndoLoadingDialog) //建议设置一个主题样式 (It is recommended to set a theme style)
+        .useDialogFragment()//默认为`DialogFragment`实现, useDialog()表示由`Dialog`实现
+        .setContentView(R.layout.layout_ando_dialog_loading) { v -> //设置显示布局 (Set display layout)
+            v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
+        }
+        .setTitle("Title")//Need Config `<item name="android:windowNoTitle">false</item>`
+        .setWidth(200)//设置宽
+        .setHeight(200)//设置高
+        .setSize(200, 200)//设置宽高(Set width and height)
+        .setAnimationId(R.style.AndoBottomDialogAnimation)//设置动画(Set up animation)
+        .setCancelable(true)
+        .setCanceledOnTouchOutside(true)
+        .setDimAmount(0.7F) //设置背景透明度, 0 ~ 1 之间,0为透明,1为不透明. 只要该值不是 -1, 就会应用该值
+        .setDimmedBehind(false) //设置背景透明, false透明, true不透明
+        .addOnGlobalLayoutListener { width, height -> }//获取显示后的真实宽高
+        .setOnCancelListener {} //取消监听
+        .setOnDismissListener {}//关闭监听
+        .setOnKeyListener { dialog, keyCode, event -> true }//按键监听
+        .setOnShowListener {}//显示监听
+        .apply {
+            //显示之前配置,如:
+            //Display the previous configuration, such as:
+            //dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        }
+        .show()
+        .apply {
+            //显示之后配置, 效果和`setOnShowListener`相同
+            //Configure after display, the effect is the same as `setOnShowListener`
+        }
 
-      //Dialog是否正在显示
-      //Whether Dialog is showing
-      DialogManager.isShowing()
-
-      //Dialog显示后动态改变展示效果
-      //Dynamically change the display effect after Dialog is displayed
-      changeDialogSize()
-}
-
-/**
- * 动态改变显示中的Dialog位置/宽高/动画等
- * Dynamically change the width and height animation of the Dialog in the display, etc.
- */
-private fun changeDialogSize() {
-    View.postDelayed({
-        if (!DialogManager.isShowing()) return@postDelayed
-
-        //改变弹窗宽高 (Change the width and height of the dialog)
+    //Dialog是否正在显示
+    //Whether Dialog is showing
+    DialogManager.isShowing()
+    
+    //Dialog显示后动态改变展示效果
+    //The Dialog display dynamically changes the display effect
+    findViewById<View>(R.id.bt_loading_progressbar_imageview).postDelayed({
+        //实用性用法, 动态改变窗口文本: "加载中" -> "已完成"
+        DialogManager.contentView?.findViewById<TextView>(R.id.tv_ando_dialog_loading_text)?.text = "已完成"
+        
+        //实用性用法, 动态改变转圈儿图片
+        DialogManager.contentView?.findViewById<ProgressBar>(ando.dialog.usage.R.id.progressbar_ando_dialog_loading)?.visibility = View.GONE
+        val image: ImageView? = DialogManager.contentView?.findViewById(ando.dialog.usage.R.id.iv_ando_dialog_loading)
+        image?.visibility = View.VISIBLE
+        val anim = AnimationUtils.loadAnimation(this, ando.dialog.usage.R.anim.anim_ando_dialog_loading)
+        image?.startAnimation(anim)
+        
+        //改变弹窗宽高(Change the width and height of the dialog)
         DialogManager.setWidth(280)
         DialogManager.setHeight(280)
         DialogManager.applySize()
-
-        //控制背景亮度 (Control background brightness)
+        
+        //控制背景亮度(Control background brightness)
         DialogManager.setDimAmount(0.3F)
         DialogManager.applyDimAmount()
-        //or 直接移除背景变暗 (Directly remove the background darkening)
+        //or 直接移除背景变暗(Directly remove the background darkening)
         //DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-
-    }, 1500)
+    }, 6000)
 }
 ```
 

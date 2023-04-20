@@ -14,7 +14,7 @@
 ```groovy
 implementation 'com.github.javakam:dialog.core:6.0.0@aar'        //15KB, 核心
 implementation 'com.github.javakam:dialog.usage:6.0.0@aar'       //25KB, 常用样式(如: 加载中弹窗)
-implementation 'com.github.javakam:dialog.bottomsheet:6.0.0@aar' //23KB, 底部弹窗, 可以单独使用
+implementation 'com.github.javakam:dialog.bottomsheet:6.0.0@aar' //23KB, 底部弹窗(必需下面的 widget.optionview 框架)
 implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //RecyclerView 实现的单/多选列表
 ```
 
@@ -62,8 +62,8 @@ fun showLoadingDialog() { //以加载中弹窗为例
         DialogManager.contentView?.findViewById<TextView>(R.id.tv_ando_dialog_loading_text)?.text = "已完成"
         
         //实用性用法, 动态改变转圈儿图片
-        DialogManager.contentView?.findViewById<ProgressBar>(ando.dialog.usage.R.id.progressbar_ando_dialog_loading)?.visibility = View.GONE
-        val image: ImageView? = DialogManager.contentView?.findViewById(ando.dialog.usage.R.id.iv_ando_dialog_loading)
+        DialogManager.contentView?.findViewById<ProgressBar>(R.id.xxx)?.visibility = View.GONE
+        val image: ImageView? = DialogManager.contentView?.findViewById(R.id.xxx)
         image?.visibility = View.VISIBLE
         val anim = AnimationUtils.loadAnimation(this, ando.dialog.usage.R.anim.anim_ando_dialog_loading)
         image?.startAnimation(anim)
@@ -191,7 +191,6 @@ Dialog.window.setWindowAnimations(R.style.AndoBottomDialogAnimation)
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:orientation="vertical">
-
         ...
     </LinearLayout>
 </FrameLayout>

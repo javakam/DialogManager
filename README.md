@@ -27,7 +27,7 @@ implementation 'com.github.javakam:dialog.usage:6.0.0@aar' //常用样式(如: �
 
 ```groovy
 implementation 'com.github.javakam:dialog.bottomsheet:6.0.0@aar' //底部弹窗(必需下面的 widget.optionview 框架)
-implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //单选/多选的RecyclerView
+implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //单选/多选的RecyclerView,基于EasyAdapter实现
 ```
 
 ## 三、用法(Usage)

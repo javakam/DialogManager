@@ -33,15 +33,11 @@ implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //单选/多选
 ## 三、用法(Usage)
 
 ```kotlin
-fun showLoadingDialog() { //以加载中弹窗为例
-    DialogManager.with(
-        this,
-        R.style.AndoLoadingDialog
-    ) //建议设置一个主题样式 (It is recommended to set a theme style)
+fun showLoadingDialog() {//以加载中弹窗为例
+    DialogManager.with(this, R.style.AndoLoadingDialog)//建议设置主题样式(It is recommended to set the theme style)
         .useDialogFragment()//默认为`DialogFragment`实现, useDialog()表示由`Dialog`实现
         .setContentView(R.layout.layout_ando_dialog_loading) { v -> //设置显示布局 (Set display layout)
-            v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility =
-                View.VISIBLE
+            v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
         }
         .setTitle("Title")//Need Config `<item name="android:windowNoTitle">false</item>`
         .setWidth(200)//设置宽
@@ -82,8 +78,7 @@ fun showLoadingDialog() { //以加载中弹窗为例
         DialogManager.contentView?.findViewById<ProgressBar>(R.id.xxx)?.visibility = View.GONE
         val image: ImageView? = DialogManager.contentView?.findViewById(R.id.xxx)
         image?.visibility = View.VISIBLE
-        val anim =
-            AnimationUtils.loadAnimation(this, ando.dialog.usage.R.anim.anim_ando_dialog_loading)
+        val anim = AnimationUtils.loadAnimation(this, ando.dialog.usage.R.anim.anim_ando_dialog_loading)
         image?.startAnimation(anim)
 
         //改变弹窗宽高(Change the width and height of the dialog)

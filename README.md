@@ -23,11 +23,11 @@ implementation 'com.github.javakam:dialog.usage:6.0.0@aar' //常用样式(如: �
 
 2. 基于`BottomSheetDialogFragment`, 包括网格弹窗, 可用于第三方分享, 支持标题、顶部圆角和滑动设置; 列表样式弹窗, 支持单选和多选。
 
-> 支持单选/多选列表的框架'com.github.javakam:widget.optionview:xxx@aar'可以独立使用, 并非依附于Dialog实现。
+> 支持单选/多选的RecyclerView框架'com.github.javakam:widget.optionview:xxx@aar'可以独立使用, 可依附于任何`ViewGroup`。
 
 ```groovy
 implementation 'com.github.javakam:dialog.bottomsheet:6.0.0@aar' //底部弹窗(必需下面的 widget.optionview 框架)
-implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //单选/多选列表(RecyclerView实现)
+implementation 'com.github.javakam:widget.optionview:6.0.0@aar'  //单选/多选的RecyclerView
 ```
 
 ## 三、用法(Usage)

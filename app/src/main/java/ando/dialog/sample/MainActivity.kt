@@ -19,10 +19,18 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.animation.AnimationUtils
-import android.widget.*
+import android.widget.Button
+import android.widget.DatePicker
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.TimePicker
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
-import java.util.*
+import java.util.Date
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
@@ -37,6 +45,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         findViewById<Button>(R.id.bt_dialog_fragment_datetime).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_replace).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_bottom).setOnClickListener(this)
+        findViewById<Button>(R.id.bt_dialog_bottom_activity).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_progress_param).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_configuration).setOnClickListener(this)
         findViewById<Button>(R.id.bt_dialog_edit_text).setOnClickListener(this)
@@ -67,6 +76,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             R.id.bt_dialog_fragment_datetime -> showDateTimePickerDialog()
             R.id.bt_dialog_replace -> replaceDialog()
             R.id.bt_dialog_bottom -> showBottomDialog()
+            R.id.bt_dialog_bottom_activity -> showBottomDialogActivity()
             R.id.bt_dialog_progress_param -> showProgressDialog()
             R.id.bt_dialog_configuration -> showDialogConfiguration()
             R.id.bt_dialog_edit_text -> showDialogEditText()
@@ -103,27 +113,29 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         DialogManager.with(this, R.style.AndoLoadingDialog)
             .setContentView(R.layout.layout_ando_dialog_loading) { v ->
-                v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
+                v.findViewById<ProgressBar>(R.id.progressbar_ando_dialog_loading).visibility =
+                    View.VISIBLE
             }
             //.setAnimationId(R.style.AndoBottomDialogAnimation)
-            .setCancelable(true)
-            .setCanceledOnTouchOutside(true)
-            .setDimAmount(0.7F)
-            .setOnDismissListener {}
-            .show()
+            .setCancelable(true).setCanceledOnTouchOutside(true).setDimAmount(0.7F)
+            .setOnDismissListener {}.show()
 
         //过n秒改变窗口样式
         //changeDialogSize(delayMillis = 6000)
         findViewById<View>(R.id.bt_loading_progressbar_imageview).postDelayed({
             //实用性用法, 动态改变窗口文本: "加载中" -> "已完成"
-            DialogManager.contentView?.findViewById<TextView>(R.id.tv_ando_dialog_loading_text)?.text = "已完成"
+            DialogManager.contentView?.findViewById<TextView>(R.id.tv_ando_dialog_loading_text)?.text =
+                "已完成"
 
             //实用性用法, 动态改变转圈儿图片
             DialogManager.contentView?.findViewById<ProgressBar>(ando.dialog.usage.R.id.progressbar_ando_dialog_loading)?.visibility =
                 View.GONE
-            val image: ImageView? = DialogManager.contentView?.findViewById(ando.dialog.usage.R.id.iv_ando_dialog_loading)
+            val image: ImageView? =
+                DialogManager.contentView?.findViewById(ando.dialog.usage.R.id.iv_ando_dialog_loading)
             image?.visibility = View.VISIBLE
-            val anim = AnimationUtils.loadAnimation(this, ando.dialog.usage.R.anim.anim_ando_dialog_loading)
+            val anim = AnimationUtils.loadAnimation(
+                this, ando.dialog.usage.R.anim.anim_ando_dialog_loading
+            )
             image?.startAnimation(anim)
 
             //改变弹窗宽高(Change the width and height of the dialog)
@@ -142,10 +154,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     //加载中弹窗(LoadingDialog): ImageView + AnimationUtils
     private fun showLoadingDialogByImageView() {
-        loadingDialog(this)
-            .setDimmedBehind(false)
-            .setCanceledOnTouchOutside(true)
-            .setSize(390, 280)
+        loadingDialog(this).setDimmedBehind(false).setCanceledOnTouchOutside(true).setSize(390, 280)
             .setOnShowListener {
                 findViewById<View>(R.id.bt_loading_imageview).postDelayed({
                     it.attributes?.apply {
@@ -156,27 +165,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         it.attributes = this
                     }
                 }, 2000)
-            }
-            .setOnDismissListener {}
-            .show()
+            }.setOnDismissListener {}.show()
 
         //changeDialogSize()
     }
 
     //简单用法(Simple usage)
     private fun showDialogFragmentSimpleUsage() {
-        DialogManager.with(this, R.style.AndoLoadingDialog)
-            .useDialogFragment()
+        DialogManager.with(this, R.style.AndoLoadingDialog).useDialogFragment()
             .setContentView(R.layout.layout_ando_dialog_loading) { v ->
-                v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility =
-                    View.VISIBLE
-            }
-            .setCancelable(true)
-            .setCanceledOnTouchOutside(true)
-            .setOnDismissListener {
+                v.findViewById<View>(R.id.progressbar_ando_dialog_loading).visibility = View.VISIBLE
+            }.setCancelable(true).setCanceledOnTouchOutside(true).setOnDismissListener {
                 Log.e("123", "Dismiss... ")
-            }
-            .show()
+            }.show()
 
         changeDialogSize()
     }
@@ -192,16 +193,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         dateTimeDialog.setCallBack(object : DateTimePickerDialog.CallBack {
             override fun onClick(originalTime: Date, dateTime: String) {
                 Toast.makeText(
-                    this@MainActivity,
-                    "$originalTime\n\n$dateTime", Toast.LENGTH_LONG
+                    this@MainActivity, "$originalTime\n\n$dateTime", Toast.LENGTH_LONG
                 ).show()
             }
 
             override fun onDateChanged(
-                v: DatePicker?,
-                year: Int,
-                monthOfYear: Int,
-                dayOfMonth: Int
+                v: DatePicker?, year: Int, monthOfYear: Int, dayOfMonth: Int
             ) {
             }
 
@@ -224,21 +221,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun replaceDialog() {
         val externalDialog = Dialog(this, android.R.style.Theme_Dialog)
 
-        DialogManager.replaceDialog(externalDialog)
-            .apply {
-                //`requestWindowFeature`必须在`show`之前调用
-                //Fixed: java.lang.RuntimeException: The feature has not been requested
-                dialog?.requestWindowFeature(Window.FEATURE_LEFT_ICON)
-            }
-            .setSize(450, 260)
-            .setTitle("Hello World")
-            .setOnShowListener {
-                DialogManager.dialog?.setFeatureDrawableResource(
-                    Window.FEATURE_LEFT_ICON, android.R.drawable.star_on
-                )
-            }
-            .create()
-            .show()
+        DialogManager.replaceDialog(externalDialog).apply {
+            //`requestWindowFeature`必须在`show`之前调用
+            //Fixed: java.lang.RuntimeException: The feature has not been requested
+            dialog?.requestWindowFeature(Window.FEATURE_LEFT_ICON)
+        }.setSize(450, 260).setTitle("Hello World").setOnShowListener {
+            DialogManager.dialog?.setFeatureDrawableResource(
+                Window.FEATURE_LEFT_ICON, android.R.drawable.star_on
+            )
+        }.create().show()
 
         changeDialogSize()
     }
@@ -267,6 +258,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         override fun getLayoutId(): Int = R.layout.layout_dialog_bottom
+    }
+
+    private fun showBottomDialogActivity() {
+        startActivity(Intent(this, BottomDialogActivity::class.java))
     }
 
     //进度弹窗(ProgressDialog)

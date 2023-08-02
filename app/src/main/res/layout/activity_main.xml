@@ -7,7 +7,7 @@
     android:overScrollMode="always"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    android:scrollbarSize="8dp"
+    android:scrollbarSize="5dp"
     android:scrollbarStyle="insideInset"
     android:scrollbars="vertical"
     tools:context="ando.dialog.sample.MainActivity">
@@ -141,6 +141,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="底部弹窗(BottomDialog)"
+            android:textAllCaps="false" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/bt_dialog_bottom_activity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="底部弹窗(BottomDialog)-Activity"
             android:textAllCaps="false" />
 
         <androidx.appcompat.widget.AppCompatButton

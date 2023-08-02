@@ -59,6 +59,7 @@ object DialogManager {
     private var isDimmedBehind: Boolean = true
 
     var contentView: View? = null
+    var window: Window? = null
     var dialog: Dialog? = null
     var dialogFragment: BaseDialogFragment? = null
 
@@ -77,6 +78,12 @@ object DialogManager {
                 }
             }
         }
+    }
+
+    fun getCurrentDialog(): Dialog? = currentDialog()
+
+    fun getCurrentWindow(): Window? {
+        return window ?: currentDialog()?.window
     }
 
     /**
@@ -149,8 +156,7 @@ object DialogManager {
     }
 
     fun with(
-        context: Context,
-        @StyleRes themeResId: Int = android.R.style.Theme_Dialog
+        context: Context, @StyleRes themeResId: Int = android.R.style.Theme_Dialog
     ): DialogManager {
         reset()
         dismiss()
@@ -182,13 +188,11 @@ object DialogManager {
     }
 
     fun setContentView(
-        layoutId: Int,
-        block: ((View) -> Unit)? = null
+        layoutId: Int, block: ((View) -> Unit)? = null
     ): DialogManager {
         FrameLayout(mContext ?: return this).apply {
             layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
 
             contentView = LayoutInflater.from(context).inflate(layoutId, this, true)
@@ -205,14 +209,11 @@ object DialogManager {
     }
 
     fun setContentView(
-        view: View,
-        params: ViewGroup.LayoutParams? = null,
-        block: ((View) -> Unit)? = null
+        view: View, params: ViewGroup.LayoutParams? = null, block: ((View) -> Unit)? = null
     ): DialogManager {
         FrameLayout(mContext ?: return this).apply {
             layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
             )
 
             contentView = view

@@ -28,16 +28,16 @@ android {
     //https://www.jianshu.com/p/4933ab2f3599
     configurations.all {
         resolutionStrategy {
-            force 'androidx.appcompat:appcompat:1.4.1'
-            force 'com.google.android.material:material:1.5.0'
+            force 'androidx.appcompat:appcompat:1.6.1'
+            force 'com.google.android.material:material:1.8.0'
         }
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
     implementation project(':dialog_core')
     implementation project(':dialog_usage')

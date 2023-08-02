@@ -12,6 +12,10 @@
         android:theme="@style/Theme.DialogManager"
         tools:ignore="AllowBackup">
         <activity
+            android:name=".BottomDialogActivity"
+            android:exported="false"
+            android:theme="@style/CustomBottomDialogActivityStyle" />
+        <activity
             android:name=".OptionViewActivity"
             android:exported="false" />
         <activity

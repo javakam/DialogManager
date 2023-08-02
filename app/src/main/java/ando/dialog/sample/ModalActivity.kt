@@ -20,6 +20,7 @@ class ModalActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modal)
 
+        //带标题 With Header
         findViewById<View>(R.id.buttonWithHeader).setOnClickListener {
             dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Title of modal")
@@ -31,6 +32,7 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog?.show(supportFragmentManager, "WithHeader")
         }
 
+        //不带标题 Without Header
         findViewById<View>(R.id.buttonWithoutHeader).setOnClickListener {
             dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
                 .addItem(this, R.menu.options)
@@ -41,6 +43,7 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog?.show(supportFragmentManager, "WithoutHeader")
         }
 
+        //网格 Grid Layout
         findViewById<View>(R.id.buttonGrid).setOnClickListener {
             ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Grid bottom layout")
@@ -50,6 +53,7 @@ class ModalActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "GridLayout")
         }
 
+        //自定义头布局 Custom Header Layout
         val list = mutableListOf(
             OptionItem(
                 1,
@@ -83,6 +87,7 @@ class ModalActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "CustomHeader")
         }
 
+        //滑动控制 Scroll Layout
         findViewById<View>(R.id.buttonScrollableList).setOnClickListener {
             dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
                 .setTitle("Scrolling layout")
@@ -104,6 +109,7 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog?.show(supportFragmentManager, "ScrollLayout")
         }
 
+        //圆角 Rounded Layout
         findViewById<View>(R.id.buttonRounded).setOnClickListener {
             val listCheckBox = mutableListOf(
                 OptionItem(1, "QQ", null),
@@ -130,7 +136,7 @@ class ModalActivity : AppCompatActivity() {
                 .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
                 .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
                 .setItemDecoration(decoration)
-                .setFullScreen(true)
+                .setFullScreen(false)
                 .addItem(listCheckBox)
                 //.setOnItemClickListener(onItemClickListener)
                 .setOnSelectedCallBack(object : ModalBottomSheetDialogFragment.OnSelectedCallBack {
@@ -139,7 +145,8 @@ class ModalActivity : AppCompatActivity() {
                         items.filter { it.isChecked }.forEach {
                             sb.append("${it.id}. ${it.title}").append("\n")
                         }
-                        Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG)
+                            .show()
                     }
                 })
                 .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
@@ -149,17 +156,23 @@ class ModalActivity : AppCompatActivity() {
                 .show(supportFragmentManager, "RoundedLayout")
         }
 
+        //分享弹窗 Share
         findViewById<View>(R.id.buttonShare).setOnClickListener {
             dismissibleDialog = ModalBottomSheetDialogFragment.Builder()
                 //.setTitle("分享")
                 //.setTitleLayout(R.layout.layout_bottom_sheet_fragment_header)
                 .addItem(this, R.menu.options)
                 .setItemViewDirection(true)
+                .setTopRounded(true)//顶部圆角控制
                 .setColumns(3)
                 .setDraggable(true)
                 .setOnItemClickListener(object : OptionView.OnItemClickListener {
                     override fun onItemSelected(item: OptionItem) {
-                        Toast.makeText(applicationContext, "Inner clicked on: " + item.title, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "Inner clicked on: " + item.title,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 })
                 .build()
@@ -167,10 +180,14 @@ class ModalActivity : AppCompatActivity() {
             dismissibleDialog?.show(supportFragmentManager, "Share")
         }
 
+        //全屏显示, 滑动关闭
         findViewById<View>(R.id.buttonFullPage).setOnClickListener {
             val dialogFull = AbsBottomSheetDialogFragment.obtain(
-                R.layout.layout_bottom_sheet_custom, isFullScreen = true, isTopRounded = false,
-                isDraggable = true, object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
+                R.layout.layout_bottom_sheet_custom,
+                isFullScreen = true,
+                isTopRounded = false,
+                isDraggable = true,
+                object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
                     override fun onDialogCreated(dialog: BottomSheetDialog) {
                         dialog.setCanceledOnTouchOutside(false)
 
@@ -261,7 +278,11 @@ class ModalActivity : AppCompatActivity() {
                 })
                 .setOnItemClickListener(object : OptionView.OnItemClickListener {
                     override fun onItemSelected(item: OptionItem) {
-                        Toast.makeText(applicationContext, "onItemSelected: " + item.title, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            applicationContext,
+                            "onItemSelected: " + item.title,
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         //选择完后直接关闭页面
                         dismissibleDialog?.dismissAllowingStateLoss()
@@ -273,7 +294,8 @@ class ModalActivity : AppCompatActivity() {
                         items.filter { it.isChecked }.forEach {
                             sb.append("${it.id}. ${it.title}").append("\n")
                         }
-                        Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@ModalActivity, "选择结果:\n$sb", Toast.LENGTH_LONG)
+                            .show()
                     }
                 })
                 .setCallBack(object : AbsBottomSheetDialogFragment.OnDialogLifeCycleCallback {
@@ -289,7 +311,8 @@ class ModalActivity : AppCompatActivity() {
 
     private val onItemClickListener = object : OptionView.OnItemClickListener {
         override fun onItemSelected(item: OptionItem) {
-            Toast.makeText(applicationContext, "clicked on: " + item.title, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "clicked on: " + item.title, Toast.LENGTH_SHORT)
+                .show()
             //dismissibleDialog.dismiss();
         }
     }

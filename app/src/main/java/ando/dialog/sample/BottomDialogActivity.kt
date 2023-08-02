@@ -6,6 +6,9 @@ import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 
+/**
+ * 弹窗且不改变状态栏字体颜色方案
+ */
 class BottomDialogActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

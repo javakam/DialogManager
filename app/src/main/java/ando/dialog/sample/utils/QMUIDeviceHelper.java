@@ -29,6 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * https://github.com/Tencent/QMUI_Android
+ *
  * @author cginechen
  * @date 2016-08-11
  */
@@ -38,8 +40,6 @@ public class QMUIDeviceHelper {
     private final static String KEY_MIUI_VERSION_NAME = "ro.miui.ui.version.name";
     private static final String KEY_FLYME_VERSION_NAME = "ro.build.display.id";
     private final static String FLYME = "flyme";
-    private final static String ZTEC2016 = "zte c2016";
-    private final static String ZUKZ1 = "zuk z1";
     private final static String MEIZUBOARD[] = {"m9", "M9", "mx", "MX"};
     private final static String POWER_PROFILE_CLASS = "com.android.internal.os.PowerProfile";
     private final static String CPU_FILE_PATH_0 = "/sys/devices/system/cpu/";

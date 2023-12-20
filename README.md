@@ -33,6 +33,7 @@ implementation 'com.github.javakam:widget.optionview:7.0.0@aar'  //单选/多选
 ## 三、用法(Usage)
 
 ```kotlin
+//1. 创建并显示弹窗
 fun showLoadingDialog() {//以加载中弹窗为例
     DialogManager.with(this, R.style.AndoLoadingDialog)//建议设置主题样式(It is recommended to set the theme style)
         .useDialogFragment()//默认为`DialogFragment`实现, useDialog()表示由`Dialog`实现
@@ -92,6 +93,12 @@ fun showLoadingDialog() {//以加载中弹窗为例
         //or 直接移除背景变暗(Directly remove the background darkening)
         //DialogManager.dialog?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
     }, 6000)
+}
+
+2. 关闭弹窗
+override fun onDestroy() {
+    super.onDestroy()
+    DialogManager.dismiss()
 }
 ```
 

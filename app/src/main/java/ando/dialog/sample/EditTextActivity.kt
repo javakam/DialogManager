@@ -85,4 +85,9 @@ class EditTextActivity : AppCompatActivity() {
             }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        DialogManager.dismiss()
+    }
+
 }

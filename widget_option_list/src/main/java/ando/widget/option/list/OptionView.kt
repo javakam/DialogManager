@@ -94,7 +94,9 @@ class OptionView @JvmOverloads constructor(
             else EasyAdapter.SelectMode.MULTI_SELECT
 
             this.mAdapter.setOnItemSingleSelectListener { itemPosition, _ ->
-                this.onItemClickListener?.onItemSelected(mAdapter.getItems()[itemPosition])
+                if (itemPosition > 0) {
+                    this.onItemClickListener?.onItemSelected(mAdapter.getItems()[itemPosition])
+                }
             }
         }
         //没有数据时候, 会有 Adapter.Title
@@ -139,9 +141,18 @@ class OptionView @JvmOverloads constructor(
             //设置预选位置
             if (items.isNotEmpty()) {
                 if (mConfig.setting.isCheckSingle()) {//单选
-                    var preSelectIndex: Int = items.indexOfFirst { it.isChecked }
-                    if (preSelectIndex < 0) preSelectIndex = 0 //防止 indexOfFirst 返回 -1 导致的数组越界
-                    setSelected(preSelectIndex)
+                    val preSelectIndex: Int = items.indexOfFirst { it.isChecked }
+                    if (preSelectIndex < 0) {
+                        if (!mConfig.setting.isCheckAllowNothing) {
+                            items[0].isChecked = true
+                            setSelected(0)
+                        } else {
+                            setSelected(-1)
+                        }
+                    } else {
+                        items[preSelectIndex].isChecked = true
+                        setSelected(preSelectIndex)
+                    }
                 } else {//多选
                     var preSelectIndexList = intArrayOf()
                     items.forEachIndexed { i, item ->
@@ -202,12 +213,15 @@ class OptionView @JvmOverloads constructor(
                 SelectMode.CLICK -> { //点击
                     holder.itemView.isSelected = false
                 }
+
                 SelectMode.SINGLE_SELECT -> { //单选
                     holder.itemView.isSelected = (singleSelected == correctPosition)
                 }
+
                 SelectMode.MULTI_SELECT -> { //多选
                     holder.itemView.isSelected = multiSelectedPosition.contains(correctPosition)
                 }
+
                 else -> {}
             }
             /////////////////////////// END ///////////////////////////

@@ -8,14 +8,14 @@ buildscript {
         buildToolsVersion = '33.0.2'
         minSdkVersion = 21
         targetSdkVersion = 33
-        versionCode = 11
-        versionName = "7.0.0"
+        versionCode = 12
+        versionName = "7.5.0"
 
         //Publish Library Version
-        versionCore = "7.0.0"
-        versionUsage = "7.0.0"
-        versionBottomSheet = "7.0.0"
-        versionOptionList = "7.0.0"
+        versionCore = "7.5.0"
+        versionUsage = "7.5.0"
+        versionBottomSheet = "7.5.0"
+        versionOptionList = "7.5.0"
     }
 
     repositories {

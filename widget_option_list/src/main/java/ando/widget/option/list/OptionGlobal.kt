@@ -30,7 +30,7 @@ data class OptConfig(
 data class OptSetting(
     @CheckMode var checkMode: Int = MODE_CHECK_NONE, //不显示选项框/单选/多选
     var isItemViewHorizontal: Boolean = true,        //是否为横向显示的 ItemView
-    var isCheckTriggerByItemView: Boolean = false,   //是否在点击 Adapter.ItemView 时直接切换 CheckBox 的勾选状态
+    var isCheckTriggerByItemView: Boolean = false,   //是否在点击 Adapter.ItemView 时直接切换 CheckBox 的勾选状态 td 2023年12月25日
     var isCheckAllowNothing: Boolean = true,         //是否允许什么都不选
 )
 

@@ -64,7 +64,7 @@ class OptionViewActivity : AppCompatActivity() {
                 OptionItem(
                     4, "朋友圈", ContextCompat.getDrawable(this, R.drawable.umeng_socialize_wxcircle), false
                 ),
-                OptionItem(5, "张三", null, true),
+                OptionItem(5, "张三", null, false),
                 OptionItem(6, "李四", null, false),
                 OptionItem(7, "王五", null, false),
                 OptionItem(8, "赵六", null, false),

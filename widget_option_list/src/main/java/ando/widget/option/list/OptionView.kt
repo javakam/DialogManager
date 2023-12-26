@@ -70,7 +70,7 @@ class OptionView @JvmOverloads constructor(
     ): OptionView {
         this.mConfig = config ?: OptConfig(
             null, LAYOUT_TITLE, LAYOUT_ITEM_HORIZONTAL, 1,
-            OptSetting(MODE_CHECK_NONE, isItemViewHorizontal = true, isCheckTriggerByItemView = false, isCheckAllowNothing = true)
+            OptSetting(MODE_CHECK_NONE, isItemViewHorizontal = true, isCheckTriggerByItemView = false)
         )
         this.onItemViewCallBack = onItemViewCallBack
         this.onItemClickListener = onItemClickListener
@@ -94,7 +94,7 @@ class OptionView @JvmOverloads constructor(
             else EasyAdapter.SelectMode.MULTI_SELECT
 
             this.mAdapter.setOnItemSingleSelectListener { itemPosition, _ ->
-                if (itemPosition > 0) {
+                if (itemPosition >= 0) {
                     this.onItemClickListener?.onItemSelected(mAdapter.getItems()[itemPosition])
                 }
             }
@@ -142,17 +142,10 @@ class OptionView @JvmOverloads constructor(
             if (items.isNotEmpty()) {
                 if (mConfig.setting.isCheckSingle()) {//单选
                     val preSelectIndex: Int = items.indexOfFirst { it.isChecked }
-                    if (preSelectIndex < 0) {
-                        if (!mConfig.setting.isCheckAllowNothing) {
-                            items[0].isChecked = true
-                            setSelected(0)
-                        } else {
-                            setSelected(-1)
-                        }
-                    } else {
+                    if (preSelectIndex >= 0) {
                         items[preSelectIndex].isChecked = true
-                        setSelected(preSelectIndex)
                     }
+                    setSelected(preSelectIndex)
                 } else {//多选
                     var preSelectIndexList = intArrayOf()
                     items.forEachIndexed { i, item ->
@@ -195,8 +188,6 @@ class OptionView @JvmOverloads constructor(
                 if (isCheckShow && isHorizontal) {
                     holder.setIsHorizontal(isHorizontal)
                     holder.setShowCheckBox(isCheckShow)
-                    //至少选择一项
-                    //holder.ivCheckBox?.
                 }
                 return holder
             }

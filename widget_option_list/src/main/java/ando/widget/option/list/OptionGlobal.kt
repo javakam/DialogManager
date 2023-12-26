@@ -21,17 +21,13 @@ data class OptConfig(
     var titleLayoutResource: Int = OptionView.LAYOUT_TITLE,
     var itemLayoutResource: Int = OptionView.LAYOUT_ITEM_HORIZONTAL,
     var columns: Int = 1,
-    var setting: OptSetting = OptSetting(
-        MODE_CHECK_NONE,
-        isItemViewHorizontal = true, isCheckTriggerByItemView = false, isCheckAllowNothing = true
-    ),
+    var setting: OptSetting = OptSetting(MODE_CHECK_NONE, isItemViewHorizontal = true, isCheckTriggerByItemView = false),
 )
 
 data class OptSetting(
     @CheckMode var checkMode: Int = MODE_CHECK_NONE, //不显示选项框/单选/多选
     var isItemViewHorizontal: Boolean = true,        //是否为横向显示的 ItemView
-    var isCheckTriggerByItemView: Boolean = false,   //是否在点击 Adapter.ItemView 时直接切换 CheckBox 的勾选状态 td 2023年12月25日
-    var isCheckAllowNothing: Boolean = true,         //是否允许什么都不选
+    var isCheckTriggerByItemView: Boolean = false,   //用于控制点击时由 Adapter.ItemView 还是 CheckBox 切换勾选状态, 默认为 CheckBox
 )
 
 fun OptSetting.isCheckShow(): Boolean = (checkMode != MODE_CHECK_NONE)

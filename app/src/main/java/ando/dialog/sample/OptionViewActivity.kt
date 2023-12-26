@@ -37,7 +37,7 @@ class OptionViewActivity : AppCompatActivity() {
                 itemLayoutResource = LAYOUT_ITEM_HORIZONTAL,
                 setting = OptSetting(
                     checkMode = if (isMultiChoiceMode) MODE_CHECK_MULTI else MODE_CHECK_SINGLE,
-                    isItemViewHorizontal = true, isCheckTriggerByItemView = true, isCheckAllowNothing = true
+                    isItemViewHorizontal = true, isCheckTriggerByItemView = true
                 )
             ),
             data = null, onItemViewCallBack = null,

@@ -28,10 +28,8 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         private const val KEY_TITLE_LAYOUT = "title_layout" //title layout
         private const val KEY_GRID_COLUMNS = "columns"      //grid columns
         private const val KEY_SHOW_CLOSE = "showClose"      //close button
-        private const val KEY_SHOW_CHECK_BOX_MODE =
-            "checkMode"             //不显示or单选or多选(Do not show or Single choice or multiple choice)
-        private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger"       //点击 Adapter.ItemView 触发 checkbox
-        private const val KEY_SHOW_CHECK_BOX_ALLOW_NOTHING = "allowNothing" //是否允许一个都不选
+        private const val KEY_SHOW_CHECK_BOX_MODE = "checkMode"       //不显示or单选or多选(Do not show or Single choice or multiple choice)
+        private const val KEY_SHOW_CHECK_BOX_TRIGGER_ITEM = "trigger" //点击 Adapter.ItemView 触发 checkbox
 
         private var itemDecoration: RecyclerView.ItemDecoration? = null
         private var mOnItemViewCallBack: OptionView.OnItemViewCallBack? = null
@@ -51,7 +49,6 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
             args.putBoolean(KEY_DRAGGABLE, builder.isDraggable)
             args.putBoolean(KEY_SHOW_CLOSE, builder.isShowClose)
             args.putBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, builder.isCheckTriggerByItemView)
-            args.putBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, builder.isCheckAllowNothing)
             itemDecoration = builder.itemDecoration
             mOnItemViewCallBack = builder.onItemViewCallBack
             mOnItemClickListener = builder.onItemClickListener
@@ -85,8 +82,7 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
                     columns = arguments?.getInt(KEY_GRID_COLUMNS) ?: 1,
                     OptSetting(
                         checkMode = arguments?.getInt(KEY_SHOW_CHECK_BOX_MODE, MODE_CHECK_NONE) ?: MODE_CHECK_NONE,
-                        isCheckTriggerByItemView = arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false,
-                        isCheckAllowNothing = arguments?.getBoolean(KEY_SHOW_CHECK_BOX_ALLOW_NOTHING, true) ?: true,
+                        isCheckTriggerByItemView = arguments?.getBoolean(KEY_SHOW_CHECK_BOX_TRIGGER_ITEM, false) ?: false
                     )
                 ),
                 data = arguments?.getParcelableArrayList(KEY_ITEMS) ?: emptyList(),
@@ -127,7 +123,6 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
         @CheckMode
         internal var checkMode: Int = MODE_CHECK_NONE
         internal var isCheckTriggerByItemView: Boolean = false
-        internal var isCheckAllowNothing: Boolean = true
         internal var titleLayoutResource = LAYOUT_TITLE
         internal var itemLayoutResource = LAYOUT_ITEM_HORIZONTAL
         internal var onItemViewCallBack: OptionView.OnItemViewCallBack? = null
@@ -217,11 +212,6 @@ class ModalBottomSheetDialogFragment : AbsBottomSheetDialogFragment() {
 
         fun setCheckTriggerByItemView(isCheckTriggerByItemView: Boolean): Builder {
             this.isCheckTriggerByItemView = isCheckTriggerByItemView
-            return this
-        }
-
-        fun setCheckAllowNothing(isCheckAllowNothing: Boolean): Builder {
-            this.isCheckAllowNothing = isCheckAllowNothing
             return this
         }
 

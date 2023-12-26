@@ -133,7 +133,6 @@ class ModalActivity : AppCompatActivity() {
                 .setTopRounded(true)             //圆角, 仅支持左上角和右上角
                 .setCheckMode(MODE_CHECK_MULTI)  //是否单选或多选       单选true;多选false
                 .setCheckTriggerByItemView(true) //是否点击整个ItemView触发CheckBox事件
-                .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
                 .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
                 .setItemDecoration(decoration)
                 .setFullScreen(false)
@@ -238,8 +237,7 @@ class ModalActivity : AppCompatActivity() {
                             optionView.obtain(
                                 false, OptionView.OptSetting(
                                     isCheckSingle = true,
-                                    isCheckTriggerByItemView = true,
-                                    isCheckAllowNothing = false
+                                    isCheckTriggerByItemView = true
                                 ), listCheckBox, null
                             )
                         }
@@ -263,7 +261,6 @@ class ModalActivity : AppCompatActivity() {
                 .setTopRounded(false)            //圆角, 仅支持左上角和右上角]
                 .setCheckMode(MODE_CHECK_SINGLE) //是否单选或多选       单选true;多选false
                 .setCheckTriggerByItemView(true) //是否点击整个ItemView触发CheckBox事件
-                .setCheckAllowNothing(false)     //是否允许选择结果为空  允许true;不允许false
                 .setItemViewDirection(false)     //是否横向显示         竖向true;横向false
                 .setItemDecoration(decoration)
                 .setFullScreen(true)

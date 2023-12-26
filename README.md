@@ -17,8 +17,8 @@
 
 1. 基于`Dialog/DialogFragment`实现, 主要包括`Dialog`开发过程中的基本用法并处理了一些常见的问题。
 ```groovy
-implementation 'com.github.javakam:dialog.core:7.5.0@aar'  //核心库, 2个类
-implementation 'com.github.javakam:dialog.usage:7.5.0@aar' //常用样式(如: 加载中弹窗)
+implementation 'com.github.javakam:dialog.core:7.6.0@aar'  //核心库, 2个类
+implementation 'com.github.javakam:dialog.usage:7.6.0@aar' //常用样式(如: 加载中弹窗)
 ```
 
 2. 基于`BottomSheetDialogFragment`, 包括网格弹窗, 可用于第三方分享, 支持标题、顶部圆角和滑动设置; 列表样式弹窗, 支持单选和多选。
@@ -26,8 +26,8 @@ implementation 'com.github.javakam:dialog.usage:7.5.0@aar' //常用样式(如: �
 > 支持单选/多选的RecyclerView框架'com.github.javakam:widget.optionview:xxx@aar'可以独立使用, 可依附于任何`ViewGroup`。
 
 ```groovy
-implementation 'com.github.javakam:dialog.bottomsheet:7.5.0@aar' //底部弹窗(必需下面的 widget.optionview 框架)
-implementation 'com.github.javakam:widget.optionview:7.5.0@aar'  //单选/多选的RecyclerView,基于EasyAdapter实现
+implementation 'com.github.javakam:dialog.bottomsheet:7.6.0@aar' //底部弹窗(必需下面的 widget.optionview 框架)
+implementation 'com.github.javakam:widget.optionview:7.6.0@aar'  //单选/多选的RecyclerView,基于EasyAdapter实现
 ```
 
 ## 三、用法(Usage)
